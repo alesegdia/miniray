@@ -1,0 +1,9 @@
+
+*~
+*.swp
+*.swo
+doc
+00
+*.bat
+build
+test
