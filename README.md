@@ -12,6 +12,9 @@ INSTALL
 ---
 todo.
 
+CREDITS
+---
+Bitmap and Texture classes taken from https://github.com/tomdalling/opengl-series
 
 LICENSE
 ---
