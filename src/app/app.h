@@ -13,7 +13,9 @@
 #include "../texgen/canvas.h"
 #include "../physics/physics.h"
 #include "../render/plane.h"
+#include "../render/font.h"
 #include "../core/random.h"
+#include "../entity/entityfactory.h"
 
 class Player;
 class PlayerHumanController;
@@ -25,13 +27,12 @@ private:
 
 	Camera cam;
 	Map map;
-	Sprite3D bichosprite, bulletsprite;
+	Sprite3D bichosprite, bulletsprite, redsprite, armasprite;
 	PlayerHumanController* playercontroller;
 
 	Canvas* canvas;
 	RNG rng;
-	tdogl::Bitmap* pbmp;
-	tdogl::Texture *tex1, *tex2, *tex3, *suelotex, *persotex, *techotex, *bullettex;
+	uint32_t deltatime;
 
 	//FPSCounter<Uint32> fpsc;
 	Player* player;
@@ -41,6 +42,13 @@ private:
 	Entity bichoentity;
 	DynamicArray<Entity*> actors;
 	DynamicArray<Entity*> bullets;
+	Font font;
+
+	tdogl::Bitmap* pbmp;
+	tdogl::Texture *armatex, *tex1, *tex2, *tex3, *suelotex, *persotex, *techotex, *bullettex, *redtex;
+	Entity arma;
+
+	EntityFactory efactory;
 
 	Renderer renderer;
 	Physics physics;
@@ -50,6 +58,7 @@ private:
 	void PurgeList( DynamicArray<Entity*>& l );
 	void SpawnBullet( cml::vector2f pos, cml::vector2f dir );
 	void SetupPlayer();
+	void UpdateActors( uint32_t delta );
 
 	// APP INTERFACE
 	void Setup(int argc, char** argv);

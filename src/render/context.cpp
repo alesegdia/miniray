@@ -14,6 +14,7 @@ bool Context::MakeCurrent()
     GetProc( GenBuffers, "glGenBuffers" ) &&
     GetProc( DepthFunc, "glDepthFunc" ) &&
     GetProc( BufferData, "glBufferData" ) &&
+    GetProc( PixelStorei, "glPixelStorei" ) &&
     GetProc( VertexAttribPointer, "glVertexAttribPointer" ) &&
     GetProc( EnableVertexAttribArray, "glEnableVertexAttribArray" ) &&
     GetProc( CreateShader, "glCreateShader" ) &&
@@ -37,16 +38,20 @@ bool Context::MakeCurrent()
     GetProc( DeleteShader, "glDeleteShader" ) &&
     GetProc( DeleteBuffers, "glDeleteBuffers" ) &&
     GetProc( UniformMatrix4fv, "glUniformMatrix4fv" ) &&
+    GetProc( Uniform1fv, "glUniform1fv" ) &&
     GetProc( Uniform1f, "glUniform1f" ) &&
     GetProc( Uniform2f, "glUniform2f" ) &&
     GetProc( Uniform3f, "glUniform3f" ) &&
+    GetProc( Uniform4f, "glUniform4f" ) &&
     GetProc( GetUniformLocation, "glGetUniformLocation" ) &&
     GetProc( CullFace, "glCullFace" ) &&
     GetProc( BlendFunc, "glBlendFunc" ) &&
     GetProc( FrontFace, "glFrontFace" ) &&
     GetProc( Enable, "glEnable" ) &&
+    GetProc( Disable, "glDisable" ) &&
     GetProc( TexParameteri, "glTexParameteri" ) &&
     GetProc( TexImage2D, "glTexImage2D" ) &&
+    GetProc( TexSubImage2D, "glTexSubImage2D" ) &&
     GetProc( GenTextures, "glGenTextures" ) &&
     GetProc( Uniform1i, "glUniform1i" ) &&
     GetProc( ActiveTexture, "glActiveTexture" ) &&
@@ -55,6 +60,16 @@ bool Context::MakeCurrent()
     GetProc( GetAttribLocation, "glGetAttribLocation" ) &&
     GetProc( VertexAttribDivisor, "glVertexAttribDivisor" ) &&
     GetProc( DrawArraysInstanced, "glDrawArraysInstanced" ) &&
+
+
+    GetProc( GenFramebuffers, "glGenFramebuffers" ) &&
+    GetProc( BindFramebuffer, "glBindFramebuffer" ) &&
+    GetProc( FramebufferTexture2D, "glFramebufferTexture2D" ) &&
+    GetProc( GenRenderbuffers, "glGenRenderbuffers" ) &&
+    GetProc( BindRenderbuffer, "glBindRenderbuffer" ) &&
+    GetProc( RenderbufferStorage, "glRenderbufferStorage" ) &&
+    GetProc( FramebufferRenderbuffer, "glFramebufferRenderbuffer" ) &&
+
     GetProc( DeleteVertexArrays, "glDeleteVertexArrays" );
 }
 

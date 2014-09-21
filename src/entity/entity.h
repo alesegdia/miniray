@@ -10,25 +10,43 @@ class EntityController;
 
 class Entity
 {
+public:
+	enum Type
+	{
+		BULLET,
+		MOB,
+		PLAYER
+	};
 
 protected:
 
-	Transform transform;
 	Sprite3D* sprite;
 	b2Body* body;
 
 	bool isAlive;
-	CollisionLayer type;
-	EntityController* controller;
+	Entity::Type type;
 
 
 public:
+
+	Transform transform;
+	EntityController* controller;
 
 	Entity()
 	{
 		isAlive = true;
 		controller = NULL;
-		type = CollisionLayer::ENEMY;
+		type = Type::MOB;
+	}
+
+	const char* TypeString()
+	{
+		switch( type )
+		{
+			case Type::MOB: return "MOB";
+			case Type::PLAYER: return "PLAYER";
+			case Type::BULLET: return "BULLET";
+		}
 	}
 
 	void ClearVelocity()
@@ -40,26 +58,26 @@ public:
 
 	void Step( uint32_t delta );
 
-	void SetType( CollisionLayer t )
+	void SetType( Entity::Type t )
 	{
 		type = t;
 	}
 
-	CollisionLayer GetType()
+	Entity::Type GetType()
 	{
 		return type;
 	}
 
 	void CollisionEnter( Entity* other )
 	{
-		printf("%p: START COLLISION WITH %p\n", this, other);
-		fflush(0);
+		//printf("%p (%s): START COLLISION WITH %p (%s)\n", this, TypeString(), other, other->TypeString());
+		//fflush(0);
 	}
 
 	void CollisionExit( Entity* other )
 	{
-		printf("%p: END COLLISION WITH %p\n", this, other);
-		fflush(0);
+		//printf("%p (%s): END COLLISION WITH %p (%s)\n", this, TypeString(), other, other->TypeString());
+		//fflush(0);
 	}
 
 	void Cleanup()

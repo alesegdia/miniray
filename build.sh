@@ -1,1 +1,1 @@
-cd build; make; cd ..;
+cd build; make -j8; cd ..;

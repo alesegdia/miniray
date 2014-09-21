@@ -1,5 +1,8 @@
 
 #include "physics.h"
+#include "layers.h"
+#include <cstdint>
+#include "../entity/player.h"
 
 void Physics::Init( int argc, char** argv )
 {
@@ -15,7 +18,7 @@ void Physics::Cleanup()
 	delete world;
 }
 
-b2Body* Physics::CreateBulletBody( float x, float y )
+b2Body* Physics::CreateBulletBody( float x, float y, CollisionLayer category, uint16_t mask )
 {
 	// BODY CONF
 	b2BodyDef bodyDef;
@@ -33,8 +36,9 @@ b2Body* Physics::CreateBulletBody( float x, float y )
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;
 	fixtureDef.density = 1.f;
-	fixtureDef.filter.categoryBits = CollisionLayer::PLAYER_BULLET;
-	fixtureDef.filter.maskBits = CollisionLayer::MAP | CollisionLayer::ENEMY;
+	fixtureDef.isSensor = true;
+	fixtureDef.filter.categoryBits = category;
+	fixtureDef.filter.maskBits = mask;
 	b2Fixture* fixture = body->CreateFixture( &fixtureDef );
 
 	body->SetGravityScale(0);
@@ -42,7 +46,7 @@ b2Body* Physics::CreateBulletBody( float x, float y )
 	return body;
 }
 
-b2Body* Physics::CreateSphereBody( float x, float y )
+b2Body* Physics::CreateSphereBody( float x, float y, CollisionLayer category, uint16_t mask )
 {
 	// BODY CONF
 	b2BodyDef bodyDef;
@@ -59,8 +63,8 @@ b2Body* Physics::CreateSphereBody( float x, float y )
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;
 	fixtureDef.density = 1.f;
-	fixtureDef.filter.categoryBits = CollisionLayer::ENEMY;
-	fixtureDef.filter.maskBits = CollisionLayer::PLAYER_BULLET | CollisionLayer::MAP | CollisionLayer::ENEMY;
+	fixtureDef.filter.categoryBits = category;
+	fixtureDef.filter.maskBits = mask;
 	b2Fixture* fixture = body->CreateFixture( &fixtureDef );
 
 	body->SetGravityScale(0);
@@ -85,7 +89,7 @@ void Physics::AddCubeBody( float x, float y )
 	fixtureDef.shape = &shape;
 	fixtureDef.density = 1.f;
 	fixtureDef.filter.categoryBits = CollisionLayer::MAP;
-	fixtureDef.filter.maskBits = CollisionLayer::PLAYER_BULLET | CollisionLayer::ENEMY;
+	fixtureDef.filter.maskBits = CollisionLayer::ALLY_BULLET | CollisionLayer::ENEMY | CollisionLayer::ENEMY_BULLET | CollisionLayer::PLAYER;
 	b2Fixture* fixture = body->CreateFixture( &fixtureDef );
 
 }
@@ -93,4 +97,34 @@ void Physics::AddCubeBody( float x, float y )
 void Physics::Step()
 {
 	world->Step(timeStep, velocityIterations, positionIterations);
+}
+
+class MyQueryCallback : public b2QueryCallback
+{
+	public:
+		static int numbodies;
+		bool ReportFixture(b2Fixture* fixture)
+		{
+			numbodies++;
+			return true;
+		}
+};
+
+int MyQueryCallback::numbodies = 0;
+
+void Physics::Stress(Player* p)
+{
+	MyQueryCallback::numbodies = 0;
+	for( int i = 0; i < 100; i++ )
+	{
+		b2AABB aabb;
+		float x, y;
+		x = p->transform.position[0];
+		y = p->transform.position[2];
+		aabb.lowerBound = b2Vec2(-x,-y);
+		aabb.upperBound = b2Vec2(-x+rng.uniform(100,500),-y+rng.uniform(100,500));
+		MyQueryCallback mycb;
+		world->QueryAABB( &mycb, aabb );
+	}
+	printf("KERI! %d\n", MyQueryCallback::numbodies);
 }

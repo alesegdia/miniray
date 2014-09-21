@@ -2,6 +2,7 @@
 #pragma once
 
 #include "entity.h"
+#include "script/weapon.h"
 
 class ActorController;
 
@@ -18,11 +19,19 @@ public:
 	int last_pain;
 	// atacó en el ultimo frame?
 	bool attack;
-	// fuerza, defensa y agilidad
-	int pwr, def, agi;
+	// PWR: aumenta daño armas
+	// DEF: reduccion daño armas
+	// PSI: daño psi, energia magica
+	// DKM: daño dkm, energia magica
+	// AGI: critico, velocidad de movimiento
+	struct { float pwr, def, psi, dkm, agi; } stats;
 	// vida
-	int current_hp;
-	int total_hp;
+	struct { int current, total; } hp;
+	// efectos
+	struct { uint32_t duration, last_pain; } fallout;
+	struct { uint32_t slow, freeze, confuse; } effect;
+	Weapon wep; // PUESTO AQUI PARA DEPURAR
+	// EN UN FUTURO; PUNTERO A WEAPON Y EN PLAYER, PLAYERWEAPON
 
 	void ApplyLinearVelocity()
 	{

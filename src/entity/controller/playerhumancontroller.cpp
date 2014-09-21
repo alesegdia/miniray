@@ -3,6 +3,9 @@
 #include "../player.h"
 #include "../entity.h"
 #include "../script/playerweapon.h"
+#include "../entityfactory.h"
+#include "../system/system.h"
+#include "../system/healthchecker.h"
 #include <Box2D/Box2D.h>
 
 PlayerHumanController::PlayerHumanController ()
@@ -19,6 +22,7 @@ PlayerHumanController::~PlayerHumanController ()
 void PlayerHumanController::Step( Entity* e, uint32_t delta )
 {
 	Player* p = static_cast<Player*>(e);
+	p->attack = shoot;
 
 	// MOVEMENT HANDLE
 	rotation_offset[0] *= -sensitivity;
@@ -37,6 +41,15 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 			finaldir = cml::rotate_vector_2D( axis, -cml::rad(p->GetAngleY()));
 		}
 		p->GetPhysicBody()->SetLinearVelocity(b2Vec2(finaldir[0]*speed,finaldir[1]*speed));
+	}
+	printf("vida: %d\n", p->hp.current);
+	CheckHealth( p );
+
+	System::SetEntityFactory( EntityController::entityfactory );
+	if( p->ammo > 0 && wpsys.TryShoot( e, static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
+	{
+		p->ammo--;
+		// restar el bat y spr
 	}
 
 	/*

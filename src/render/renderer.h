@@ -12,6 +12,11 @@
 #include "../entity/entity.h"
 #include "plane.h"
 #include "../constants.h"
+#include "../core/random.h"
+#include "font.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 class Renderer
 {
@@ -26,21 +31,42 @@ private:
 	float cube_fog_range;
 
 	Render::Context* gl;
-	Program quadprog, blockprog, planeprog;
+	Program quadprog, blockprog, planeprog, postprog, fontprog;
 
+	// usado para posteffects
+	GLuint frameBuffer, texColorBuffer, rboDepthStencil, postvao, postvbo;
+	GLfloat array[256];
+	RNG rng;
 
 	Block block;
 
+	Font default_font;
+	FT_Library ftlib;
+	GLuint attribute_coord, uniform_tex, uniform_color;
+	GLuint fontvao, fontvbo;
+	int ww, wh;
 
 public:
 
-	void Prepare( Render::Context* gl )
+	void Prepare( Render::Context* gl, int winWidth, int winHeight )
 	{
 		this->gl = gl;
+		this->ww = winWidth;
+		this->wh = winHeight;
+
+		fontprog.Prepare( gl, "data/vs_font.vert", "data/fs_font.frag" );
+		attribute_coord = gl->GetAttribLocation( fontprog.Object(), "coord" );
+		uniform_tex = gl->GetUniformLocation( fontprog.Object(), "tex" );
+		uniform_color = gl->GetUniformLocation( fontprog.Object(), "color" );
+		gl->GenVertexArrays(1, &fontvao);
+		gl->GenBuffers(1, &fontvbo);
+		if( FT_Init_FreeType(&ftlib) ) printf("couldnt init freetype\n");
+		default_font.Prepare( gl, ftlib, "data/mine.ttf", 96 );
 
 		blockprog.Prepare( gl, "data/vs_mvptex_inst.vert", "data/fs_mvptex_inst.frag" );
 		quadprog.Prepare( gl, "data/vs_quadanim.vert", "data/fs_quadanim.frag" );
 		planeprog.Prepare( gl, "data/vs_plane.vert", "data/fs_plane.frag" );
+		postprog.Prepare( gl, "data/vs_post.vert", "data/fs_post.frag" );
 
 		GLuint pos_loc = 0;
 		GLuint tex_loc = 1;
@@ -63,8 +89,105 @@ public:
 		gl->Enable (GL_BLEND);
 		gl->BlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		//gl->BlendFunc (GL_ONE, GL_ONE);
+		//
+
+		gl->GenFramebuffers(1, &frameBuffer);
+		gl->BindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+		gl->GenTextures(1, &texColorBuffer);
+		gl->BindTexture(GL_TEXTURE_2D, texColorBuffer);
+
+		gl->TexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL
+		);
+
+		gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		gl->FramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0
+		);
+
+		gl->GenRenderbuffers(1, &rboDepthStencil);
+		gl->BindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+		gl->RenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+
+
+		gl->FramebufferRenderbuffer(
+			GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil
+		);
+
+		gl->BindFramebuffer( GL_FRAMEBUFFER, 0);
+
+		AllocPostQuad();
+
+
 	}
 
+	void RenderText( const char* text, float x, float y, cml::vector4f color = cml::vectorf(1.f,0.f,0.f,1.f), float sx_ = 1.f, float sy_ = 1.f )
+	{
+		float sx = sx_ * (2.0 / ww);
+		float sy = sy_ * (2.0 / wh);
+		gl->UseProgram( fontprog.Object() );
+		gl->BindTexture( GL_TEXTURE_2D, default_font.Texture() );
+		gl->Uniform1i( uniform_tex, 0 );
+		gl->Uniform4f( uniform_color, color[0], color[1], color[2], color[3] );
+
+		gl->BindVertexArray( fontvao );
+		gl->BindBuffer( GL_ARRAY_BUFFER, fontvbo );
+		gl->EnableVertexAttribArray( attribute_coord );
+		gl->VertexAttribPointer( attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0 );
+
+
+		int nvert = default_font.UpdateGPUQuads( gl, text, x, y, sx, sy );
+		gl->DrawArrays(GL_TRIANGLES, 0, nvert);
+		gl->DisableVertexAttribArray(attribute_coord);
+	}
+
+	void BindPostFBO()
+	{
+		gl->BindFramebuffer( GL_FRAMEBUFFER, frameBuffer );
+	}
+	void AllocPostQuad()
+	{
+		GLfloat quadVertices[] = {
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			1.0f,  1.0f,  1.0f, 1.0f,
+			1.0f, -1.0f,  1.0f, 0.0f,
+
+			1.0f, -1.0f,  1.0f, 0.0f,
+			-1.0f, -1.0f,  0.0f, 0.0f,
+			-1.0f,  1.0f,  0.0f, 1.0f
+		};
+
+		GLfloat postdata[] = {
+			-1.f, -1.f, 	0.f, 0.f,
+			1.f, -1.f, 		1.f, 0.f,
+			1.f, 1.f, 		1.f, 1.f,
+			-1.f, 1.f, 		0.f, 1.f
+		};
+		gl->GenVertexArrays(1,&postvao);
+		gl->BindVertexArray(postvao);
+		gl->GenBuffers(1,&postvbo);
+		gl->BindBuffer(GL_ARRAY_BUFFER,postvbo);
+		gl->BufferData( GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, postdata, GL_STATIC_DRAW );
+		GLuint xy_loc = gl->GetAttribLocation(postprog.Object(),"position");
+		gl->EnableVertexAttribArray( xy_loc );
+		gl->VertexAttribPointer( xy_loc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0 );
+		GLuint uv_loc = gl->GetAttribLocation(postprog.Object(),"texcoord");
+		gl->EnableVertexAttribArray( uv_loc );
+		gl->VertexAttribPointer( uv_loc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (const GLvoid*)(2 * sizeof(GLfloat)) );
+		gl->BindBuffer( GL_ARRAY_BUFFER, 0 );
+		gl->BindVertexArray(0);
+	}
+
+	void RenderPostQuad()
+	{
+		gl->BindVertexArray(0);
+	}
+
+	void UseDefaultFBO() { gl->BindFramebuffer( GL_FRAMEBUFFER, 0 ); }
+	void UseCreatedFBO() { gl->BindFramebuffer( GL_FRAMEBUFFER, frameBuffer ); }
 	void RenderClear()
 	{
 		gl->ClearColor(0.0, 0.0, 0.0, 1.0);
@@ -156,9 +279,35 @@ public:
 		gl->BindVertexArray(0);
 	}
 
+	uint32_t timer = 0;
 
-	void RenderFinish( SDL_Window* mainWindow )
+	void RenderFinish( SDL_Window* mainWindow, uint32_t delta )
 	{
+		gl->BindFramebuffer(GL_FRAMEBUFFER, 0);
+		gl->BindVertexArray(postvao);
+		gl->Disable(GL_DEPTH_TEST);
+		gl->UseProgram(postprog.Object());
+
+		if( timer >= 100 )
+		{
+			timer = delta;
+			for( int i = 0; i < 256; i++ )
+			{
+				array[i] = float(rng.uniform(0,3))/10.f;
+			}
+		}
+		else
+		{
+			timer += delta;
+		}
+		gl->Uniform1fv( gl->GetUniformLocation( postprog.Object(), "scanarray" ), 256, array );
+		gl->Uniform1f( gl->GetUniformLocation( postprog.Object(), "time" ), SDL_GetTicks() );
+
+		gl->ActiveTexture(GL_TEXTURE0);
+		gl->BindTexture(GL_TEXTURE_2D, texColorBuffer);
+
+		gl->DrawArrays( GL_QUADS, 0, 4 );
+		gl->BindVertexArray(0);
 		SDL_GL_SwapWindow(mainWindow);
 	}
 

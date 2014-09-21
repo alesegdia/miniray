@@ -10,6 +10,9 @@
 #include "../entity/player.h"
 #include "../physics/layers.h"
 #include "../entity/controller/playerhumancontroller.h"
+#include "../entity/controller/entitycontroller.h"
+#include "../entity/controller/mobaicontroller.h"
+#include "../core/random.h"
 
 App::App() :
 	SDLGLApp( 800, 600 )
@@ -20,11 +23,14 @@ void App::SetupPlayer()
 {
 	player = new Player();
 	player->SetSprite(NULL);
-	player->SetType(CollisionLayer::PLAYER);
-	player->SetPhysicBody(physics.CreateSphereBody(-30, -30));
+	player->SetType(Entity::Type::PLAYER);
+	player->SetPhysicBody(physics.CreateSphereBody(-30, -30, CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
 	this->playercontroller = new PlayerHumanController();
 	player->SetController( this->playercontroller );
-	//actors.Add( player );
+	System::SetPlayerEntity( player );
+	player->hp.current = 200;
+	player->hp.total = 200;
+		//actors.Add( player );
 }
 
 void App::Setup(int argc, char** argv)
@@ -35,9 +41,9 @@ void App::Setup(int argc, char** argv)
 	SDL_ShowCursor(0);
 
 	physics.Init( argc, argv );
-	renderer.Prepare( gl );
+	renderer.Prepare( gl, winWidth, winHeight );
 
-	cam.SetPosition( cml::vector3f( -30, 0, -30 ) );
+	cam.SetPosition( cml::vector3f( -0, 0, -0 ) );
 	cam.SetHorizontalAngle( 90 );
 
 	int w, h;
@@ -69,7 +75,7 @@ void App::Setup(int argc, char** argv)
 				physics.AddCubeBody(-i*2,-j*2);
 		}
 	}
-	map.Debug();
+	//map.Debug();
 
 	rzfx::noise( cv );
 	//rzfx::turbulence( cv );
@@ -113,18 +119,45 @@ void App::Setup(int argc, char** argv)
 	bmp.flipVertically();
 	bullettex = new tdogl::Texture(gl, bmp);
 
+	bmp = tdogl::Bitmap::bitmapFromFile("data/redbullet.png");
+	bmp.flipVertically();
+	redtex = new tdogl::Texture(gl, bmp);
+
+	bmp = tdogl::Bitmap::bitmapFromFile("data/arma.png");
+	bmp.flipVertically();
+	armatex = new tdogl::Texture(gl, bmp);
+
 	bichosprite.Prepare( gl, cml::vector3f( 6, 0, 4 ), persotex, 1, 1 );
 	bichosprite.SetCurrentFrame( 0, 0 );
 
 	bulletsprite.Prepare( gl, cml::vector3f( 6, 0, 4 ), bullettex, 1, 1 );
 	bulletsprite.SetCurrentFrame( 0, 0 );
 
-	for( int i = 0; i < 100; i++ )
+	redsprite.Prepare( gl, cml::vector3f( 6, 0, 4 ), redtex, 1, 1 );
+	redsprite.SetCurrentFrame( 0, 0 );
+
+	armasprite.Prepare( gl, cml::vector3f(0,0,0), armatex, 2, 2 );
+	armasprite.SetCurrentFrame( 0, 0 );
+
+	RNG rng;
+
+	for( int i = 0; i < 300; i++ )
 	{
-		Entity* ent = new Entity();
+		Entity* ent = new Actor();
+		Actor* actor = static_cast<Actor*>(ent);
+		actor->hp.current = 10;
+		actor->wep.rate = 20;
+		actor->wep.bullet_speed = 20;
+		actor->wep.bullet_duration = 30;
+
+		ent->controller = new MobAIController();
 		ent->SetSprite( &bichosprite );
 		//ent->GetTransform().position = cml::vector3f( i*2, 0, 30 );
-		ent->SetPhysicBody( physics.CreateSphereBody( -i*2, -30 ) );
+		int xcoord = rng.uniform(0, map.Width()-1);
+		int ycoord = rng.uniform(0, map.Height()-1);
+		//printf("%d,%d\n", xcoord, ycoord);
+		ent->SetPhysicBody( physics.CreateSphereBody( -xcoord*2, -ycoord*2 ) );
+		//ent->SetPhysicBody( physics.CreateSphereBody( -i*2, -30 ) );
 		actors.Add( ent );
 	}
 
@@ -132,11 +165,18 @@ void App::Setup(int argc, char** argv)
 	//bichoentity.SetSprite( &bichosprite );
 
 	timer = 0; coord = 0;
+
+	efactory.SetLists(&actors, &bullets);
+	efactory.SetPhysics( &physics );
+	efactory.SetBulletSprite( &bulletsprite, &redsprite );
+	EntityController::SetEntityFactory( &efactory );
+
 }
 
 
 void App::SpawnBullet( cml::vector2f pos, cml::vector2f dir )
 {
+	/*
 	Entity* ent = new Entity();
 	ent->SetType( CollisionLayer::PLAYER_BULLET );
 	b2Body* b = physics.CreateBulletBody( pos[0], pos[1] );
@@ -144,6 +184,7 @@ void App::SpawnBullet( cml::vector2f pos, cml::vector2f dir )
 	ent->SetPhysicBody(b);
 	ent->SetSprite(&bulletsprite);
 	bullets.Add(ent);
+	*/
 }
 
 void App::PurgeList( DynamicArray<Entity*>& l )
@@ -153,52 +194,51 @@ void App::PurgeList( DynamicArray<Entity*>& l )
 		if( !l[i]->IsAlive() )
 		{
 			l[i]->Cleanup();
+			if( l[i]->controller != NULL ) delete l[i]->controller;
 			delete l[i];
 			l[i] = l[l.Size()-1];
-			l.RemoveLast();
+			l.RemoveLast(); // dealloc!! se olvida?
 			i--;
 		}
 	}
 }
 
-void App::Update(uint32_t delta)
+void App::UpdateActors( uint32_t delta )
 {
-	timer += delta;
-	if( timer > 1000 )
-	{
-		coord = (((int)coord)+1)%2;
-		timer = 0;
-	}
-
-	// step
-	// ENTITIES STEP
-	SDL_WarpMouseInWindow( NULL, 400, 300 );
 	for( int i = 0; i < actors.Size(); i++ )
 	{
 		actors[i]->Step( delta );
 	}
+	for( int i = 0; i < bullets.Size(); i++ )
+	{
+		bullets[i]->Step( delta );
+	}
+}
 
-	player->Step( delta );
-	cam.SetPosition(cml::vector3f(0,0,0));
-	cam.SetHorizontalAngle(-player->GetAngleY());
-	// PHYSICS STEP
+void App::Update(uint32_t delta)
+{
+
+	// step
+	// ENTITIES STEP
+	SDL_WarpMouseInWindow( NULL, 400, 300 );
+
+	// PHYSICS QUERY AABB STRESS TEST
+	//physics.Stress(this->player);
+
+	UpdateActors(delta);
+
 	physics.Step();
 	player->PhysicStep();
+	player->Step( delta );
+	if( !player->IsAlive() ) Stop();
 
 	PurgeList(actors);
 	PurgeList(bullets);
-	/*
-	if( caminput.shoot )
-	{
-		printf("DISPARARRRR\n");
-		cml::vector3f pos = player.GetTransform().position;
-		cml::vector2f pos2d(pos[0],pos[2]);
-		cml::vector2f finaldir = cml::rotate_vector_2D( cml::vector2f(0,1), cml::rad(cam.GetHorizontalAngle()) );
-		printf("finaldir: %f, %f\n", finaldir[0], finaldir[1] );
-		SpawnBullet(cml::vector2f(-pos2d[0],-pos2d[1]) + finaldir, cml::vector2f(finaldir[0],finaldir[1]) * 20);
-	}
-	*/
 
+	if( player->attack ) armasprite.SetCurrentFrame( 1, 1 );
+	else armasprite.SetCurrentFrame( 0, 1 );
+
+	deltatime = delta;
 	int bicho = 5;
 	//cam.SetHorizontalAngle( playerBody->GetAngle() );
 
@@ -209,9 +249,14 @@ void App::Update(uint32_t delta)
 void App::Render()
 {
 
+	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
 	cam.SetPosition(cml::vector3f(ppos.x, 0, ppos.y));
+	cam.SetHorizontalAngle(-player->GetAngleY());
 
+	// SETUP MVP MATRICES
+	renderer.BindPostFBO();
+	gl->Enable(GL_DEPTH_TEST);
 	renderer.SetVP( cam.GetView(), cam.GetProjection() );
 	renderer.RenderClear();
 
@@ -227,7 +272,6 @@ void App::Render()
 
 	renderer.RenderMap( map, tex1, tex2, tex3 );
 	renderer.BatchSprite3D();
-	//renderer.RenderSprite3D( bichosprite, bichoentity.Model() );
 	for( int i = 0; i < actors.Size(); i++ )
 	{
 		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY() ) );
@@ -243,8 +287,33 @@ void App::Render()
 		renderer.RenderEntity( bullets[i] );
 	}
 
-	//renderer.RenderEntity( bichoentity );
-	renderer.RenderFinish( mainWindow );
+	model = cml::identity<4>();
+	cml::vector3f offset(0,0,0);
+	offset = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
+	cml::matrix_set_translation( model, player->GetTransform().position + offset );
+	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
+	renderer.RenderSprite3D( armasprite, model );
+
+
+	//gl->Enable(GL_BLEND);
+    //gl->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	timer += deltatime;
+	float r = sin(((float)timer)/10);
+	float g = sin(((float)timer)/40);
+	float b = sin(((float)timer)/400);
+    renderer.RenderText("Miniray", -0.35, 0.7, cml::vector4f(b,g,r,1));
+    char buf[8];
+    sprintf(buf, "%d", player->hp.current);
+	float phealth = float(player->hp.current) / float(player->hp.total);
+    renderer.RenderText(buf, -1, -0.97, cml::vector4f(1-phealth,phealth,0,1));
+
+    sprintf(buf, "%d", player->ammo);
+    renderer.RenderText(buf, 0.5, -0.97, cml::vector4f(1,0.5,0,1));
+    //renderer.RenderText("The Misaligned Fox Jumps Over The Lazy Dog", -1, -1);
+	//renderer.RenderText("The Small Texture Scaled Fox Jumps Over The Lazy Dog", -0.5, -0.5, cml::vector4f(0,0,1,1), 0.5, 0.5);
+	renderer.RenderFinish( mainWindow, deltatime );
 
 }
 
@@ -257,6 +326,8 @@ void App::HandleEvent(SDL_Event& event)
 		{
 		case SDL_KEYDOWN:
 			if( event.key.keysym.sym == SDLK_ESCAPE ) Stop();
+			else if( event.key.keysym.sym == SDLK_p ) renderer.UseDefaultFBO();
+			else if( event.key.keysym.sym == SDLK_o ) renderer.UseCreatedFBO();
 			break;
 		}
 	}
@@ -269,6 +340,7 @@ void App::Cleanup()
 	renderer.Dispose( );
 	for( int i = 0; i < actors.Size(); i++ )
 	{
+		if( actors[i]->controller ) delete actors[i]->controller;
 		delete actors[i];
 	}
 }

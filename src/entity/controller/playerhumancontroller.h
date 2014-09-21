@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <cml/cml.h>
 #include "entitycontroller.h"
+#include "../system/weaponsystem.h"
 
 class Entity;
 
@@ -19,6 +20,7 @@ public:
 
 private:
 
+	WeaponSystem wpsys;
 	bool forward, back, left, right;
 	cml::vector2f axis, rotation_offset;
 	bool shift, shoot;

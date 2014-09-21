@@ -16,7 +16,7 @@ protected:
 
 public:
 
-	void SetEntityFactory( EntityFactory* entityfactory );
+	static void SetEntityFactory( EntityFactory* entityfactory );
 	virtual void Step( Entity* e, uint32_t delta ) {}
 
 };
