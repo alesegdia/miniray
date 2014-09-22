@@ -337,6 +337,7 @@ public:
 		quadprog.Dispose( gl );
 		blockprog.Dispose( gl );
 		block.Dispose( gl );
+		FT_Done_FreeType( ftlib );
 	}
 
 };

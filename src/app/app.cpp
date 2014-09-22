@@ -270,4 +270,5 @@ void App::Cleanup()
 		if( actors[i]->controller ) delete actors[i]->controller;
 		delete actors[i];
 	}
+	physics.Cleanup();
 }

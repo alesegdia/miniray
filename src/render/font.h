@@ -74,6 +74,8 @@ public:
 			ox += g->bitmap.width+1;
 		}
 
+		FT_Done_Face(face);
+
 	}
 
 
@@ -125,13 +127,13 @@ public:
 
 	GLuint Texture() { return tex; }
 
+private:
+
 	void SetSize( int size )
 	{
 		FT_Set_Pixel_Sizes( face, 0, size );
 	}
 
-
-private:
 
 	FT_Face face;
 	GLuint tex;

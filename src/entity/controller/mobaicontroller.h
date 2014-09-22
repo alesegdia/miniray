@@ -33,8 +33,8 @@ public:
 		}
 
 		cml::vector3f mob_to_pl = actor->transform.position - System::player->transform.position;
-		bool shoot = cml::length( mob_to_pl ) < 21.f;
-		wpsys.TryShoot( e, &(actor->wep), shoot, delta, System::player->transform.position );
+		//bool shoot = cml::length( mob_to_pl ) < 21.f;
+		//wpsys.TryShoot( e, &(actor->wep), shoot, delta, System::player->transform.position );
 	}
 
 };

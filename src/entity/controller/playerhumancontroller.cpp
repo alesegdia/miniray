@@ -10,8 +10,7 @@
 
 PlayerHumanController::PlayerHumanController ()
 {
-	forward = back = left = right = false;
-
+	forward = back = left = right = shoot = shift = false;
 }
 
 PlayerHumanController::~PlayerHumanController ()

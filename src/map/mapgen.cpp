@@ -72,8 +72,8 @@ Map Flatten( Map map )
 		{ 0, -1 },
 		{ 1, -1 }
 	};
-	for( int x = 0; x < map.Width(); x++ )
-	for( int y = 0; y < map.Height(); y++ )
+	for( int x = 1; x < map.Width(); x++ )
+	for( int y = 1; y < map.Height(); y++ )
 	{
 		int nb=0;
 		for( int i = 0; i < 8; i++ ) nb += (map.Getint((x+bounds[i][0]) % map.Width(), (y+bounds[i][1]) % map.Height()) == Map::BLOCK_FREE ? 0 : 1);

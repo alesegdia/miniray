@@ -27,7 +27,7 @@ constexpr int TEX_MAX = 10;
 class Assets {
 public:
 	~Assets(){
-		for( int i = 0; i < 9; i++ )
+		for( int i = 0; i < TEX_MAX; i++ )
 		{
 			delete textures[i];
 		}
