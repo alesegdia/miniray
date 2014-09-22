@@ -28,10 +28,11 @@ private:
 
 public:
 
-	static constexpr uint16_t PLAYER_MASK = CollisionLayer::ENEMY_BULLET | CollisionLayer::MAP | CollisionLayer::ENEMY;
+	static constexpr uint16_t PLAYER_MASK = CollisionLayer::PICKUP | CollisionLayer::ENEMY_BULLET | CollisionLayer::MAP | CollisionLayer::ENEMY;
 	static constexpr uint16_t MOB_MASK = CollisionLayer::ALLY_BULLET | CollisionLayer::MAP | CollisionLayer::ENEMY | CollisionLayer::PLAYER;
 	static constexpr uint16_t ABULLET_MASK = CollisionLayer::MAP | CollisionLayer::ENEMY;
 	static constexpr uint16_t EBULLET_MASK = CollisionLayer::MAP | CollisionLayer::PLAYER; // | CollisionLayer::ALLY
+	static constexpr uint16_t PICKUP_MASK = CollisionLayer::PLAYER; // | CollisionLayer::ALLY
 
 	void Init( int argc, char** argv );
 	void Cleanup();

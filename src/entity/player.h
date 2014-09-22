@@ -25,6 +25,6 @@ public:
 	float walk_speed = 8.f;
 	// velocidad al esprintar
 	float run_speed = 16.f;
-	int ammo = 2000;
+	int ammo = 200;
 
 };

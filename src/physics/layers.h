@@ -8,5 +8,6 @@ enum CollisionLayer
 	PLAYER = 		0x0004,
 	ENEMY_BULLET =	0x0008,
 	ENEMY =			0x0010,
-	MAP =			0x0011
+	MAP =			0x0020,
+	PICKUP =		0x0040
 };

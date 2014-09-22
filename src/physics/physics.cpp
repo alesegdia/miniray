@@ -30,7 +30,7 @@ b2Body* Physics::CreateBulletBody( float x, float y, CollisionLayer category, ui
 	// SHAPE CONF
 	b2CircleShape shape;
 	shape.m_p.Set(0,0);
-	shape.m_radius = 0.3f;
+	shape.m_radius = 0.2f;
 
 	// FIXTURE CONF
 	b2FixtureDef fixtureDef;

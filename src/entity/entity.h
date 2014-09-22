@@ -15,7 +15,8 @@ public:
 	{
 		BULLET,
 		MOB,
-		PLAYER
+		PLAYER,
+		PICKUP
 	};
 
 protected:

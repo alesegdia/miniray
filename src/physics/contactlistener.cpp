@@ -2,6 +2,8 @@
 #include "contactlistener.h"
 #include "../entity/entity.h"
 #include "../entity/actor.h"
+#include "../entity/player.h"
+#include "../entity/pickup.h"
 
 void ContactListener::BeginContact( b2Contact* contact )
 {
@@ -30,6 +32,20 @@ void ContactListener::BeginContact( b2Contact* contact )
 				Actor* actor = static_cast<Actor*>(e0);
 				actor->hp.current--;
 			}
+		}
+		if( e0->GetType() == Entity::Type::PLAYER && e1->GetType() == Entity::Type::PICKUP )
+		{
+			Player* pl = static_cast<Player*>( e0 );
+			Pickup* pi = static_cast<Pickup*>( e1 );
+			pl->ammo += pi->quantity;
+			e1->Die();
+		}
+		if( e1->GetType() == Entity::Type::PLAYER && e0->GetType() == Entity::Type::PICKUP )
+		{
+			Player* pl = static_cast<Player*>( e1 );
+			Pickup* pi = static_cast<Pickup*>( e0 );
+			pl->ammo += pi->quantity;
+			e0->Die();
 		}
 	}
 	else if( entity0 )

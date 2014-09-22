@@ -228,20 +228,6 @@ public:
 		BindVisionRange( shaderprogram );
 	}
 
-	void RenderSprite3D( Sprite3D& sprite, const cml::matrix44f_c& model )
-	{
-		cml::vector2f f = sprite.CurrentFrame();
-		cml::vector2f s = sprite.FrameSize();
-		gl->BindVertexArray( sprite.GetQuad().GetVAO() );
-			gl->UniformMatrix4fv( gl->GetUniformLocation( quadprog.Object(), "model" ), 1, false, model.data() );//sprite.GetModel().data() );
-			gl->Uniform2f( gl->GetUniformLocation( quadprog.Object(), "frame" ), f[0], f[1] );
-			gl->Uniform2f( gl->GetUniformLocation( quadprog.Object(), "size" ), s[0], s[1] );
-			gl->ActiveTexture( GL_TEXTURE0 );
-			gl->BindTexture( GL_TEXTURE_2D, sprite.GetTex()->object() );
-			gl->Uniform1i( gl->GetUniformLocation( quadprog.Object(), "tex" ), 0 );
-			gl->DrawArrays( GL_TRIANGLE_STRIP, 0, sprite.GetQuad().NumElements() );
-		gl->BindVertexArray(0);
-	}
 
 	void RenderPlane( Plane* p, const cml::matrix44f_c& model, tdogl::Texture* tex )
 	{
@@ -261,10 +247,24 @@ public:
 		gl->BindVertexArray(0);
 	}
 
+	void RenderSprite3D( Sprite3D* sprite, const cml::matrix44f_c& model )
+	{
+		cml::vector2f f = sprite->CurrentFrame();
+		cml::vector2f s = sprite->FrameSize();
+		gl->BindVertexArray( sprite->GetQuad().GetVAO() );
+			gl->UniformMatrix4fv( gl->GetUniformLocation( quadprog.Object(), "model" ), 1, false, model.data() );//sprite.GetModel().data() );
+			gl->Uniform2f( gl->GetUniformLocation( quadprog.Object(), "frame" ), f[0], f[1] );
+			gl->Uniform2f( gl->GetUniformLocation( quadprog.Object(), "size" ), s[0], s[1] );
+			gl->ActiveTexture( GL_TEXTURE0 );
+			gl->BindTexture( GL_TEXTURE_2D, sprite->GetTex()->object() );
+			gl->Uniform1i( gl->GetUniformLocation( quadprog.Object(), "tex" ), 0 );
+			gl->DrawArrays( GL_TRIANGLE_STRIP, 0, sprite->GetQuad().NumElements() );
+		gl->BindVertexArray(0);
+	}
+
 	void RenderEntity( Entity* ent )
 	{
 		gl->UseProgram( quadprog.Object() );
-
 		Sprite3D* sprite = ent->GetSprite();
 		cml::vector2f f = sprite->CurrentFrame();
 		cml::vector2f s = sprite->FrameSize();

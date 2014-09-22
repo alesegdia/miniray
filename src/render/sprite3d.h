@@ -31,7 +31,7 @@ public:
 		this->angle = angle;
 	}
 
-	void Prepare( Render::Context* gl, const cml::vector3f& pos, tdogl::Texture* tex, int frames_x = 1, int frames_y = 1 )
+	void Prepare( Render::Context* gl, tdogl::Texture* tex, int frames_x = 1, int frames_y = 1 )
 	{
 		num_frames[0] = frames_x;
 		num_frames[1] = frames_y;

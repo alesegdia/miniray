@@ -6,6 +6,8 @@
 #include "controller/bulletcontroller.h"
 #include "bullet.h"
 #include "../render/sprite3d.h"
+#include "../render/assets.h"
+#include "pickup.h"
 
 EntityFactory::EntityFactory ()
 {
@@ -17,26 +19,22 @@ EntityFactory::~EntityFactory ()
 	 // dtor
 }
 
-void EntityFactory::SetLists( DynamicArray<Entity*>* actorlist, DynamicArray<Entity*>* bulletlist )
+void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Entity*>* actorlist, DynamicArray<Entity*>* bulletlist )
 {
 	this->actorlist = actorlist;
 	this->bulletlist = bulletlist;
-}
-
-void EntityFactory::SetPhysics( Physics* physics )
-{
 	this->physics = physics;
+	this->assets = assets;
 }
-
 
 void EntityFactory::SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time )
 {
-	SpawnBullet( pos, dir, CollisionLayer::ALLY_BULLET, Physics::ABULLET_MASK, bulletsprite, time);
+	SpawnBullet( pos, dir, CollisionLayer::ALLY_BULLET, Physics::ABULLET_MASK, assets->Sprite(S3D_GREENBULLET), time );
 }
 
 void EntityFactory::SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time )
 {
-	SpawnBullet( pos, dir, CollisionLayer::ENEMY_BULLET, Physics::EBULLET_MASK, redsprite, time );
+	SpawnBullet( pos, dir, CollisionLayer::ENEMY_BULLET, Physics::EBULLET_MASK, assets->Sprite(S3D_REDBULLET), time );
 }
 
 void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time )
@@ -53,8 +51,12 @@ void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& 
 	bulletlist->Add(ent);
 }
 
-void EntityFactory::SetBulletSprite( Sprite3D* sprite, Sprite3D* redsprite )
+void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 {
-	bulletsprite = sprite;
-	this->redsprite = redsprite;
+	Pickup* p = new Pickup();
+	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
+	p->controller = NULL;
+	p->SetType( Entity::Type::PICKUP );
+	p->SetSprite( assets->Sprite(S3D_PICKSFW) );
+	bulletlist->Add(p);
 }

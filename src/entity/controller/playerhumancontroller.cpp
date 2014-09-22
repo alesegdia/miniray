@@ -42,7 +42,6 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 		}
 		p->GetPhysicBody()->SetLinearVelocity(b2Vec2(finaldir[0]*speed,finaldir[1]*speed));
 	}
-	printf("vida: %d\n", p->hp.current);
 	CheckHealth( p );
 
 	System::SetEntityFactory( EntityController::entityfactory );

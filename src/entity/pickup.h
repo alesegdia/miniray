@@ -1,7 +1,7 @@
 
 #pragma once
 
-class Pickup {
+class Pickup : public Entity {
 public:
 	enum Type {
 		AMMO, HEALTH, ITEM
