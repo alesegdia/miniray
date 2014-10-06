@@ -9,6 +9,7 @@ class Entity;
 class Physics;
 class Sprite3D;
 class Assets;
+class Actor;
 
 class EntityFactory {
 
@@ -27,6 +28,7 @@ public:
 	void SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time );
 	void SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time );
 	void SpawnPickup( const cml::vector2f& pos );
+	Actor* SpawnEnemy( float x, float y );
 
 
 private:

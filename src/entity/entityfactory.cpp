@@ -1,9 +1,11 @@
 
 #include "entityfactory.h"
 #include "entity.h"
+#include "actor.h"
 #include "../core/dynamicarray.h"
 #include "../physics/physics.h"
 #include "controller/bulletcontroller.h"
+#include "controller/mobaicontroller.h"
 #include "bullet.h"
 #include "../render/sprite3d.h"
 #include "../render/assets.h"
@@ -59,4 +61,18 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	p->SetType( Entity::Type::PICKUP );
 	p->SetSprite( assets->Sprite(S3D_PICKSFW) );
 	bulletlist->Add(p);
+}
+
+Actor* EntityFactory::SpawnEnemy( float x, float y )
+{
+	Actor* actor = new Actor();
+	actor->hp.current = 10;
+	actor->wep.rate = 20;
+	actor->wep.bullet_speed = 20;
+	actor->wep.bullet_duration = 30;
+	actor->controller = new MobAIController();
+	actor->SetSprite( assets->Sprite(S3D_BICHO) );
+	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
+	actorlist->Add( actor );
+	return actor;
 }

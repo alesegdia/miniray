@@ -1,10 +1,11 @@
 
 #pragma once
 
+//#include <freetype2/config/ftheader.h>
 #include <ft2build.h>
+#include FT_FREETYPE_H
 #include "program.h"
 #include "context.h"
-#include FT_FREETYPE_H
 
 class Font {
 public:

@@ -12,9 +12,10 @@ INSTALL
 ---
 todo.
 
-CREDITS
+EXTERNAL CREDITS
 ---
-Bitmap and Texture classes taken from https://github.com/tomdalling/opengl-series
+Bitmap and Texture classes from https://github.com/tomdalling/opengl-series
+A\* Algorithm Implementation using STL from https://github.com/justinhj/astar-algorithm-cpp
 
 LICENSE
 ---

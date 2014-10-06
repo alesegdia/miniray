@@ -24,7 +24,12 @@ void App::SetupPlayer()
 	player = new Player();
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
-	player->SetPhysicBody(physics.CreateSphereBody(-30, -30, CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
+	rng.uniform();
+	cml::vector2i playerpos = mapdata.rooms[0].RandomPosition( rng, 3 );
+	mapdata.rooms[0].Debug();
+	printf("%d,%d\n", playerpos[0], playerpos[1]);
+	//player->SetPhysicBody(physics.CreateSphereBody(-playerpos[0], -playerpos[1], CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
+	player->SetPhysicBody(physics.CreateSphereBody(-mapdata.rooms[0].x*2, -mapdata.rooms[0].y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
 	this->playercontroller = new PlayerHumanController();
 	player->SetController( this->playercontroller );
 	System::SetPlayerEntity( player );
@@ -39,10 +44,31 @@ void App::Setup(int argc, char** argv)
 	//map.Debug();
 
 	SDL_ShowCursor(0);
+	uint32_t sid = 0;
+	if( argc == 2 ) sid = atoi(argv[1]);
+	printf("SEED: %d\n",sid);
+	rng.seed( sid );
 
 	physics.Init( argc, argv );
 	renderer.Prepare( gl, winWidth, winHeight );
 	assets.Prepare( gl );
+	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
+
+	mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
+	printf("n: %d\n", mapdata.rooms.Size() );
+	map = mapgen::RasterMapData( mapdata );
+
+	for(int i = 0; i < map.Width(); i++ )
+	{
+		for( int j = 0; j < map.Height(); j++ )
+		{
+			if( map.Get(i,j) != Map::BLOCK_FREE )
+				physics.AddCubeBody(-i*2,-j*2);
+		}
+	}
+	map.Debug();
+	printf("\n");
+	(mapgen::ConstructRoomMap(map,mapdata.rooms)).Debug();
 
 	cam.SetPosition( cml::vector3f( -0, 0, -0 ) );
 	cam.SetHorizontalAngle( 90 );
@@ -67,47 +93,31 @@ void App::Setup(int argc, char** argv)
 	Canvas cv(w,h);
 
 	plane.Prepare(gl,300,300,4,4);
-	mapgen::Config cfg;
-	map = mapgen::Generar(cfg);
-	for(int i = 0; i < map.Width(); i++ )
-	{
-		for( int j = 0; j < map.Height(); j++ )
-		{
-			if( map.Getint(i,j) != Map::BLOCK_FREE )
-				physics.AddCubeBody(-i*2,-j*2);
-		}
-	}
-	//map.Debug();
+	efactory.Prepare( &physics, &assets, &actors, &bullets );
 
 	rzfx::noise( cv );
 	//rzfx::turbulence( cv );
 	pbmp = new tdogl::Bitmap( w, h, tdogl::Bitmap::Format::Format_RGBA, ((unsigned char*)cv.Raw() ));
 	delete pbmp;
 
-	RNG rng;
-
-	for( int i = 0; i < 300; i++ )
+	for( int i = 1; i < mapdata.rooms.Size(); i++ )
 	{
-		Entity* ent = new Actor();
-		Actor* actor = static_cast<Actor*>(ent);
-		actor->hp.current = 10;
-		actor->wep.rate = 20;
-		actor->wep.bullet_speed = 20;
-		actor->wep.bullet_duration = 30;
-
-		ent->controller = new MobAIController();
-		ent->SetSprite(assets.Sprite(S3D_BICHO));
-		int xcoord = rng.uniform(0, map.Width()-1);
-		int ycoord = rng.uniform(0, map.Height()-1);
-		ent->SetPhysicBody( physics.CreateSphereBody( -xcoord*2, -ycoord*2 ) );
-		actors.Add( ent );
+		int lim = rng.uniform(6,11);
+		for( int j = 0; j < lim; j++ )
+		{
+			cml::vector2i enemypos = mapdata.rooms[i].RandomPosition( rng );
+			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
+		}
 	}
+	/*
+			cml::vector2i enemypos = mapdata.rooms[1].RandomPosition( rng );
+			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
+	*/
 
 	SetupPlayer();
 
 	timer = 0; coord = 0;
 
-	efactory.Prepare( &physics, &assets, &actors, &bullets );
 	EntityController::SetEntityFactory( &efactory );
 
 }
@@ -177,6 +187,7 @@ void App::Update(uint32_t delta)
 void App::Render()
 {
 
+	renderer.SetViewerPos( player->transform.position );
 	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
 	cam.SetPosition(cml::vector3f(ppos.x, 0, ppos.y));
@@ -202,16 +213,18 @@ void App::Render()
 	renderer.BatchSprite3D();
 	for( int i = 0; i < actors.Size(); i++ )
 	{
-		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY() ) );
 		actors[i]->PhysicStep();
 		actors[i]->ClearVelocity();
-		renderer.RenderEntity( actors[i] );
+		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
+		Actor* ac = static_cast<Actor*>( actors[i] );
+		//renderer.RenderEntity( actors[i] );
+		renderer.RenderActor( ac );
 	}
 
 	for( int i = 0; i < bullets.Size(); i++ )
 	{
-		bullets[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		bullets[i]->PhysicStep();
+		bullets[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		renderer.RenderEntity( bullets[i] );
 	}
 

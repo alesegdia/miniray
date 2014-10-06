@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <cml/cml.h>
 #include "entitycontroller.h"
 #include "../system/weaponsystem.h"

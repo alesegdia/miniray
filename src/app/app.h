@@ -17,6 +17,7 @@
 #include "../render/font.h"
 #include "../core/random.h"
 #include "../entity/entityfactory.h"
+#include "../map/mapdata.h"
 
 class Player;
 class PlayerHumanController;
@@ -28,6 +29,7 @@ private:
 
 	Camera cam;
 	Map map;
+	mapgen::MapData mapdata;
 
 	Canvas* canvas;
 	RNG rng;

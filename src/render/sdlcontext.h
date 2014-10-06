@@ -2,7 +2,7 @@
 #pragma once
 #include <stdint.h>
 #include <GL/glcorearb.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include "context.h"
 

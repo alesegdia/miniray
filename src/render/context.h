@@ -2,7 +2,6 @@
 #pragma once
 
 #include "glcorearb.h"
-#include <SDL.h>
 
 namespace Render {
 

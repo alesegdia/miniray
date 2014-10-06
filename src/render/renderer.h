@@ -14,9 +14,8 @@
 #include "../constants.h"
 #include "../core/random.h"
 #include "font.h"
+#include "../entity/actor.h"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 class Renderer
 {
@@ -54,19 +53,19 @@ public:
 		this->ww = winWidth;
 		this->wh = winHeight;
 
-		fontprog.Prepare( gl, "data/vs_font.vert", "data/fs_font.frag" );
+		fontprog.Prepare( gl, "assets/vs_font.vert", "assets/fs_font.frag" );
 		attribute_coord = gl->GetAttribLocation( fontprog.Object(), "coord" );
 		uniform_tex = gl->GetUniformLocation( fontprog.Object(), "tex" );
 		uniform_color = gl->GetUniformLocation( fontprog.Object(), "color" );
 		gl->GenVertexArrays(1, &fontvao);
 		gl->GenBuffers(1, &fontvbo);
 		if( FT_Init_FreeType(&ftlib) ) printf("couldnt init freetype\n");
-		default_font.Prepare( gl, ftlib, "data/mine.ttf", 96 );
+		default_font.Prepare( gl, ftlib, "assets/mine.ttf", 96 );
 
-		blockprog.Prepare( gl, "data/vs_mvptex_inst.vert", "data/fs_mvptex_inst.frag" );
-		quadprog.Prepare( gl, "data/vs_quadanim.vert", "data/fs_quadanim.frag" );
-		planeprog.Prepare( gl, "data/vs_plane.vert", "data/fs_plane.frag" );
-		postprog.Prepare( gl, "data/vs_post.vert", "data/fs_post.frag" );
+		blockprog.Prepare( gl, "assets/vs_mvptex_inst.vert", "assets/fs_mvptex_inst.frag" );
+		quadprog.Prepare( gl, "assets/vs_quadanim.vert", "assets/fs_quadanim.frag" );
+		planeprog.Prepare( gl, "assets/vs_plane.vert", "assets/fs_plane.frag" );
+		postprog.Prepare( gl, "assets/vs_post.vert", "assets/fs_post.frag" );
 
 		GLuint pos_loc = 0;
 		GLuint tex_loc = 1;
@@ -262,11 +261,31 @@ public:
 		gl->BindVertexArray(0);
 	}
 
+	void RenderActor( Actor* actor )
+	{
+		gl->UseProgram( quadprog.Object() );
+		Sprite3D* sprite = actor->GetSprite();
+
+		cml::vector3f actor2pl = actor->transform.position - viewerPos;
+		cml::vector3f rotactor = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,-1,0), cml::rad(180.f)+actor->logic_angle );
+		float datAngle = 180 + cml::deg(cml::signed_angle_2D( cml::vector2f(actor2pl[0],actor2pl[2]), cml::vector2f(rotactor[0],rotactor[2]) ));
+		//float deltangle = playerAngle - actor->GetAngleY();
+		//while( deltangle < 0 ) deltangle += 360;
+		int q = (((int)(datAngle+45)) % 360) / 90;
+		int corr[] = { 0,2,1,3 };
+		sprite->SetCurrentFrame(corr[q],0);
+
+		RenderEntity( static_cast<Entity*>(actor) );
+	}
+
 	void RenderEntity( Entity* ent )
 	{
 		gl->UseProgram( quadprog.Object() );
 		Sprite3D* sprite = ent->GetSprite();
 		cml::vector2f f = sprite->CurrentFrame();
+		RenderSprite3D( sprite, ent->Model() );
+
+		/*
 		cml::vector2f s = sprite->FrameSize();
 		gl->BindVertexArray( sprite->GetQuad().GetVAO() );
 			gl->UniformMatrix4fv( gl->GetUniformLocation( quadprog.Object(), "model" ), 1, false, ent->Model().data() );//sprite.GetModel().data() );
@@ -277,6 +296,7 @@ public:
 			gl->Uniform1i( gl->GetUniformLocation( quadprog.Object(), "tex" ), 0 );
 			gl->DrawArrays( GL_TRIANGLE_STRIP, 0, sprite->GetQuad().NumElements() );
 		gl->BindVertexArray(0);
+		*/
 	}
 
 	uint32_t timer = 0;
@@ -331,12 +351,19 @@ public:
 		this->projection = projection;
 	}
 
+	cml::vector3f viewerPos;
+	void SetViewerPos( cml::vector3f& vp )
+	{
+		viewerPos = vp;
+	}
+
 
 	void Dispose()
 	{
 		quadprog.Dispose( gl );
 		blockprog.Dispose( gl );
 		block.Dispose( gl );
+		gl->DeleteBuffers(1,&postvbo);
 		FT_Done_FreeType( ftlib );
 	}
 

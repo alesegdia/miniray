@@ -11,6 +11,5 @@ void main(void) {
 	float depth = (gl_FragCoord.z / gl_FragCoord.w) / range;
 	vec4 texcolor = texture(tex, frag_TexCoord);
 	finalColor = depth * vec4(0.f,0.f,0.f,1.f) + (1-depth) * texture(tex, frag_TexCoord);
-	//finalColor = texcolor;
 }
 

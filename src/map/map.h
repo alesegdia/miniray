@@ -33,8 +33,6 @@ private:
 		int block_type;
 	};
 
-
-
 	Matrix2D<int> map_data;
 	DynamicArray<cml::matrix44f_c> model_list;
 
@@ -74,11 +72,12 @@ public:
 	void SaveToFile( const char* path )
 	{
 		FILE* f = fopen(path, "w+");
+		fprintf(f, "%d %d ", Width(), Height());
 		for( int x = 0; x < Width(); x++ )
 		{
 			for( int y = 0; y < Height(); y++ )
 			{
-				fprintf(f, "%d", Getint( x, y ));
+				fprintf(f, "%d", Get( x, y ));
 			}
 			fprintf(f, "\n");
 		}
@@ -90,7 +89,7 @@ public:
 		return map_data.Get( y, x ) == BLOCK_FREE;
 	}
 
-	int Getint( int x, int y )
+	int Get( int x, int y )
 	{
 		return map_data.Get( y, x );
 	}
@@ -115,6 +114,15 @@ public:
 		map_data.Debug();
 	}
 
+	int GetScroll( int x, int y )
+	{
+		if( x < 0 ) x = Width() + x;
+		else if( x >= Width() ) x = Width() - x;
+		if( y < 0 ) y = Height() + y;
+		else if( y >= Height() ) y = Height() - y;
+		return Get(x,y);
+	}
+
 	void GenerateModels( int block_type = 1 )
 	{
 		model_list.Clear();
@@ -122,7 +130,7 @@ public:
 		{
 			for( int j = 0; j < map_data.Cols(); j++ )
 			{
-				if( !IsFree( j, i ) && Getint( j, i ) == block_type )
+				if( !IsFree( j, i ) && Get( j, i ) == block_type )
 				{
 					model_list.Add( cml::identity<4>() );
 					cml::matrix_translation( model_list.Back(), cml::vector3f( j*2, 0, i*2 ) );

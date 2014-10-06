@@ -8,7 +8,6 @@ find_package(Freetype REQUIRED)
 
 file( GLOB_RECURSE SRCs */*.cpp )
 file( GLOB_RECURSE INCs */*.h )
-#add_executable(test main.cpp mapgen.cpp canvas.cpp texgen.cpp context.cpp shader.cpp Bitmap.cpp Texture.cpp sdlcontext.cpp sdlglapp.cpp app.cpp camera.cpp block.cpp )
 add_executable(test main.cpp ${SRCs})
 
 
