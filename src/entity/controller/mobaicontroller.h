@@ -2,25 +2,20 @@
 #pragma once
 
 #include "entitycontroller.h"
-#include "../system/healthchecker.h"
-#include "../system/weaponsystem.h"
+#include "../../constants.h"
 #include "../actor.h"
 #include "../entity.h"
+#include "../entityfactory.h"
+#include "../player.h"
 // mierda, el player deberia estar en el controller, pero bueno
-#include "../system/system.h"
 #include "../../core/random.h"
+#include "../script/helpers.h"
 
 
 class MobAIController : public EntityController
 {
 
-	WeaponSystem wpsys;
 	static RNG rng; // hacerlo puntero y pasarselo desde el main
-
-	enum State {
-		IDLE,
-		HUNTING_PLAYER
-	};
 
 	class MyRayCB : public b2RayCastCallback
 	{
@@ -43,42 +38,30 @@ class MobAIController : public EntityController
 		}
 	};
 
-	State st = State::IDLE;
+
+	static constexpr float NO_PLAYER = -5000;
 
 public:
 
-
-	void Step( Entity* e, uint32_t delta )
+	float PlayerInSight( Actor* actor, cml::vector3f mob2player )
 	{
-		Actor* actor = static_cast<Actor*>(e);
-		CheckHealth( actor );
-		cml::vector3f mob2player = actor->transform.position - System::player->transform.position;
-		float dist = cml::length( mob2player );
-		if( !e->IsAlive() )
-		{
-			if( rng.uniform() > 0.6 )
-			{
-				printf("SUERTO!\n");
-				printf("%f, %f\n", actor->transform.position[0], actor->transform.position[2]);
-				entityfactory->SpawnPickup(cml::vector2f( -actor->transform.position[0], -actor->transform.position[2]));
-			}
-		}
-
-		//actor->logic_angle += 0.01;
+		//bool insight = false;
 		//
-		//actor->logic_angle = cml::rad(180.f+45.f);
-		//printf("logic_angle: %f\n", actor->logic_angle);
+		float dist = cml::length( mob2player );
 
-		if( dist <  20.f  )
+		if( dist <  SIGHT_DISTANCE  )
 		{
-			cml::vector2f mobv = cml::rotate_vector_2D( cml::vector2f(1,0), actor->logic_angle );
-			cml::vector3f dif = actor->transform.position - System::player->transform.position;
-			float ang = cml::deg(cml::signed_angle_2D( mobv, cml::vector2f(dif[0],dif[2]) ));
-			if( abs(ang) < 90 )
+			// calculamos el ángulo desde el forward del bicho hasta el player
+			cml::vector2f mob_forward = cml::rotate_vector_2D( cml::vector2f(0,1), actor->logic_angle );
+			float angle2player = cml::deg(cml::signed_angle_2D( mob_forward, cml::vector2f(mob2player[0],mob2player[2]) ));
+
+			// si entra en el cono de visión...
+			if( abs(angle2player) < SIGHT_ANGLE)
 			{
+				// comprobamos que no haya algun elemento del mapa interrumpiendo la visión
 				b2Body* b = actor->GetPhysicBody();
 				cml::vector3f actorpos = actor->transform.position;
-				cml::vector3f playerpos = System::player->transform.position;
+				cml::vector3f playerpos = player->transform.position;
 				if( actorpos != playerpos )
 				{
 					MyRayCB tehcb;
@@ -86,51 +69,42 @@ public:
 					b2Vec2 apos(-actorpos[0],-actorpos[2]);
 					b2Vec2 ppos(-playerpos[0],-playerpos[2]);
 					b->GetWorld()->RayCast( &tehcb, apos, ppos );
-					if( tehcb.didcollide )
-					{
-						//printf("COLMAPA!!");
-					}
-					else
-					{
-						bool shoot = dist < 21.f;
-						//wpsys.TryShoot( e, &(actor->wep), shoot, delta, System::player->transform.position );
-						// SHOOT AT LOGIC_ANGLE DIRECTION!!
-						//printf("GOGOGO\n");
-						float degs = cml::deg(cml::signed_angle_2D(cml::vector2f(1,0), cml::vector2f(dif[0],dif[2])));
-						//printf("logic: %f, ang: %f, degs: %f\n",cml::deg(actor->logic_angle),ang,degs);
-						//while(degs>=360) degs -= 360;
-						actor->logic_angle += cml::rad(ang);
-						//actor->logic_angle = cml::rad(degs); //,difcml::deg(System::player->GetAngleY());
-						cml::vector3f dirshoot = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,-1,0), cml::rad(180.f)+actor->logic_angle );
-						wpsys.TryShoot( e, &(actor->wep), shoot, delta, actor->transform.position + dirshoot );
 
-						if( mob2player != cml::zero<3>() ) mob2player.normalize();
-						mob2player *= 4;
-						actor->GetPhysicBody()->SetLinearVelocity(b2Vec2( mob2player[0], mob2player[2] ));
-						//printf("LLEGA AL PLAYER!");
+					// si el rayo NO ha colisionado con algun elemento del mapa, tenemos al player en el cono!
+					if( !tehcb.didcollide )
+					{
+						return angle2player;
 					}
 				}
-
 			}
 		}
-		/*
-		b2RayCastInput rayinput;
-		rayinput.p1 = actor->transform.position;
-		rayinput.p2 = System::player->transform.position;
-		rayinput.maxFraction = 2;
+		return NO_PLAYER;
+	}
 
-		bool playerInSight = false;
-		for( b2Fixture* f = System::player->GetPhysicBody()->GetFixtureList(); f; f = f->GetNext() )
+	void Step( Entity* e, uint32_t delta )
+	{
+		Actor* actor = static_cast<Actor*>(e);
+		CheckHealth( actor );
+		DoDropItem( actor, rng, entityfactory );
+
+		// calculamos el vector bicho - player
+		cml::vector3f mob2player = actor->transform.position - EntityController::player->transform.position;
+		float dist = cml::length( mob2player );
+
+		float angle2player = PlayerInSight( actor, mob2player );
+		if( angle2player != NO_PLAYER )
 		{
-			b2RayCastOutput rayoutput;
-			if( f->RayCast( &rayoutput, rayinput ) )
+			bool shoot = dist < SHOOT_DISTANCE;
+			actor->logic_angle += cml::rad(angle2player);
+			cml::vector2f shootdir = GetForward( actor );
+			if( DoShoot( &(actor->wep), shoot, delta  ) )
 			{
-
-				break;
+				entityfactory->SpawnEnemyBullet( GetWorld2DPos( e->transform.position ) + shootdir, shootdir * actor->wep.bullet_speed, actor->wep.bullet_duration );
 			}
 
+			DoMove( actor, mob2player , 4 );
 		}
-		*/
+
 	}
 
 };

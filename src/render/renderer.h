@@ -272,7 +272,7 @@ public:
 		//float deltangle = playerAngle - actor->GetAngleY();
 		//while( deltangle < 0 ) deltangle += 360;
 		int q = (((int)(datAngle+45)) % 360) / 90;
-		int corr[] = { 0,2,1,3 };
+		int corr[] = { 2,1,3,0 };
 		sprite->SetCurrentFrame(corr[q],0);
 
 		RenderEntity( static_cast<Entity*>(actor) );

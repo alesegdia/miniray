@@ -32,7 +32,6 @@ void App::SetupPlayer()
 	player->SetPhysicBody(physics.CreateSphereBody(-mapdata.rooms[0].x*2, -mapdata.rooms[0].y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
 	this->playercontroller = new PlayerHumanController();
 	player->SetController( this->playercontroller );
-	System::SetPlayerEntity( player );
 	player->hp.current = 200;
 	player->hp.total = 200;
 		//actors.Add( player );
@@ -118,7 +117,7 @@ void App::Setup(int argc, char** argv)
 
 	timer = 0; coord = 0;
 
-	EntityController::SetEntityFactory( &efactory );
+	EntityController::Prepare( &efactory, this->player );
 
 }
 

@@ -3,9 +3,8 @@
 #include "../player.h"
 #include "../entity.h"
 #include "../script/playerweapon.h"
+#include "../script/helpers.h"
 #include "../entityfactory.h"
-#include "../system/system.h"
-#include "../system/healthchecker.h"
 #include <Box2D/Box2D.h>
 
 PlayerHumanController::PlayerHumanController ()
@@ -21,6 +20,7 @@ PlayerHumanController::~PlayerHumanController ()
 void PlayerHumanController::Step( Entity* e, uint32_t delta )
 {
 	Player* p = static_cast<Player*>(e);
+	p->logic_angle = -cml::rad(e->GetAngleY());
 	p->attack = shoot;
 
 	// MOVEMENT HANDLE
@@ -39,13 +39,15 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 			axis.normalize();
 			finaldir = cml::rotate_vector_2D( axis, -cml::rad(p->GetAngleY()));
 		}
-		p->GetPhysicBody()->SetLinearVelocity(b2Vec2(finaldir[0]*speed,finaldir[1]*speed));
+		DoMove( p, cml::vector3f(finaldir[0],0,finaldir[1]), speed );
+		//p->GetPhysicBody()->SetLinearVelocity(b2Vec2(finaldir[0]*speed,finaldir[1]*speed));
 	}
 	CheckHealth( p );
 
-	System::SetEntityFactory( EntityController::entityfactory );
-	if( p->ammo > 0 && wpsys.TryShoot( e, static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
+	if( p->ammo > 0 && DoShoot( static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
 	{
+		cml::vector2f shootdir = GetForward( p ); //Rotate2D( cml::vector2f(0.f,1.f), cml::rad(-e->GetAngleY()) );
+		entityfactory->SpawnPlayerBullet( GetWorld2DPos( e->transform.position ) + shootdir * 2.5, shootdir * p->weapon.bullet_speed, p->weapon.bullet_duration);
 		p->ammo--;
 		// restar el bat y spr
 	}

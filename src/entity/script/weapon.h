@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 class Weapon
 {
 public:
