@@ -8,3 +8,4 @@ doc
 *.bat
 build
 test
+bin
