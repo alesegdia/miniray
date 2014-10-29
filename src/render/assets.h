@@ -33,50 +33,29 @@ public:
 			delete textures[i];
 		}
 	}
+
+	void LoadTexture( Render::Context* gl, const char* path, int texid )
+	{
+		tdogl::Bitmap bmp = tdogl::Bitmap::bitmapFromFile(path);
+		bmp.flipVertically();
+		textures[texid] = new tdogl::Texture( gl, bmp );
+	}
+
 	void Prepare( Render::Context* gl )
 	{
-		tdogl::Bitmap bmp = tdogl::Bitmap::bitmapFromFile("assets/qwe.png");
-		bmp.flipVertically();
-		textures[TEX_TEX1] = new tdogl::Texture( gl, bmp );
+		LoadTexture( gl, "assets/qwe.png", TEX_TEX1 );
+		LoadTexture( gl, "assets/asd.png", TEX_TEX2 );
+		LoadTexture( gl, "assets/asd2.png", TEX_TEX3 );
+		LoadTexture( gl, "assets/techo.png", TEX_TECHO );
+		LoadTexture( gl, "assets/suelo.png", TEX_SUELO );
+		LoadTexture( gl, "assets/rob.png", TEX_ROBOT );
+		LoadTexture( gl, "assets/bullet.png", TEX_GREENBULLET );
+		LoadTexture( gl, "assets/redbullet.png", TEX_REDBULLET );
+		LoadTexture( gl, "assets/arma.png", TEX_ARMA );
+		LoadTexture( gl, "assets/picksfw.png", TEX_PICKSFW );
 
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/asd.png");
-		bmp.flipVertically();
-		textures[TEX_TEX2] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/asd2.png");
-		bmp.flipVertically();
-		textures[TEX_TEX3] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/techo.png");
-		bmp.flipVertically();
-		textures[TEX_TECHO] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/suelo.png");
-		bmp.flipVertically();
-		textures[TEX_SUELO] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/rob.png");
-		bmp.flipVertically();
-		textures[TEX_ROBOT] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/bullet.png");
-		bmp.flipVertically();
-		textures[TEX_GREENBULLET] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/redbullet.png");
-		bmp.flipVertically();
-		textures[TEX_REDBULLET] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/arma.png");
-		bmp.flipVertically();
-		textures[TEX_ARMA] = new tdogl::Texture( gl, bmp );
-
-		bmp = tdogl::Bitmap::bitmapFromFile("assets/picksfw.png");
-		bmp.flipVertically();
-		textures[TEX_PICKSFW] = new tdogl::Texture( gl, bmp );
-
-		sprites[S3D_BICHO].Prepare( gl, textures[TEX_ROBOT], 4, 1 );
-		sprites[S3D_BICHO].SetCurrentFrame(2,0);
+		sprites[S3D_BICHO].Prepare( gl, textures[TEX_ROBOT], 4, 3 );
+		sprites[S3D_BICHO].SetCurrentFrame(0,0);
 		sprites[S3D_GREENBULLET].Prepare( gl, textures[TEX_GREENBULLET], 1, 1 );
 		sprites[S3D_REDBULLET].Prepare( gl, textures[TEX_REDBULLET], 1, 1 );
 		sprites[S3D_ARMA].Prepare( gl, textures[TEX_ARMA], 2, 2 );

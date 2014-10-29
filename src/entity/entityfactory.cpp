@@ -2,6 +2,7 @@
 #include "entityfactory.h"
 #include "entity.h"
 #include "actor.h"
+#include "mob.h"
 #include "../core/dynamicarray.h"
 #include "../physics/physics.h"
 #include "controller/bulletcontroller.h"
@@ -65,7 +66,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 
 Actor* EntityFactory::SpawnEnemy( float x, float y )
 {
-	Actor* actor = new Actor();
+	Actor* actor = new Mob();
 	actor->hp.current = 10;
 	actor->wep.rate = 20;
 	actor->wep.bullet_speed = 20;

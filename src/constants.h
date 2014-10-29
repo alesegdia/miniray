@@ -9,6 +9,6 @@ constexpr float PLAYER_VISION_RANGE = 17.f;
 	// ángulo del cono de visión
 static constexpr float SIGHT_ANGLE = 90.f;
 	// altura del cono de visión
-static constexpr float SIGHT_DISTANCE = 20.f;
+static constexpr float SIGHT_DISTANCE = 2000.f;
 	// distancia a partir de la cual empezará a disparar
 static constexpr float SHOOT_DISTANCE = 15.f;

@@ -273,7 +273,7 @@ public:
 		//while( deltangle < 0 ) deltangle += 360;
 		int q = (((int)(datAngle+45)) % 360) / 90;
 		int corr[] = { 2,1,3,0 };
-		sprite->SetCurrentFrame(corr[q],0);
+		sprite->SetCurrentFrame(corr[q],2);
 
 		RenderEntity( static_cast<Entity*>(actor) );
 	}

@@ -127,6 +127,7 @@ OBJECTS := \
 	$(OBJDIR)/Bitmap.o \
 	$(OBJDIR)/context.o \
 	$(OBJDIR)/camera.o \
+	$(OBJDIR)/animation.o \
 	$(OBJDIR)/shader.o \
 	$(OBJDIR)/sdlcontext.o \
 	$(OBJDIR)/Texture.o \
@@ -246,6 +247,9 @@ $(OBJDIR)/context.o: src/render/context.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/camera.o: src/render/camera.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/animation.o: src/render/animation.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/shader.o: src/render/shader.cpp

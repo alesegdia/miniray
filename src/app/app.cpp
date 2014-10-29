@@ -104,7 +104,7 @@ void App::Setup(int argc, char** argv)
 		int lim = rng.uniform(6,11);
 		for( int j = 0; j < lim; j++ )
 		{
-			cml::vector2i enemypos = mapdata.rooms[i].RandomPosition( rng );
+			cml::vector2i enemypos = mapdata.rooms[i].RandomPosition( rng, 1 );
 			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
 		}
 	}
