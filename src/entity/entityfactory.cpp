@@ -32,7 +32,7 @@ void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Enti
 }
 
 Player* EntityFactory::SpawnPlayer( float x, float y ){
-	Player* player = new Player();
+	Player* player = AllocEntity<Player>();
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
@@ -54,7 +54,7 @@ void EntityFactory::SpawnEnemyBullet( const cml::vector2f& pos, const cml::vecto
 
 void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time )
 {
-	Entity* ent = new Bullet();
+	Entity* ent = AllocEntity<Bullet>();
 	Bullet* bu = static_cast<Bullet*>(ent);
 	bu->timer = time;
 	ent->controller = new BulletController();
@@ -68,7 +68,7 @@ void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& 
 
 void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 {
-	Pickup* p = new Pickup();
+	Pickup* p = AllocEntity<Pickup>();
 	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
 	p->controller = NULL;
 	p->SetType( Entity::Type::PICKUP );
@@ -78,7 +78,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 
 Actor* EntityFactory::SpawnEnemy( float x, float y )
 {
-	Actor* actor = new Mob();
+	Mob* actor = AllocEntity<Mob>();
 	actor->hp.current = 10;
 	actor->wep.rate = 20;
 	actor->wep.bullet_speed = 20;
@@ -91,6 +91,13 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 }
 Entity* EntityFactory::SpawnPlayerWeapon(float x, float y)
 {
-	Entity* e = new Entity();
+	Entity* e = AllocEntity<Entity>();
 	e->SetSprite( this->assets->Sprite(0) );
+}
+
+template <typename EntityType>
+EntityType* EntityFactory::AllocEntity()
+{
+	EntityType* e = new EntityType();
+	return e;
 }
