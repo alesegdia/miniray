@@ -22,12 +22,15 @@ public:
 		rotation = cml::vector3f(0,0,0);
 	}
 	
-	void Update( Transform parent = Transform() )
+	void Update( const Transform& parent )
 	{
 		world = cml::identity<4>();
 		cml::matrix_rotation_euler( world, rotation[0], rotation[1], rotation[2], cml::EulerOrder::euler_order_yxz );
 		cml::matrix_set_translation( world, position );
-		
+		for( int i = 0; i < this->children.Size(); i++ )
+		{
+			children[i]->Update(*this);
+		}
 	}
 	
 	void AddChild( Transform* child )
