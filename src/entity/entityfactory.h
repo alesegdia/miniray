@@ -11,6 +11,7 @@ class Physics;
 class Sprite3D;
 class Assets;
 class Actor;
+class Transform;
 
 class EntityFactory {
 
