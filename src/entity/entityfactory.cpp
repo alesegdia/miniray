@@ -7,6 +7,7 @@
 #include "../physics/physics.h"
 #include "controller/bulletcontroller.h"
 #include "controller/mobaicontroller.h"
+#include "controller/playerhumancontroller.h"
 #include "bullet.h"
 #include "../render/sprite3d.h"
 #include "../render/assets.h"
@@ -29,6 +30,17 @@ void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Enti
 	this->physics = physics;
 	this->assets = assets;
 }
+
+Player* EntityFactory::SpawnPlayer( float x, float y ){
+	Player* player = new Player();
+	player->SetSprite(NULL);
+	player->SetType(Entity::Type::PLAYER);
+	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
+	player->SetController( new PlayerHumanController() );
+	player->hp.current = 200;
+	player->hp.total = 200;
+
+}	
 
 void EntityFactory::SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time )
 {

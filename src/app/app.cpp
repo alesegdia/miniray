@@ -21,20 +21,9 @@ App::App() :
 
 void App::SetupPlayer()
 {
-	player = new Player();
-	player->SetSprite(NULL);
-	player->SetType(Entity::Type::PLAYER);
-	rng.uniform();
 	cml::vector2i playerpos = mapdata.rooms[0].RandomPosition( rng, 3 );
-	mapdata.rooms[0].Debug();
-	printf("%d,%d\n", playerpos[0], playerpos[1]);
-	//player->SetPhysicBody(physics.CreateSphereBody(-playerpos[0], -playerpos[1], CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
-	player->SetPhysicBody(physics.CreateSphereBody(-mapdata.rooms[0].x*2, -mapdata.rooms[0].y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ));
-	this->playercontroller = new PlayerHumanController();
-	player->SetController( this->playercontroller );
-	player->hp.current = 200;
-	player->hp.total = 200;
-		//actors.Add( player );
+	player = this->efactory.SpawnPlayer(playerpos[0], playerpos[1]);
+	this->playercontroller = static_cast<PlayerHumanController*>(player->controller);
 }
 
 void App::Setup(int argc, char** argv)

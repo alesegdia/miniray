@@ -6,6 +6,7 @@
 #include "../physics/layers.h"
 
 class Entity;
+class Player;
 class Physics;
 class Sprite3D;
 class Assets;
