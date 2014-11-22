@@ -15,18 +15,28 @@ public:
 	cml::vector3f local_position;
 	cml::vector3f local_rotation;
 	cml::matrix44f_c world;
+	cml::matrix44f_c local;
+	
 
 	Transform()
 	{
-		position = cml::vector3f(0,0,0);
-		rotation = cml::vector3f(0,0,0);
+		world = local = cml::identity<4>();
+		position = rotation = local_position = local_rotation = cml::vector3f(0,0,0);
 	}
 	
 	void Update( const Transform& parent )
 	{
-		world = cml::identity<4>();
-		cml::matrix_rotation_euler( world, rotation[0], rotation[1], rotation[2], cml::EulerOrder::euler_order_yxz );
-		cml::matrix_set_translation( world, position );
+		// update local
+		local = cml::identity<4>();
+		cml::matrix_rotation_euler( local, local_rotation[0], local_rotation[1], local_rotation[2], cml::EulerOrder::euler_order_yxz );
+		cml::matrix_set_translation( local, local_position );
+
+		// update world
+		cml::matrix44f_c tmp = cml::identity<4>();
+		cml::matrix_rotation_euler( tmp, rotation[0], rotation[1], rotation[2], cml::EulerOrder::euler_order_yxz );
+		cml::matrix_set_translation( tmp, position );
+		world = local * tmp;
+
 		for( int i = 0; i < this->children.Size(); i++ )
 		{
 			children[i]->Update(*this);
