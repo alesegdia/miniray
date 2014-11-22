@@ -1,6 +1,6 @@
 
 
-solution "programita"
+solution "miniraygame"
   configurations { "Debug", "Release" }
   platforms { "x64", "x32" }
 project "miniray"
