@@ -1,4 +1,9 @@
 
+Makefile
+obj
+miniray.*
+*.workspace
+.codelite
 tags
 *~
 *.swp
