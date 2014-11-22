@@ -12,33 +12,10 @@
 #include "../../core/random.h"
 #include "../script/helpers.h"
 
-
 class MobAIController : public EntityController
 {
 
 	static RNG rng; // hacerlo puntero y pasarselo desde el main
-
-	class MyRayCB : public b2RayCastCallback
-	{
-		public:
-			bool didcollide;
-
-		void SetOrigin( b2Vec2 origin )
-		{
-			didcollide = false;
-		}
-
-		float32 ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction )
-		{
-			if( fixture->GetFilterData().categoryBits == CollisionLayer::MAP )
-			{
-				didcollide = true;
-				return 0;
-			}
-			return fraction;
-		}
-	};
-
 
 
 public:
@@ -51,12 +28,10 @@ public:
 		DoDropItem( mob, rng, entityfactory );
 		DoSensePlayer( mob, player );
 
-		cml::vector3f ppos = EntityController::player->transform.position;
 		if( mob->player_visible )
 		{
 			if( DoKeepDistanceAndShoot( mob, EntityController::player, delta ) )
 				Shoot( mob, entityfactory );
-
 		}
 	}
 
