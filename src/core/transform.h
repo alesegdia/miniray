@@ -29,6 +29,11 @@ public:
 		cml::matrix_set_translation( world, position );
 		
 	}
+	
+	void AddChild( Transform* child )
+	{
+		this->children.Add(child);
+	}
 
 	cml::matrix44f_c Model()
 	{

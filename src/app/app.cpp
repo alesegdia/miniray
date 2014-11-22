@@ -81,7 +81,7 @@ void App::Setup(int argc, char** argv)
 	Canvas cv(w,h);
 
 	plane.Prepare(gl,300,300,4,4);
-	efactory.Prepare( &physics, &assets, &actors, &bullets );
+	efactory.Prepare( &physics, &assets, &actors, &bullets, &sceneRoot );
 
 	rzfx::noise( cv );
 	//rzfx::turbulence( cv );

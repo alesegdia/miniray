@@ -23,7 +23,8 @@ public:
 	void Prepare(
 			Physics* physics, Assets* assets,
 			DynamicArray<Entity*>* actorlist,
-			DynamicArray<Entity*>* bulletlist
+			DynamicArray<Entity*>* bulletlist,
+			Transform* sceneRoot
 		);
 
 	template <typename EntityType>

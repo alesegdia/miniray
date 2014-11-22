@@ -52,6 +52,7 @@ private:
 
 	Renderer renderer;
 	Physics physics;
+	Transform sceneRoot;
 
 	void HandleCamInput();
 	void GenThat();

@@ -23,13 +23,15 @@ EntityFactory::~EntityFactory ()
 	 // dtor
 }
 
-void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Entity*>* actorlist, DynamicArray<Entity*>* bulletlist )
+void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Entity*>* actorlist, DynamicArray<Entity*>* bulletlist, Transform* sceneRoot )
 {
 	this->actorlist = actorlist;
 	this->bulletlist = bulletlist;
 	this->physics = physics;
 	this->assets = assets;
+	this->sceneTree = sceneRoot;
 }
+
 
 Player* EntityFactory::SpawnPlayer( float x, float y ){
 	Player* player = AllocEntity<Player>();
@@ -99,5 +101,6 @@ template <typename EntityType>
 EntityType* EntityFactory::AllocEntity()
 {
 	EntityType* e = new EntityType();
+	this->sceneTree->AddChild( &(e->transform) );
 	return e;
 }
