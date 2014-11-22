@@ -6,7 +6,7 @@ solution "programita"
 project "miniray"
   language "C++"
   kind "WindowedApp"
-  files		{ "src/**.cpp" } -- "../game/src/**.h" }
+  files		{ "src/**.cpp", "src/**.h" } -- "../game/src/**.h" }
   links		{ "c", "dl", "m", "rt", "freetype", "SDL2", "Box2D", "GL" }
   buildoptions { "-std=c++11" }
   includedirs { "~/Libs/cml-1_0_3/" }
