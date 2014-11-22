@@ -133,10 +133,12 @@ void App::UpdateActors( uint32_t delta )
 {
 	for( int i = 0; i < actors.Size(); i++ )
 	{
+		actors[i]->transform.Update();
 		actors[i]->Step( delta );
 	}
 	for( int i = 0; i < bullets.Size(); i++ )
 	{
+		bullets[i]->transform.Update();
 		bullets[i]->Step( delta );
 	}
 }

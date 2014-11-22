@@ -89,3 +89,8 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actorlist->Add( actor );
 	return actor;
 }
+Entity* EntityFactory::SpawnPlayerWeapon(float x, float y)
+{
+	Entity* e = new Entity();
+	e->SetSprite( this->assets->Sprite(0) );
+}

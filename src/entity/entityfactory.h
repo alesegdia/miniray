@@ -30,6 +30,7 @@ public:
 	void SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time );
 	void SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time );
 	void SpawnPickup( const cml::vector2f& pos );
+	Entity* SpawnPlayerWeapon( float x, float y );
 	Actor* SpawnEnemy( float x, float y );
 
 
@@ -39,6 +40,7 @@ private:
 	DynamicArray<Entity*>* bulletlist;
 	Physics* physics;
 	Assets* assets;
+	Transform* sceneTree;
 
 
 };
