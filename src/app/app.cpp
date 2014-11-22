@@ -54,7 +54,7 @@ void App::Setup(int argc, char** argv)
 	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
 
 	mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
-	printf("n: %d\n", mapdata.rooms.Size() );
+	printf("n: %zu\n", mapdata.rooms.Size() );
 	map = mapgen::RasterMapData( mapdata );
 
 	for(int i = 0; i < map.Width(); i++ )
