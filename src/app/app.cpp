@@ -154,6 +154,8 @@ void App::Update(uint32_t delta)
 	//physics.Stress(this->player);
 
 	UpdateActors(delta);
+	efactory.UpdateRest(delta);
+
 
 	physics.Step();
 	player->PhysicStep();
@@ -217,6 +219,8 @@ void App::Render()
 		bullets[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		renderer.RenderEntity( bullets[i] );
 	}
+	
+	efactory.RenderRest(renderer);
 
 	model = cml::identity<4>();
 	cml::vector3f offset(0,0,0);

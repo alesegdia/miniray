@@ -20,7 +20,7 @@ PlayerHumanController::~PlayerHumanController ()
 void PlayerHumanController::Step( Entity* e, uint32_t delta )
 {
 	Player* p = static_cast<Player*>(e);
-	p->logic_angle = -cml::rad(e->GetAngleY());
+	p->transform.logic_angle = -cml::rad(e->GetAngleY());
 	p->attack = shoot;
 
 	// MOVEMENT HANDLE

@@ -6,6 +6,7 @@
 #include "../core/dynamicarray.h"
 #include "../physics/physics.h"
 #include "controller/bulletcontroller.h"
+#include "controller/debugtransformcontroller.h"
 #include "controller/mobaicontroller.h"
 #include "controller/playerhumancontroller.h"
 #include "bullet.h"
@@ -20,7 +21,10 @@ EntityFactory::EntityFactory ()
 
 EntityFactory::~EntityFactory ()
 {
-	 // dtor
+	for( int i = 0; i < this->rest.Size(); i++ )
+	{
+		delete this->rest[i];
+	}
 }
 
 void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Entity*>* actorlist, DynamicArray<Entity*>* bulletlist, Transform* sceneRoot )
@@ -35,6 +39,9 @@ void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Enti
 
 Player* EntityFactory::SpawnPlayer( float x, float y ){
 	Player* player = AllocEntity<Player>();
+	this->player = player;
+
+	
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
@@ -89,8 +96,41 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
 	actorlist->Add( actor );
+	
+	
+	Entity* weapon;
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->transform.local_position[0] = -1; 
+	weapon->controller = new DebugTransformController();
+	actor->transform.AddChild(&(weapon->transform));
+	this->rest.Add(weapon);
+
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->transform.local_position[0] = 1; 
+	weapon->controller = new DebugTransformController();
+	actor->transform.AddChild(&(weapon->transform));
+	this->rest.Add(weapon);
+
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->transform.local_position[2] = -1; 
+	weapon->controller = new DebugTransformController();
+	actor->transform.AddChild(&(weapon->transform));
+	this->rest.Add(weapon);
+
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->transform.local_position[2] = 1; 
+	weapon->controller = new DebugTransformController();
+	actor->transform.AddChild(&(weapon->transform));
+	this->rest.Add(weapon);
+
+	
 	return actor;
 }
+
 Entity* EntityFactory::SpawnPlayerWeapon(float x, float y)
 {
 	Entity* e = AllocEntity<Entity>();
@@ -103,4 +143,27 @@ EntityType* EntityFactory::AllocEntity()
 	EntityType* e = new EntityType();
 	this->sceneTree->AddChild( &(e->transform) );
 	return e;
+}
+
+void EntityFactory::UpdateRest(uint32_t delta)
+{
+	printf("TEHSTEP");
+	for( int i = 0; i < rest.Size(); i++ )
+	{
+		rest[i]->Step( delta );
+	}
+
+}
+
+void EntityFactory::RenderRest( Renderer& renderer )
+{
+	for( int i = 0; i < rest.Size(); i++ )
+	{
+		// rest[i]->PhysicStep();
+		//rest[i]->transform.local_rotation[0] = cml::rad(180 + player->GetAngleY());
+		rest[i]->SetAngleY( - rest[i]->transform.local_rotation[0] );//+ cml::rad(180 + player->GetAngleY()) );
+		// rest[i]->transform.local_rotation[0] = -cml::rad(180 + player->GetAngleY());
+		renderer.RenderEntity( rest[i] );
+	}
+			
 }

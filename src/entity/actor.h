@@ -32,7 +32,6 @@ public:
 	struct { uint32_t slow, freeze, confuse; } effect;
 	Weapon wep; // PUESTO AQUI PARA DEPURAR
 	// EN UN FUTURO; PUNTERO A WEAPON Y EN PLAYER, PLAYERWEAPON
-	float logic_angle = 0.f;
 
 	void ApplyLinearVelocity()
 	{

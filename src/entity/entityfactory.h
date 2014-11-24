@@ -4,6 +4,7 @@
 #include <cml/cml.h>
 #include "../core/dynamicarray.h"
 #include "../physics/layers.h"
+#include "../render/renderer.h"
 
 class Entity;
 class Player;
@@ -14,6 +15,11 @@ class Actor;
 class Transform;
 
 class EntityFactory {
+	
+private:
+	
+	DynamicArray<Entity*> rest;
+	Player* player;
 
 public:
 
@@ -37,6 +43,9 @@ public:
 	void SpawnPickup( const cml::vector2f& pos );
 	Entity* SpawnPlayerWeapon( float x, float y );
 	Actor* SpawnEnemy( float x, float y );
+	void UpdateRest( uint32_t delta );
+	void RenderRest( Renderer& renderer );
+	
 
 
 private:

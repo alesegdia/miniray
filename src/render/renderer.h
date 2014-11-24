@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "../render/sdlcontext.h"
 
 #include <cml/cml.h>
 #include "context.h"
@@ -15,6 +16,7 @@
 #include "../core/random.h"
 #include "font.h"
 #include "../entity/actor.h"
+#include "../map/map.h"
 
 
 class Renderer
@@ -267,7 +269,7 @@ public:
 		Sprite3D* sprite = actor->GetSprite();
 
 		cml::vector3f actor2pl = actor->transform.position - viewerPos;
-		cml::vector3f rotactor = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,-1,0), cml::rad(180.f)+actor->logic_angle );
+		cml::vector3f rotactor = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,-1,0), cml::rad(180.f)+actor->transform.logic_angle );
 		float datAngle = 180 + cml::deg(cml::signed_angle_2D( cml::vector2f(actor2pl[0],actor2pl[2]), cml::vector2f(rotactor[0],rotactor[2]) ));
 		//float deltangle = playerAngle - actor->GetAngleY();
 		//while( deltangle < 0 ) deltangle += 360;

@@ -121,11 +121,27 @@ public:
 	{
 		transform.rotation[0] = angle;
 	}
+	
+	void SetLogicAngleY( float angle )
+	{
+		transform.logic_angle = angle;
+	}
 
 	float GetAngleY()
 	{
 		return transform.rotation[0];
 	}
+	
+	float GetQuadAngleY()
+	{
+		return transform.local_rotation[0];
+	}
+	
+	void SetQuadAngleY( float angle )
+	{
+		transform.local_rotation[0] = angle;
+	}
+
 
 	void OffsetRotationY( float delta_angle )
 	{

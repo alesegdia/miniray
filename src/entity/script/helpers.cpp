@@ -60,7 +60,7 @@ cml::vector2f GetWorld2DPos( cml::vector3f v )
 
 cml::vector2f GetForward( Actor* actor )
 {
-	return cml::rotate_vector_2D( cml::vector2f(0.f,1.f), actor->logic_angle );
+	return cml::rotate_vector_2D( cml::vector2f(0.f,1.f), actor->transform.logic_angle );
 }
 cml::vector2f Rotate2D( cml::vector2f v, float angle )
 {
@@ -69,7 +69,7 @@ cml::vector2f Rotate2D( cml::vector2f v, float angle )
 
 void DoLogicAngleAdd( Actor* actor, float angle )
 {
-	actor->logic_angle += cml::rad(angle);
+	actor->transform.logic_angle += cml::rad(angle);
 }
 
 class MyRayCB : public b2RayCastCallback
