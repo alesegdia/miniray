@@ -131,14 +131,15 @@ void App::PurgeList( DynamicArray<Entity*>& l )
 
 void App::UpdateActors( uint32_t delta )
 {
+	sceneRoot.Update(Transform());
 	for( int i = 0; i < actors.Size(); i++ )
 	{
-		actors[i]->transform.Update(Transform());
+		//actors[i]->transform.Update(Transform());
 		actors[i]->Step( delta );
 	}
 	for( int i = 0; i < bullets.Size(); i++ )
 	{
-		bullets[i]->transform.Update(Transform());
+		//bullets[i]->transform.Update(Transform());
 		bullets[i]->Step( delta );
 	}
 }
