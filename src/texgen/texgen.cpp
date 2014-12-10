@@ -54,6 +54,7 @@ Canvas turbulence( Canvas& in, Canvas& out )
 	{
 		//uint8_t val = ((uint8_t)(turbulence(in,x,y,zoom,smooth,base)));
 	}
+	return cv;
 }
 
 }

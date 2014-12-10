@@ -50,6 +50,7 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	player->hp.current = 200;
 	player->hp.total = 200;
 
+	return player;
 }	
 
 void EntityFactory::SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time )
@@ -136,6 +137,7 @@ Entity* EntityFactory::SpawnPlayerWeapon(float x, float y)
 {
 	Entity* e = AllocEntity<Entity>();
 	e->SetSprite( this->assets->Sprite(0) );
+	return e;
 }
 
 template <typename EntityType>
@@ -168,3 +170,6 @@ void EntityFactory::RenderRest( Renderer& renderer )
 	}
 			
 }
+
+
+

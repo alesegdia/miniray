@@ -2,6 +2,7 @@
 #pragma once
 
 #include "glcorearb.h"
+#include <cstdint>
 
 namespace Render {
 

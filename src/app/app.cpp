@@ -54,39 +54,13 @@ void App::Setup(int argc, char** argv)
 				physics.AddCubeBody(-i*2,-j*2);
 		}
 	}
-	map.Debug();
-	printf("\n");
-	(mapgen::ConstructRoomMap(map,mapdata.rooms)).Debug();
 
-	cam.SetPosition( cml::vector3f( -0, 0, -0 ) );
+	cam.SetPosition( cml::vector3f(0,0,0) );
 	cam.SetHorizontalAngle( 90 );
-
-	int w, h;
-	w = h = 512;
-	canvas = new Canvas( w,h );
-	canvas->Fill( Color(0,0,0,255) );
-
-	//canvas->GenClouds( rng );
-	//canvas->GenTurbulence( rng, 64, 2048, false );
-	canvas->GenPixelTurbulence( rng, 64, 32 );
-	delete canvas;
-
-	/*
-	for( int i = 0; i < 32*32; i++ )
-	{
-		printf("%u ", ((unsigned char*)canvas->Raw())[i]);
-	}
-	*/
-
-	Canvas cv(w,h);
 
 	plane.Prepare(gl,300,300,4,4);
 	efactory.Prepare( &physics, &assets, &actors, &bullets, &sceneRoot );
 
-	rzfx::noise( cv );
-	//rzfx::turbulence( cv );
-	pbmp = new tdogl::Bitmap( w, h, tdogl::Bitmap::Format::Format_RGBA, ((unsigned char*)cv.Raw() ));
-	delete pbmp;
 
 	for( int i = 1; i < mapdata.rooms.Size(); i++ )
 	{
@@ -104,7 +78,7 @@ void App::Setup(int argc, char** argv)
 
 	SetupPlayer();
 
-	timer = 0; coord = 0;
+	coord = 0;
 
 	EntityController::Prepare( &efactory, this->player );
 
@@ -131,15 +105,16 @@ void App::PurgeList( DynamicArray<Entity*>& l )
 
 void App::UpdateActors( uint32_t delta )
 {
-	sceneRoot.Update(Transform());
-	for( int i = 0; i < actors.Size(); i++ )
+	// sceneRoot.Update(Transform());
+	for( size_t i = 0; i < actors.Size(); i++ )
 	{
-		//actors[i]->transform.Update(Transform());
+		actors[i]->transform.Update(Transform());
 		actors[i]->Step( delta );
 	}
-	for( int i = 0; i < bullets.Size(); i++ )
+
+	for( size_t i = 0; i < bullets.Size(); i++ )
 	{
-		//bullets[i]->transform.Update(Transform());
+		bullets[i]->transform.Update(Transform());
 		bullets[i]->Step( delta );
 	}
 }
@@ -230,16 +205,24 @@ void App::Render()
 	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
 	renderer.RenderSprite3D( assets.Sprite(S3D_ARMA), model );
 
+	RenderMiniText();
+	RenderPlayerHP();
 
-	//gl->Enable(GL_BLEND);
-    //gl->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	renderer.RenderFinish( mainWindow, deltatime );
 
+}
 
-	timer += deltatime;
-	float r = sin(((float)timer)/10);
-	float g = sin(((float)timer)/40);
-	float b = sin(((float)timer)/400);
+void App::RenderMiniText()
+{
+	uint32_t time = SDL_GetTicks();
+	float r = sin(((float)time)/10);
+	float g = sin(((float)time)/40);
+	float b = sin(((float)time)/400);
     renderer.RenderText("Miniray", -0.35, 0.7, cml::vector4f(b,g,r,1));
+}
+
+void App::RenderPlayerHP()
+{
     char buf[8];
     sprintf(buf, "%d", player->hp.current);
 	float phealth = float(player->hp.current) / float(player->hp.total);
@@ -247,10 +230,6 @@ void App::Render()
 
     sprintf(buf, "%d", player->ammo);
     renderer.RenderText(buf, 0.5, -0.97, cml::vector4f(1,0.5,0,1));
-    //renderer.RenderText("The Misaligned Fox Jumps Over The Lazy Dog", -1, -1);
-	//renderer.RenderText("The Small Texture Scaled Fox Jumps Over The Lazy Dog", -0.5, -0.5, cml::vector4f(0,0,1,1), 0.5, 0.5);
-	renderer.RenderFinish( mainWindow, deltatime );
-
 }
 
 

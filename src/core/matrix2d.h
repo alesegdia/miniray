@@ -135,6 +135,8 @@ public:
 		{
 			Set( i, j, other.Get(i, j) );
 		}
+
+		return *this;
 	}
 
 

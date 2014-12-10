@@ -6,26 +6,26 @@
 #include "sprite3d.h"
 #include "../constants.h"
 
-constexpr int S3D_BICHO = 		0;
-constexpr int S3D_GREENBULLET = 	1;
-constexpr int S3D_REDBULLET = 	2;
-constexpr int S3D_ARMA = 		3;
-constexpr int S3D_PICKSFW = 4;
-constexpr int S3D_FIREBALL = 5;
-constexpr int S3D_MAX = 6;
+const int S3D_BICHO = 		0;
+const int S3D_GREENBULLET = 	1;
+const int S3D_REDBULLET = 	2;
+const int S3D_ARMA = 		3;
+const int S3D_PICKSFW = 4;
+const int S3D_FIREBALL = 5;
+const int S3D_MAX = 6;
 
-constexpr int TEX_ARMA = 0;
-constexpr int TEX_TEX1 = 1;
-constexpr int TEX_TEX2 = 2;
-constexpr int TEX_TEX3 = 3;
-constexpr int TEX_SUELO = 4;
-constexpr int TEX_ROBOT = 5;
-constexpr int TEX_TECHO = 6;
-constexpr int TEX_GREENBULLET = 7;
-constexpr int TEX_REDBULLET = 8;
-constexpr int TEX_PICKSFW = 9;
-constexpr int TEX_FIREBALL = 10;
-constexpr int TEX_MAX = 11;
+const int TEX_ARMA = 0;
+const int TEX_TEX1 = 1;
+const int TEX_TEX2 = 2;
+const int TEX_TEX3 = 3;
+const int TEX_SUELO = 4;
+const int TEX_ROBOT = 5;
+const int TEX_TECHO = 6;
+const int TEX_GREENBULLET = 7;
+const int TEX_REDBULLET = 8;
+const int TEX_PICKSFW = 9;
+const int TEX_FIREBALL = 10;
+const int TEX_MAX = 11;
 
 class Assets {
 public:

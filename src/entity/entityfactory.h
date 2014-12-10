@@ -46,6 +46,8 @@ public:
 	void UpdateRest( uint32_t delta );
 	void RenderRest( Renderer& renderer );
 	
+	void ClearChildren(Entity* e);
+	
 
 
 private:

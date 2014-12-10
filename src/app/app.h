@@ -27,38 +27,43 @@ class App : public SDLGLApp
 
 private:
 
-	Camera cam;
-	Map map;
-	mapgen::MapData mapdata;
-
-	Canvas* canvas;
+	// core
 	RNG rng;
 	uint32_t deltatime;
 
+	// scene
+	Camera cam;
+	Map map;
+	mapgen::MapData mapdata;					// map generation data
+	Player* player;								// player entity
+	PlayerHumanController* playercontroller;	// player controller for input stuff
+	DynamicArray<Entity*> actors;				// list of actors
+	DynamicArray<Entity*> bullets;				// list of bullets
+
+	// game
 	Assets assets;
-
 	EntityFactory efactory;
-	Player* player;
-	PlayerHumanController* playercontroller;
-	DynamicArray<Entity*> actors;
-	DynamicArray<Entity*> bullets;
 
-	uint32_t timer;
+
 	float coord;
 	Plane plane;
 	Font font;
-
-	tdogl::Bitmap* pbmp;
 
 	Renderer renderer;
 	Physics physics;
 	Transform sceneRoot;
 
+	int pepe;
 	void HandleCamInput();
+
 	void GenThat();
 	void PurgeList( DynamicArray<Entity*>& l );
 	void SetupPlayer();
 	void UpdateActors( uint32_t delta );
+
+	// RENDER
+	void RenderMiniText();
+	void RenderPlayerHP();
 
 	// APP INTERFACE
 	void Setup(int argc, char** argv);

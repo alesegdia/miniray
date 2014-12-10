@@ -42,6 +42,7 @@ public:
 	Map& operator=( const Map& other )
 	{
 		this->map_data = other.map_data;
+		return *this;
 	}
 
 	Map( const Map& other ) : map_data(other.map_data) {}

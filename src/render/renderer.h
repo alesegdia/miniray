@@ -27,7 +27,6 @@ private:
 	cml::matrix44f_c view;
 	cml::matrix44f_c projection;
 
-
 	float sprite3d_fog_range;
 	float cube_fog_range;
 
