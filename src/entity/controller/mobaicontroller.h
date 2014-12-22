@@ -22,7 +22,6 @@ public:
 
 	void Step( Entity* e, uint32_t delta )
 	{
-		printf("doing ai\n");
 		Mob* mob = static_cast<Mob*>(e);
 		mob->GetPhysicBody()->SetLinearVelocity(b2Vec2(0,0));
 		CheckHealth( mob );

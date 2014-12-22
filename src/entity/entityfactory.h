@@ -18,7 +18,7 @@ class EntityFactory {
 	
 private:
 	
-	DynamicArray<Entity*> rest;
+	UnorderedDynamicArray<Entity*> rest;
 	Player* player;
 
 public:
@@ -34,7 +34,7 @@ public:
 		);
 
 	template <typename EntityType>
-	EntityType* AllocEntity();
+	EntityType* AllocEntity(Transform* parent=NULL);
 
 	Player* SpawnPlayer( float x, float y );
 	void SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time );
@@ -46,8 +46,7 @@ public:
 	void UpdateRest( uint32_t delta );
 	void RenderRest( Renderer& renderer );
 	
-	void ClearChildren(Entity* e);
-	
+	void CleanRest();
 
 
 private:

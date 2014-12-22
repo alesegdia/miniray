@@ -62,6 +62,7 @@ void App::Setup(int argc, char** argv)
 	efactory.Prepare( &physics, &assets, &actors, &bullets, &sceneRoot );
 
 
+	int spawned = 0;
 	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
 	{
 		int lim = rng.uniform(6,11);
@@ -69,8 +70,10 @@ void App::Setup(int argc, char** argv)
 		{
 			cml::vector2i enemypos = mapdata.rooms[i].RandomPosition( rng, 1 );
 			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
+			spawned++;
 		}
 	}
+	printf("total spawned: %d\n", spawned);
 	/*
 			cml::vector2i enemypos = mapdata.rooms[1].RandomPosition( rng );
 			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
@@ -134,8 +137,10 @@ void App::Update(uint32_t delta)
 	player->Step( delta );
 	if( !player->IsAlive() ) Stop();
 
-	//PurgeList(actors);
-	//PurgeList(bullets);
+	this->sceneRoot.UpdateClean();
+	this->efactory.CleanRest();
+	PurgeList(actors);
+	PurgeList(bullets);
 
 	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);

@@ -21,6 +21,7 @@ public:
 	cml::matrix44f_c local;
 	Entity* entity;
 
+	void UpdateClean(bool force=false);
 	Transform();
 
 	void Update( const Transform& parent, uint32_t delta );

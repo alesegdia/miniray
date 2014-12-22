@@ -75,6 +75,7 @@ void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& 
 	ent->SetPhysicBody(b);
 	ent->SetSprite(sprite);
 	bulletlist->Add(ent);
+	this->sceneTree->AddChild(&(bu->transform));
 }
 
 void EntityFactory::SpawnPickup( const cml::vector2f& pos )
@@ -98,6 +99,8 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
 	actorlist->Add( actor );
+	this->sceneTree->AddChild(&(actor->transform));
+	printf("Spawn me\n");
 
 	Entity* weapon;
 	weapon = AllocEntity<Entity>();
@@ -123,12 +126,13 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
-	weapon->transform.local_position[2] = 1; 
+	weapon->transform.local_position[2] = 1;
 	weapon->controller = new DebugTransformController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
-	
+	printf("spawn my allies: %d\n", this->rest.Size());
+
 	return actor;
 }
 
@@ -140,10 +144,11 @@ Entity* EntityFactory::SpawnPlayerWeapon(float x, float y)
 }
 
 template <typename EntityType>
-EntityType* EntityFactory::AllocEntity()
+EntityType* EntityFactory::AllocEntity( Transform* parent)
 {
+	if( parent == NULL ) parent = this->sceneTree;
 	EntityType* e = new EntityType();
-	this->sceneTree->AddChild( &(e->transform) );
+	// parent->AddChild( &(e->transform) );
 	return e;
 }
 
@@ -167,7 +172,20 @@ void EntityFactory::RenderRest( Renderer& renderer )
 		// rest[i]->transform.local_rotation[0] = -cml::rad(180 + player->GetAngleY());
 		renderer.RenderEntity( rest[i] );
 	}
-			
+}
+
+void EntityFactory::CleanRest()
+{
+	for( int i = 0; i < rest.Size(); i++ )
+	{
+		if( !rest[i]->IsAlive() )
+		{
+			delete rest[i];
+			rest.Remove(i);
+			i--;
+		}
+	}
+
 }
 
 
