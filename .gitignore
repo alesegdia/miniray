@@ -1,6 +1,12 @@
 
-.ycm_extra_conf
+callgrind.out.*
+.clang_complete
+miniraygame*
+win
+.ycm*
 Makefile
+Makefile*
+miniray.*
 obj
 miniray.*
 *.workspace

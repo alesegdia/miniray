@@ -125,6 +125,7 @@ void App::Update(uint32_t delta)
 
 	SDL_WarpMouseInWindow( NULL, 400, 300 );
 
+	//this->sceneRoot.Update(Transform());
 	UpdateActors(delta);
 	efactory.UpdateRest(delta);
 
