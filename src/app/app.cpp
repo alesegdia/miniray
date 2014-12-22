@@ -62,7 +62,7 @@ void App::Setup(int argc, char** argv)
 	efactory.Prepare( &physics, &assets, &actors, &bullets, &sceneRoot );
 
 
-	for( int i = 1; i < mapdata.rooms.Size(); i++ )
+	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
 	{
 		int lim = rng.uniform(6,11);
 		for( int j = 0; j < lim; j++ )
@@ -88,7 +88,7 @@ void App::Setup(int argc, char** argv)
 
 void App::PurgeList( DynamicArray<Entity*>& l )
 {
-	for( int i = 0; i < l.Size(); i++ )
+	for( size_t i = 0; i < l.Size(); i++ )
 	{
 		if( !l[i]->IsAlive() )
 		{
@@ -119,19 +119,14 @@ void App::UpdateActors( uint32_t delta )
 	}
 }
 
+
 void App::Update(uint32_t delta)
 {
 
-	// step
-	// ENTITIES STEP
 	SDL_WarpMouseInWindow( NULL, 400, 300 );
-
-	// PHYSICS QUERY AABB STRESS TEST
-	//physics.Stress(this->player);
 
 	UpdateActors(delta);
 	efactory.UpdateRest(delta);
-
 
 	physics.Step();
 	player->PhysicStep();
@@ -145,17 +140,12 @@ void App::Update(uint32_t delta)
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
 
 	deltatime = delta;
-	int bicho = 5;
-	//cam.SetHorizontalAngle( playerBody->GetAngle() );
-
-
-	//bichosprite.SetAngleY( cam.GetHorizontalAngle() );
 }
 
 void App::Render()
 {
-
 	renderer.SetViewerPos( player->transform.position );
+
 	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
 	cam.SetPosition(cml::vector3f(ppos.x, 0, ppos.y));
@@ -179,7 +169,8 @@ void App::Render()
 
 	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
 	renderer.BatchSprite3D();
-	for( int i = 0; i < actors.Size(); i++ )
+
+	for( size_t i = 0; i < actors.Size(); i++ )
 	{
 		actors[i]->PhysicStep();
 		actors[i]->ClearVelocity();
@@ -189,27 +180,33 @@ void App::Render()
 		renderer.RenderActor( ac );
 	}
 
-	for( int i = 0; i < bullets.Size(); i++ )
+	for( size_t i = 0; i < bullets.Size(); i++ )
 	{
 		bullets[i]->PhysicStep();
 		bullets[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		renderer.RenderEntity( bullets[i] );
 	}
-	
+
 	efactory.RenderRest(renderer);
 
-	model = cml::identity<4>();
-	cml::vector3f offset(0,0,0);
-	offset = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
-	cml::matrix_set_translation( model, player->GetTransform().position + offset );
-	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
-	renderer.RenderSprite3D( assets.Sprite(S3D_ARMA), model );
+	RenderWeapon();
 
 	RenderMiniText();
 	RenderPlayerHP();
 
 	renderer.RenderFinish( mainWindow, deltatime );
 
+}
+
+void App::RenderWeapon()
+{
+	cml::matrix44f_c model = cml::identity<4>();
+	model = cml::identity<4>();
+	cml::vector3f offset(0,0,0);
+	offset = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
+	cml::matrix_set_translation( model, player->GetTransform().position + offset );
+	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
+	renderer.RenderSprite3D( assets.Sprite(S3D_ARMA), model );
 }
 
 void App::RenderMiniText()
@@ -252,7 +249,7 @@ void App::Cleanup()
 {
 	plane.Dispose(gl);
 	renderer.Dispose( );
-	for( int i = 0; i < actors.Size(); i++ )
+	for( size_t i = 0; i < actors.Size(); i++ )
 	{
 		if( actors[i]->controller ) delete actors[i]->controller;
 		delete actors[i];

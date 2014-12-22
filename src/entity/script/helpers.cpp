@@ -139,8 +139,8 @@ bool DoKeepDistanceAndShoot( Mob* mob, Player* player, uint32_t delta )
 	if( dist > 7 ) DoMove( mob, mob2player , 4 );
 	DoMove( mob, mob2player , 4 );
 
-	//bool shoot = mob->player_distance < SHOOT_DISTANCE;
-	return false;//DoShoot( &(mob->wep), shoot, delta  );
+	bool shoot = mob->player_distance < SHOOT_DISTANCE;
+	return DoShoot( &(mob->wep), shoot, delta  );
 }
 
 void Shoot( Actor* actor, EntityFactory* ef )

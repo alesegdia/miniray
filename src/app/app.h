@@ -53,7 +53,6 @@ private:
 	Physics physics;
 	Transform sceneRoot;
 
-	int pepe;
 	void HandleCamInput();
 
 	void GenThat();
@@ -64,6 +63,7 @@ private:
 	// RENDER
 	void RenderMiniText();
 	void RenderPlayerHP();
+	void RenderWeapon();
 
 	// APP INTERFACE
 	void Setup(int argc, char** argv);

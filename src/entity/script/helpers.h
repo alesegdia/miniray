@@ -4,7 +4,6 @@
 #include "../actor.h"
 #include "../../core/random.h"
 
-class Actor;
 class EntityFactory;
 class Weapon;
 class Mob;
@@ -43,3 +42,24 @@ void DoLogicAngleAdd( Actor* actor, float angle );
 // obtener vector hacia delante
 cml::vector2f GetForward( Actor* actor );
 
+/*
+float DealLinearDamage( Actor* attacker, Actor* victim,
+		Actor::Stat::Type enforcerer, Actor::Stat::Type weakener, float factor = 1.0f
+{
+	//return ( attacker->stats[enforcerer] - attacker->stats[weakener] ) * factor;
+	return 0;
+}
+
+float DealPhysicalDamage( Actor* attacker, Actor* victim )
+{
+	float dmg = 0;
+	return 0;
+
+	if( core::rng.uniform() < attacker->stats[Actor::Stat::Type::LUCK] )
+		dmg = DealLinearDamage( attacker, victim, Actor::Stat::Type::POWER, Actor::Stat::Type::DEFENSE, 0.10 );
+
+	return dmg + DealLinearDamage( attacker, victim,
+			Actor::Stat::Type::POWER, Actor::Stat::Type::DEFENSE );
+}
+
+			*/
