@@ -98,8 +98,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
 	actorlist->Add( actor );
-	
-	
+
 	Entity* weapon;
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));

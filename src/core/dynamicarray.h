@@ -8,7 +8,7 @@ template <typename T>
 class DynamicArray
 {
 
-private:
+protected:
 
 	static const size_t INITIAL_SIZE = 20;
 	static const size_t REALLOC_STEP = 5;
@@ -36,7 +36,7 @@ public:
 		data = ((T*)malloc( initial_size * sizeof(T) ));
 	}
 
-	~DynamicArray( )
+	virtual ~DynamicArray( )
 	{
 		if( data )
 		{

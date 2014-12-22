@@ -2,7 +2,7 @@
 #include "transform.h"
 #include "../entity/entity.h"
 
-void Transform::Update(const Transform& parent)
+void Transform::Update(const Transform& parent, uint32_t delta)
 {
 	cml::matrix44f_c worldtrans,
 					 localrot,
@@ -21,17 +21,23 @@ void Transform::Update(const Transform& parent)
 	cml::matrix_set_translation( worldtrans, position );
 
 	world = parent.world * worldtrans * localrot * localtrans * worldrot;
+	if( this->entity )
+		this->entity->Step( delta );
 
 	for( size_t i = 0; i < this->children.Size(); i++ )
 	{
 		// peta porque estamos actualizando un hijo que se ha eliminado (una bala probablemente, hija del nodo raiz)
-		children[i]->Update(*this);
+		printf("%d\n", i);
+		fflush(0);
+		children[i]->Update(*this, delta);
 	}
 }
+
 Transform::Transform()
 {
 	world = local = cml::identity<4>();
 	position = rotation = local_position = local_rotation = cml::vector3f(0,0,0);
+	this->entity = NULL;
 }
 
 void Transform::Update2(const Transform& parent)

@@ -38,6 +38,7 @@ public:
 		isAlive = true;
 		controller = NULL;
 		type = Type::MOB;
+		this->transform.entity = this;
 	}
 
 	const char* TypeString()

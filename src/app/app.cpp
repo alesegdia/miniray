@@ -108,13 +108,13 @@ void App::UpdateActors( uint32_t delta )
 	// sceneRoot.Update(Transform());
 	for( size_t i = 0; i < actors.Size(); i++ )
 	{
-		actors[i]->transform.Update(Transform());
+		actors[i]->transform.Update(Transform(), delta);
 		actors[i]->Step( delta );
 	}
 
 	for( size_t i = 0; i < bullets.Size(); i++ )
 	{
-		bullets[i]->transform.Update(Transform());
+		bullets[i]->transform.Update(Transform(), delta);
 		bullets[i]->Step( delta );
 	}
 }
@@ -125,9 +125,9 @@ void App::Update(uint32_t delta)
 
 	SDL_WarpMouseInWindow( NULL, 400, 300 );
 
-	//this->sceneRoot.Update(Transform());
-	UpdateActors(delta);
-	efactory.UpdateRest(delta);
+	this->sceneRoot.Update(Transform(), delta);
+	//UpdateActors(delta);
+	//efactory.UpdateRest(delta);
 
 	physics.Step();
 	player->PhysicStep();
