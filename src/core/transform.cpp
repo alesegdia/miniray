@@ -27,9 +27,14 @@ void Transform::Update(const Transform& parent, uint32_t delta)
 	for( size_t i = 0; i < this->children.Size(); i++ )
 	{
 		// peta porque estamos actualizando un hijo que se ha eliminado (una bala probablemente, hija del nodo raiz)
-		printf("%d\n", i);
+		printf("%u\n", i);
 		fflush(0);
 		children[i]->Update(*this, delta);
+		if( !children[i]->entity->IsAlive() )
+		{
+			children.Remove(i);
+			i--;
+		}
 	}
 }
 

@@ -125,17 +125,17 @@ void App::Update(uint32_t delta)
 
 	SDL_WarpMouseInWindow( NULL, 400, 300 );
 
-	this->sceneRoot.Update(Transform(), delta);
 	//UpdateActors(delta);
 	//efactory.UpdateRest(delta);
 
+	this->sceneRoot.Update(Transform(), delta);
 	physics.Step();
 	player->PhysicStep();
 	player->Step( delta );
 	if( !player->IsAlive() ) Stop();
 
-	PurgeList(actors);
-	PurgeList(bullets);
+	//PurgeList(actors);
+	//PurgeList(bullets);
 
 	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
