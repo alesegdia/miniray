@@ -43,10 +43,10 @@ public:
 	void SpawnPickup( const cml::vector2f& pos );
 	Entity* SpawnPlayerWeapon( float x, float y );
 	Actor* SpawnEnemy( float x, float y );
-	void UpdateRest( uint32_t delta );
 	void RenderRest( Renderer& renderer );
 	
 	void CleanRest();
+	void CleanAll();
 
 
 private:

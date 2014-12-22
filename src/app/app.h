@@ -44,8 +44,6 @@ private:
 	Assets assets;
 	EntityFactory efactory;
 
-
-	float coord;
 	Plane plane;
 	Font font;
 
@@ -58,7 +56,6 @@ private:
 	void GenThat();
 	void PurgeList( DynamicArray<Entity*>& l );
 	void SetupPlayer();
-	void UpdateActors( uint32_t delta );
 
 	// RENDER
 	void RenderMiniText();

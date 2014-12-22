@@ -16,7 +16,6 @@ public:
 		size_t size = DynamicArray<T>::size;
 		data[index] = data[size-1];
 		this->size--;
-		printf("size: %d\n", size);
 	}
 
 private:

@@ -21,11 +21,6 @@ EntityFactory::EntityFactory ()
 
 EntityFactory::~EntityFactory ()
 {
-	for( int i = 0; i < this->rest.Size(); i++ )
-	{
-		if( this->rest[i]->controller != NULL ) delete this->rest[i]->controller;
-		delete this->rest[i];
-	}
 }
 
 void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Entity*>* actorlist, DynamicArray<Entity*>* bulletlist, Transform* sceneRoot )
@@ -86,6 +81,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	p->SetType( Entity::Type::PICKUP );
 	p->SetSprite( assets->Sprite(S3D_PICKSFW) );
 	bulletlist->Add(p);
+	this->sceneTree->AddChild(&(p->transform));
 }
 
 Actor* EntityFactory::SpawnEnemy( float x, float y )
@@ -100,26 +96,25 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
 	actorlist->Add( actor );
 	this->sceneTree->AddChild(&(actor->transform));
-	printf("Spawn me\n");
 
 	Entity* weapon;
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
-	weapon->transform.local_position[0] = -1; 
+	weapon->transform.local_position[0] = -1;
 	weapon->controller = new DebugTransformController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
-	weapon->transform.local_position[0] = 1; 
+	weapon->transform.local_position[0] = 1;
 	weapon->controller = new DebugTransformController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
-	weapon->transform.local_position[2] = -1; 
+	weapon->transform.local_position[2] = -1;
 	weapon->controller = new DebugTransformController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
@@ -130,8 +125,6 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	weapon->controller = new DebugTransformController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
-
-	printf("spawn my allies: %d\n", this->rest.Size());
 
 	return actor;
 }
@@ -152,24 +145,11 @@ EntityType* EntityFactory::AllocEntity( Transform* parent)
 	return e;
 }
 
-void EntityFactory::UpdateRest(uint32_t delta)
-{
-	printf("TEHSTEP");
-	for( int i = 0; i < rest.Size(); i++ )
-	{
-		rest[i]->Step( delta );
-	}
-
-}
-
 void EntityFactory::RenderRest( Renderer& renderer )
 {
 	for( int i = 0; i < rest.Size(); i++ )
 	{
-		// rest[i]->PhysicStep();
-		//rest[i]->transform.local_rotation[0] = cml::rad(180 + player->GetAngleY());
 		rest[i]->SetAngleY( - rest[i]->transform.local_rotation[0] );//+ cml::rad(180 + player->GetAngleY()) );
-		// rest[i]->transform.local_rotation[0] = -cml::rad(180 + player->GetAngleY());
 		renderer.RenderEntity( rest[i] );
 	}
 }
@@ -185,7 +165,15 @@ void EntityFactory::CleanRest()
 			i--;
 		}
 	}
+}
 
+void EntityFactory::CleanAll()
+{
+	for( int i = 0; i < this->rest.Size(); i++ )
+	{
+		if( this->rest[i]->controller != NULL ) delete this->rest[i]->controller;
+		delete this->rest[i];
+	}
 }
 
 

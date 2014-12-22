@@ -62,7 +62,6 @@ void App::Setup(int argc, char** argv)
 	efactory.Prepare( &physics, &assets, &actors, &bullets, &sceneRoot );
 
 
-	int spawned = 0;
 	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
 	{
 		int lim = rng.uniform(6,11);
@@ -70,18 +69,10 @@ void App::Setup(int argc, char** argv)
 		{
 			cml::vector2i enemypos = mapdata.rooms[i].RandomPosition( rng, 1 );
 			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
-			spawned++;
 		}
 	}
-	printf("total spawned: %d\n", spawned);
-	/*
-			cml::vector2i enemypos = mapdata.rooms[1].RandomPosition( rng );
-			efactory.SpawnEnemy( enemypos[0], enemypos[1] );
-	*/
 
 	SetupPlayer();
-
-	coord = 0;
 
 	EntityController::Prepare( &efactory, this->player );
 
@@ -106,37 +97,19 @@ void App::PurgeList( DynamicArray<Entity*>& l )
 	}
 }
 
-void App::UpdateActors( uint32_t delta )
-{
-	// sceneRoot.Update(Transform());
-	for( size_t i = 0; i < actors.Size(); i++ )
-	{
-		actors[i]->transform.Update(Transform(), delta);
-		actors[i]->Step( delta );
-	}
-
-	for( size_t i = 0; i < bullets.Size(); i++ )
-	{
-		bullets[i]->transform.Update(Transform(), delta);
-		bullets[i]->Step( delta );
-	}
-}
-
-
 void App::Update(uint32_t delta)
 {
 
 	SDL_WarpMouseInWindow( NULL, 400, 300 );
 
-	//UpdateActors(delta);
-	//efactory.UpdateRest(delta);
-
+	// Update everything
 	this->sceneRoot.Update(Transform(), delta);
 	physics.Step();
 	player->PhysicStep();
 	player->Step( delta );
 	if( !player->IsAlive() ) Stop();
 
+	// Clean dead entities
 	this->sceneRoot.UpdateClean();
 	this->efactory.CleanRest();
 	PurgeList(actors);
@@ -182,7 +155,6 @@ void App::Render()
 		actors[i]->ClearVelocity();
 		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		Actor* ac = static_cast<Actor*>( actors[i] );
-		//renderer.RenderEntity( actors[i] );
 		renderer.RenderActor( ac );
 	}
 
@@ -260,5 +232,11 @@ void App::Cleanup()
 		if( actors[i]->controller ) delete actors[i]->controller;
 		delete actors[i];
 	}
+	for( size_t i = 0; i < this->bullets.Size(); i++ )
+	{
+		if( bullets[i]->controller ) delete bullets[i]->controller;
+		delete bullets[i];
+	}
+	this->efactory.CleanAll();
 	physics.Cleanup();
 }
