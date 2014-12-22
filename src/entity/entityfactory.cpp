@@ -6,7 +6,7 @@
 #include "../core/dynamicarray.h"
 #include "../physics/physics.h"
 #include "controller/bulletcontroller.h"
-#include "controller/debugtransformcontroller.h"
+#include "controller/moboptioncontroller.h"
 #include "controller/mobaicontroller.h"
 #include "controller/playerhumancontroller.h"
 #include "bullet.h"
@@ -101,28 +101,28 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[0] = -1;
-	weapon->controller = new DebugTransformController();
+	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[0] = 1;
-	weapon->controller = new DebugTransformController();
+	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[2] = -1;
-	weapon->controller = new DebugTransformController();
+	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[2] = 1;
-	weapon->controller = new DebugTransformController();
+	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
 
