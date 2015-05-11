@@ -71,7 +71,7 @@ public:
 			c[i].tx = (float)ox / (float)w;
 			c[i].ty = 0;
 
-			rowh = std::max( rowh, g->bitmap.rows );
+			rowh = std::max( rowh, (int) g->bitmap.rows );
 			ox += g->bitmap.width+1;
 		}
 
