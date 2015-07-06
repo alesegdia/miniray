@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "context.h"
+#include <glrayfw/render/context.h>
 #include "Texture.h"
 #include "sprite3d.h"
 #include "../constants.h"

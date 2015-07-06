@@ -17,7 +17,7 @@
  */
 
 #include "Texture.h"
-#include "context.h"
+#include <glrayfw/render/context.h>
 #include <stdexcept>
 
 using namespace tdogl;

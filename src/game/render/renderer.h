@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "../render/sdlcontext.h"
+#include <glrayfw/render/sdlcontext.h>
 
 #include <cml/cml.h>
-#include "context.h"
+#include <glrayfw/render/context.h>
 #include "Texture.h"
 #include "quad.h"
 #include "block.h"

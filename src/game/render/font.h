@@ -5,7 +5,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "program.h"
-#include "context.h"
+#include <glrayfw/render/context.h>
 
 class Font {
 public:

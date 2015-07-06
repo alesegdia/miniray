@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "../core/fpscounter.h"
-#include "sdlglapp.h"
+#include <glrayfw/core/fpscounter.h>
+#include <glrayfw/app/sdlglapp.h>
 #include "../map/map.h"
 #include "../render/camera.h"
 #include "../render/block.h"
