@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../../core/dynamicarray.h"
+#include <glrayfw/core/dynamicarray.h>
 
 typedef struct
 {

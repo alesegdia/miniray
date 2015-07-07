@@ -1,6 +1,6 @@
 
 #include "mapgen.h"
-#include "../core/random.h"
+#include <glrayfw/core/random.h>
 #include "mapdata.h"
 
 

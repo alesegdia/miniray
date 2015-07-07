@@ -2,8 +2,8 @@
 #pragma once
 
 #include <glrayfw/render/context.h>
-#include "Texture.h"
-#include "sprite3d.h"
+#include <glrayfw/render/Texture.h>
+#include <glrayfw/render/sprite3d.h>
 #include "../constants.h"
 
 const int S3D_BICHO = 		0;

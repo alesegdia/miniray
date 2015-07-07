@@ -1,18 +1,19 @@
 
 #include "app.h"
-#include "../render/block.h"
+#include <glrayfw/render/block.h>
 #include "../texgen/canvas.h"
 #include "../texgen/color.h"
 #include "../texgen/texgen.h"
-#include "../core/matrix2d.h"
+#include <glrayfw/core/matrix2d.h>
 #include "../map/mapgen.h"
-#include "../entity/entity.h"
+#include <glrayfw/entity/entity.h>
 #include "../entity/player.h"
-#include "../physics/layers.h"
+#include <glrayfw/physics/layers.h>
 #include "../entity/controller/playerhumancontroller.h"
-#include "../entity/controller/entitycontroller.h"
+#include <glrayfw/entity/controller/entitycontroller.h>
 #include "../entity/controller/mobaicontroller.h"
-#include "../core/random.h"
+#include <glrayfw/core/random.h>
+#include "../physics/contactlistener.h"
 
 App::App() :
 	SDLGLApp( 800, 600 )
@@ -37,7 +38,7 @@ void App::Setup(int argc, char** argv)
 	printf("SEED: %d\n",sid);
 	rng.seed( sid );
 
-	physics.Init( argc, argv );
+	physics.Init( argc, argv, new ContactListener() );
 	renderer.Prepare( gl, winWidth, winHeight );
 	assets.Prepare( gl );
 	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
@@ -74,7 +75,7 @@ void App::Setup(int argc, char** argv)
 
 	SetupPlayer();
 
-	EntityController::Prepare( &efactory, this->player );
+	MobAIController::Prepare( this->player, &(this->efactory) );
 
 }
 
@@ -154,8 +155,8 @@ void App::Render()
 		actors[i]->PhysicStep();
 		actors[i]->ClearVelocity();
 		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
-		Actor* ac = static_cast<Actor*>( actors[i] );
-		renderer.RenderActor( ac );
+		Pawn* ac = static_cast<Pawn*>( actors[i] );
+		renderer.RenderPawn( ac );
 	}
 
 	for( size_t i = 0; i < bullets.Size(); i++ )

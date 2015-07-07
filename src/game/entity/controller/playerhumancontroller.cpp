@@ -1,14 +1,15 @@
 
 #include "playerhumancontroller.h"
 #include "../player.h"
-#include "../entity.h"
+#include <glrayfw/entity/entity.h>
 #include "../script/playerweapon.h"
 #include "../script/helpers.h"
 #include "../entityfactory.h"
 #include <Box2D/Box2D.h>
 
-PlayerHumanController::PlayerHumanController ()
+PlayerHumanController::PlayerHumanController (EntityFactory* efactory)
 {
+	this->entityfactory = efactory;
 	forward = back = left = right = shoot = shift = false;
 }
 

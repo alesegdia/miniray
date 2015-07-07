@@ -1,6 +1,6 @@
 
 #include "texgen.h"
-#include "../core/random.h"
+#include <glrayfw/core/random.h>
 #include "color.h"
 
 namespace rzfx

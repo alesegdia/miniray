@@ -4,7 +4,7 @@
 #include <glrayfw/render/sdlcontext.h>
 
 #include <cml/cml.h>
-#include <glrayfw/render/context.h>
+#include "context.h"
 #include "Texture.h"
 #include "quad.h"
 #include "block.h"
@@ -12,10 +12,9 @@
 #include "program.h"
 #include "../entity/entity.h"
 #include "plane.h"
-#include "../constants.h"
 #include "../core/random.h"
 #include "font.h"
-#include "../entity/actor.h"
+#include "../entity/pawn.h"
 #include "../map/map.h"
 
 
@@ -24,6 +23,7 @@ class Renderer
 
 private:
 
+	const float PLAYER_VISION_RANGE = 17.f;
 	cml::matrix44f_c view;
 	cml::matrix44f_c projection;
 
@@ -262,7 +262,7 @@ public:
 		gl->BindVertexArray(0);
 	}
 
-	void RenderActor( Actor* actor )
+	void RenderPawn( Pawn* actor )
 	{
 		gl->UseProgram( quadprog.Object() );
 		Sprite3D* sprite = actor->GetSprite();

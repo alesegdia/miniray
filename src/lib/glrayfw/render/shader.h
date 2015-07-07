@@ -2,7 +2,7 @@
 #ifndef __SHAD__
 #define __SHAD__
 
-#include <glrayfw/render/context.h>
+#include "context.h"
 #include "glcorearb.h"
 char* filetobuf(const char *file);
 

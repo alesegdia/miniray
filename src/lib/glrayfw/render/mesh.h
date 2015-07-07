@@ -2,7 +2,7 @@
 #pragma once
 
 #include "glcorearb.h"
-#include <glrayfw/render/context.h>
+#include "context.h"
 #include <cml/cml.h>
 
 class Mesh

@@ -2,7 +2,7 @@
 #pragma once
 
 #include "../bullet.h"
-#include "entitycontroller.h"
+#include <glrayfw/entity/controller/entitycontroller.h>
 
 class BulletController : public EntityController {
 public:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "map.h"
+#include <glrayfw/map/map.h>
 #include "mapdata.h"
 
 namespace mapgen

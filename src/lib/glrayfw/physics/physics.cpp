@@ -2,15 +2,15 @@
 #include "physics.h"
 #include "layers.h"
 #include <cstdint>
-#include "../entity/player.h"
 
-void Physics::Init( int argc, char** argv )
+void Physics::Init( int argc, char** argv, b2ContactListener* b2cl )
 {
 	B2_NOT_USED(argc);
 	B2_NOT_USED(argv);
 
 	world = new b2World(b2Vec2(0.f,0.f));
-	world->SetContactListener(&contactlistener);
+	this->contactlistener = b2cl;
+	world->SetContactListener(contactlistener);
 }
 
 void Physics::Cleanup()
@@ -112,6 +112,7 @@ class MyQueryCallback : public b2QueryCallback
 
 int MyQueryCallback::numbodies = 0;
 
+/*
 void Physics::Stress(Player* p)
 {
 	MyQueryCallback::numbodies = 0;
@@ -128,3 +129,4 @@ void Physics::Stress(Player* p)
 	}
 	printf("KERI! %d\n", MyQueryCallback::numbodies);
 }
+*/

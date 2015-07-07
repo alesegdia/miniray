@@ -5,7 +5,7 @@
 #include "../player.h"
 #include "../../constants.h"
 #include "../entityfactory.h"
-#include "../../physics/layers.h"
+#include <glrayfw/physics/layers.h>
 #include "weapon.h"
 
 void CheckHealth( Actor* actor )

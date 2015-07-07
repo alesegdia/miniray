@@ -4,18 +4,18 @@
 
 #include <glrayfw/core/fpscounter.h>
 #include <glrayfw/app/sdlglapp.h>
-#include "../map/map.h"
-#include "../render/camera.h"
-#include "../render/block.h"
-#include "../render/Bitmap.h"
-#include "../render/Texture.h"
-#include "../render/renderer.h"
+#include <glrayfw/map/map.h>
+#include <glrayfw/render/camera.h>
+#include <glrayfw/render/block.h>
+#include <glrayfw/render/Bitmap.h>
+#include <glrayfw/render/Texture.h>
+#include <glrayfw/render/renderer.h>
 #include "../render/assets.h"
 #include "../texgen/canvas.h"
-#include "../physics/physics.h"
-#include "../render/plane.h"
-#include "../render/font.h"
-#include "../core/random.h"
+#include <glrayfw/physics/physics.h>
+#include <glrayfw/render/plane.h>
+#include <glrayfw/render/font.h>
+#include <glrayfw/core/random.h>
 #include "../entity/entityfactory.h"
 #include "../map/mapdata.h"
 

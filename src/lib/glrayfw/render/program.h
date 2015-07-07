@@ -4,7 +4,7 @@
  * mirar en la cache, así tb podemos evitar el gl aqui
  */
 #pragma once
-#include <glrayfw/render/context.h>
+#include "context.h"
 #include "shader.h"
 class Program
 {

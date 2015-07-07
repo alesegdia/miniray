@@ -3,14 +3,15 @@
 
 #include <SDL2/SDL.h>
 #include <cml/cml.h>
-#include "entitycontroller.h"
+#include <glrayfw/entity/controller/entitycontroller.h>
 
 class Entity;
+class EntityFactory;
 
 
 class PlayerHumanController : public EntityController {
 public:
-	PlayerHumanController ();
+	PlayerHumanController (EntityFactory* efactory);
 	virtual ~PlayerHumanController ();
 
 	int HandleEvent( SDL_Event& event );
@@ -19,6 +20,7 @@ public:
 
 private:
 
+	EntityFactory* entityfactory;
 	bool forward, back, left, right;
 	cml::vector2f axis, rotation_offset;
 	bool shift, shoot;

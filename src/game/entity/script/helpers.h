@@ -2,7 +2,7 @@
 #pragma once
 
 #include "../actor.h"
-#include "../../core/random.h"
+#include <glrayfw/core/random.h>
 
 class EntityFactory;
 class Weapon;

@@ -1,6 +1,6 @@
 
 #include "contactlistener.h"
-#include "../entity/entity.h"
+#include <glrayfw/entity/entity.h>
 #include "../entity/actor.h"
 #include "../entity/player.h"
 #include "../entity/pickup.h"

@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include "../render/Bitmap.h"
+#include <glrayfw/render/Bitmap.h>
 #include "color.h"
 
-#include "../core/matrix2d.h"
-#include "../core/random.h"
+#include <glrayfw/core/matrix2d.h>
+#include <glrayfw/core/random.h>
 
 Color HSLtoRGB(Color hsl);
 

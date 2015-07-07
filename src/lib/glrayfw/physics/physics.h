@@ -4,7 +4,6 @@
 #include <Box2D/Box2D.h>
 
 #include "layers.h"
-#include "contactlistener.h"
 #include "../core/random.h"
 #include <cstdint>
 
@@ -22,7 +21,7 @@ private:
 	RNG rng;
 
 	b2World* world;
-	ContactListener contactlistener;
+	b2ContactListener* contactlistener;
 
 
 
@@ -34,7 +33,7 @@ public:
 	static const uint16_t EBULLET_MASK = CollisionLayer::MAP | CollisionLayer::PLAYER; // | CollisionLayer::ALLY
 	static const uint16_t PICKUP_MASK = CollisionLayer::PLAYER; // | CollisionLayer::ALLY
 
-	void Init( int argc, char** argv );
+	void Init( int argc, char** argv, b2ContactListener* b2cl );
 	void Cleanup();
 	b2Body* CreateBulletBody( float x, float y, CollisionLayer category, uint16_t mask );
 	b2Body* CreateSphereBody( float x, float y, CollisionLayer category = CollisionLayer::ENEMY, uint16_t mask = MOB_MASK );

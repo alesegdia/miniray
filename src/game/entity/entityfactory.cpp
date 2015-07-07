@@ -1,16 +1,16 @@
 
 #include "entityfactory.h"
-#include "entity.h"
+#include <glrayfw/entity/entity.h>
 #include "actor.h"
 #include "mob.h"
-#include "../core/dynamicarray.h"
-#include "../physics/physics.h"
+#include <glrayfw/core/dynamicarray.h>
+#include <glrayfw/physics/physics.h>
 #include "controller/bulletcontroller.h"
 #include "controller/moboptioncontroller.h"
 #include "controller/mobaicontroller.h"
 #include "controller/playerhumancontroller.h"
 #include "bullet.h"
-#include "../render/sprite3d.h"
+#include <glrayfw/render/sprite3d.h>
 #include "../render/assets.h"
 #include "pickup.h"
 
@@ -41,7 +41,7 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
-	player->SetController( new PlayerHumanController() );
+	player->SetController( new PlayerHumanController(this) );
 	player->hp.current = 200;
 	player->hp.total = 200;
 

@@ -19,7 +19,7 @@
 #pragma once
 
 #include "Bitmap.h"
-#include <glrayfw/render/context.h>
+#include "context.h"
 
 namespace tdogl {
 

@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "../core/random.h"
-#include "cml/cml.h"
+#include <glrayfw/core/random.h>
+#include <cml/cml.h>
 
 namespace mapgen
 {

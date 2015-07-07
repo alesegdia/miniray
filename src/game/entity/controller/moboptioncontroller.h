@@ -1,6 +1,6 @@
 #pragma once
-#include "entitycontroller.h"
-#include "../entity.h"
+#include <glrayfw/entity/controller/entitycontroller.h>
+#include <glrayfw/entity/entity.h>
 
 class MobOptionController : public EntityController {
 public:

@@ -2,9 +2,9 @@
 #pragma once
 
 #include <cml/cml.h>
-#include "../core/dynamicarray.h"
-#include "../physics/layers.h"
-#include "../render/renderer.h"
+#include <glrayfw/core/dynamicarray.h>
+#include <glrayfw/physics/layers.h>
+#include <glrayfw/render/renderer.h>
 
 class Entity;
 class Player;

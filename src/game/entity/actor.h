@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "entity.h"
+#include <glrayfw/entity/pawn.h>
 #include "script/weapon.h"
 
 class ActorController;

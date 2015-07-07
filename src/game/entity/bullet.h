@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "entity.h"
+#include <glrayfw/entity/entity.h>
 #include "actor.h"
 
 class Bullet : public Entity {
