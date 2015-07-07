@@ -9,8 +9,8 @@ project "glrayfw"
   language "C++"
   buildoptions {"-std=c++11"}
   files {
-    "src/lib/**.cpp",
-    "src/lib/**.h"
+    "lib/glrayfw/glrayfw/**.cpp",
+    "lib/glrayfw/glrayfw/**.h",
   }
 project "miniray"
   language "C++"
@@ -28,8 +28,8 @@ project "miniray"
 	flags	{ "Optimize" }
 	targetdir "bin/release64"
   configuration { "x32" }
-	includedirs { "src/lib", "include32", "/usr/include/freetype2" }
+	includedirs { "lib/glrayfw", "include32", "/usr/include/freetype2" }
 	linkoptions {  }
   configuration { "x64" }
-	includedirs { "src/lib", "include64,include","/usr/include/freetype2" }
+	includedirs { "lib/glrayfw", "include64,include","/usr/include/freetype2" }
 	linkoptions { "-ftest-coverage", "-fprofile-arcs" }
