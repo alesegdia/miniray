@@ -1,0 +1,3 @@
+[submodule "lib/glrayfw"]
+	path = lib/glrayfw
+	url = git@github.com:alesegdia/glrayfw.git
