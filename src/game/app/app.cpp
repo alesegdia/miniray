@@ -88,7 +88,7 @@ void App::PurgeList( DynamicArray<Entity*>& l )
 		if( !l[i]->IsAlive() )
 		{
 			l[i]->Cleanup();
-			if( l[i]->controller != NULL ) delete l[i]->controller;
+			//if( l[i]->controller != NULL ) delete l[i]->controller;
 			//l[i]->GetPhysicBody()->GetWorld()->DestroyBody(l[i]->GetPhysicBody());
 			delete l[i];
 			l[i] = l[l.Size()-1];
@@ -230,12 +230,12 @@ void App::Cleanup()
 	renderer.Dispose( );
 	for( size_t i = 0; i < actors.Size(); i++ )
 	{
-		if( actors[i]->controller ) delete actors[i]->controller;
+		//if( actors[i]->controller ) delete actors[i]->controller;
 		delete actors[i];
 	}
 	for( size_t i = 0; i < this->bullets.Size(); i++ )
 	{
-		if( bullets[i]->controller ) delete bullets[i]->controller;
+		//if( bullets[i]->controller ) delete bullets[i]->controller;
 		delete bullets[i];
 	}
 	this->efactory.CleanAll();

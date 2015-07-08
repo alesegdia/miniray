@@ -171,7 +171,7 @@ void EntityFactory::CleanAll()
 {
 	for( int i = 0; i < this->rest.Size(); i++ )
 	{
-		if( this->rest[i]->controller != NULL ) delete this->rest[i]->controller;
+		//if( this->rest[i]->controller != NULL ) delete this->rest[i]->controller;
 		delete this->rest[i];
 	}
 }
