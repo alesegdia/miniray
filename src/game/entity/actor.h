@@ -4,9 +4,7 @@
 #include <glrayfw/entity/pawn.h>
 #include "script/weapon.h"
 
-class ActorController;
-
-class Actor : public Entity
+class Actor : public Pawn
 {
 
 public:
