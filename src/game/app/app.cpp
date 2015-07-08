@@ -163,6 +163,7 @@ void App::Render()
 
 	efactory.RenderRest(renderer);
 
+	gl->Disable(GL_DEPTH_TEST);
 	RenderWeapon();
 
 	RenderMiniText();
