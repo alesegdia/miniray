@@ -39,7 +39,7 @@ void App::Setup(int argc, char** argv)
 	rng.seed( sid );
 
 	physics.Init( argc, argv, new ContactListener() );
-	renderer.Prepare( gl, winWidth, winHeight );
+	renderer.Prepare( gl, &cam, winWidth, winHeight );
 	assets.Prepare( gl );
 	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
 
@@ -124,18 +124,13 @@ void App::Update(uint32_t delta)
 
 void App::Render()
 {
-	renderer.SetViewerPos( player->transform.position );
 
 	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
 	cam.SetPosition(cml::vector3f(ppos.x, 0, ppos.y));
 	cam.SetHorizontalAngle(-player->GetAngleY());
 
-	// SETUP MVP MATRICES
-	renderer.BindPostFBO();
-	gl->Enable(GL_DEPTH_TEST);
-	renderer.SetVP( cam.GetView(), cam.GetProjection() );
-	renderer.RenderClear();
+	renderer.SetupRender();
 
 	cml::matrix44f_c model = cml::identity<4>();
 	cml::matrix_rotation_world_x( model, cml::rad(90.f) );
