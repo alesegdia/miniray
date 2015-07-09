@@ -18,7 +18,6 @@ class EntityFactory {
 	
 private:
 	
-	UnorderedDynamicArray<Entity*> rest;
 	Player* player;
 
 public:
@@ -43,10 +42,6 @@ public:
 	void SpawnPickup( const cml::vector2f& pos );
 	Entity* SpawnPlayerWeapon( float x, float y );
 	Actor* SpawnEnemy( float x, float y );
-	void RenderRest( Renderer& renderer );
-	
-	void CleanRest();
-	void CleanAll();
 
 
 private:

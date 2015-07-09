@@ -112,7 +112,6 @@ void App::Update(uint32_t delta)
 
 	// Clean dead entities
 	this->sceneRoot.UpdateClean();
-	this->efactory.CleanRest();
 	PurgeList(actors);
 	PurgeList(bullets);
 
@@ -160,8 +159,6 @@ void App::Render()
 		bullets[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		renderer.RenderEntity( bullets[i] );
 	}
-
-	efactory.RenderRest(renderer);
 
 	gl->Disable(GL_DEPTH_TEST);
 	RenderWeapon();
@@ -234,6 +231,5 @@ void App::Cleanup()
 		//if( bullets[i]->controller ) delete bullets[i]->controller;
 		delete bullets[i];
 	}
-	this->efactory.CleanAll();
 	physics.Cleanup();
 }

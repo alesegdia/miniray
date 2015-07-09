@@ -103,28 +103,28 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	weapon->transform.local_position[0] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->rest.Add(weapon);
+	this->bulletlist->Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[0] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->rest.Add(weapon);
+	this->bulletlist->Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[2] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->rest.Add(weapon);
+	this->bulletlist->Add(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[2] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->rest.Add(weapon);
+	this->bulletlist->Add(weapon);
 	return actor;
 }
 
@@ -142,37 +142,6 @@ EntityType* EntityFactory::AllocEntity( Transform* parent)
 	EntityType* e = new EntityType();
 	// parent->AddChild( &(e->transform) );
 	return e;
-}
-
-void EntityFactory::RenderRest( Renderer& renderer )
-{
-	for( int i = 0; i < rest.Size(); i++ )
-	{
-		rest[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
-		renderer.RenderEntity( rest[i] );
-	}
-}
-
-void EntityFactory::CleanRest()
-{
-	for( int i = 0; i < rest.Size(); i++ )
-	{
-		if( !rest[i]->IsAlive() )
-		{
-			delete rest[i];
-			rest.Remove(i);
-			i--;
-		}
-	}
-}
-
-void EntityFactory::CleanAll()
-{
-	for( int i = 0; i < this->rest.Size(); i++ )
-	{
-		//if( this->rest[i]->controller != NULL ) delete this->rest[i]->controller;
-		delete this->rest[i];
-	}
 }
 
 
