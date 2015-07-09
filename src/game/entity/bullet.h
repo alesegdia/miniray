@@ -10,6 +10,7 @@ public:
 		this->type = Entity::Type::BULLET;
 	}
 	Actor* owner;
+	b2Vec2 direction;
 	float dmg;
 	int effect;
 	int element;

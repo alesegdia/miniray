@@ -27,8 +27,7 @@ public:
 
 	void Prepare(
 			Physics* physics, Assets* assets,
-			DynamicArray<Entity*>* actorlist,
-			DynamicArray<Entity*>* bulletlist,
+			DynamicArray<Entity*>* entityList,
 			Transform* sceneRoot
 		);
 
@@ -46,8 +45,7 @@ public:
 
 private:
 
-	DynamicArray<Entity*>* actorlist;
-	DynamicArray<Entity*>* bulletlist;
+	DynamicArray<Entity*>* entityList;
 	Physics* physics;
 	Assets* assets;
 	Transform* sceneTree;

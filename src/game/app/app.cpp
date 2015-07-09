@@ -60,8 +60,7 @@ void App::Setup(int argc, char** argv)
 	cam.SetHorizontalAngle( 90 );
 
 	plane.Prepare(gl,300,300,4,4);
-	efactory.Prepare( &physics, &assets, &actors, &bullets, &sceneRoot );
-
+	efactory.Prepare( &physics, &assets, &entityList, &sceneRoot );
 
 	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
 	{
@@ -112,8 +111,7 @@ void App::Update(uint32_t delta)
 
 	// Clean dead entities
 	this->sceneRoot.UpdateClean();
-	PurgeList(actors);
-	PurgeList(bullets);
+	PurgeList(entityList);
 
 	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
@@ -144,19 +142,12 @@ void App::Render()
 	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
 	renderer.BatchSprite3D();
 
-	for( size_t i = 0; i < actors.Size(); i++ )
+	for( size_t i = 0; i < entityList.Size(); i++ )
 	{
-		actors[i]->PhysicStep();
-		actors[i]->ClearVelocity();
-		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
-		renderer.RenderEntity( actors[i] );
-	}
-
-	for( size_t i = 0; i < bullets.Size(); i++ )
-	{
-		bullets[i]->PhysicStep();
-		bullets[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
-		renderer.RenderEntity( bullets[i] );
+		entityList[i]->PhysicStep();
+		entityList[i]->ClearVelocity();
+		entityList[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
+		renderer.RenderEntity( entityList[i] );
 	}
 
 	gl->Disable(GL_DEPTH_TEST);
@@ -220,15 +211,10 @@ void App::Cleanup()
 {
 	plane.Dispose(gl);
 	renderer.Dispose( );
-	for( size_t i = 0; i < actors.Size(); i++ )
+	for( size_t i = 0; i < entityList.Size(); i++ )
 	{
-		//if( actors[i]->controller ) delete actors[i]->controller;
-		delete actors[i];
-	}
-	for( size_t i = 0; i < this->bullets.Size(); i++ )
-	{
-		//if( bullets[i]->controller ) delete bullets[i]->controller;
-		delete bullets[i];
+		//if( entityList[i]->controller ) delete entityList[i]->controller;
+		delete entityList[i];
 	}
 	physics.Cleanup();
 }

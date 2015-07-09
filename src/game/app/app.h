@@ -37,8 +37,7 @@ private:
 	mapgen::MapData mapdata;					// map generation data
 	Player* player;								// player entity
 	PlayerHumanController* playercontroller;	// player controller for input stuff
-	DynamicArray<Entity*> actors;				// list of actors
-	DynamicArray<Entity*> bullets;				// list of bullets
+	DynamicArray<Entity*> entityList;			// list of entityList
 
 	// game
 	Assets assets;
