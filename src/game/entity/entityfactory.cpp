@@ -125,7 +125,6 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	this->rest.Add(weapon);
-
 	return actor;
 }
 
@@ -149,7 +148,7 @@ void EntityFactory::RenderRest( Renderer& renderer )
 {
 	for( int i = 0; i < rest.Size(); i++ )
 	{
-		rest[i]->SetAngleY( - rest[i]->transform.local_rotation[0] );//+ cml::rad(180 + player->GetAngleY()) );
+		rest[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
 		renderer.RenderEntity( rest[i] );
 	}
 }
