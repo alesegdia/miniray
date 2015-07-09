@@ -149,8 +149,7 @@ void App::Render()
 		actors[i]->PhysicStep();
 		actors[i]->ClearVelocity();
 		actors[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
-		Pawn* ac = static_cast<Pawn*>( actors[i] );
-		renderer.RenderPawn( ac );
+		renderer.RenderEntity( actors[i] );
 	}
 
 	for( size_t i = 0; i < bullets.Size(); i++ )
