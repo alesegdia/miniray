@@ -8,6 +8,7 @@ project "glrayfw"
   kind "StaticLib"
   language "C++"
   buildoptions {"-std=c++11"}
+  includedirs {"include64,include", "/usr/include/freetype2"}
   files {
     "lib/glrayfw/glrayfw/**.cpp",
     "lib/glrayfw/glrayfw/**.h",
