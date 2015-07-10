@@ -40,6 +40,8 @@ void App::Setup(int argc, char** argv)
 
 	physics.Init( argc, argv, new ContactListener() );
 	renderer.Prepare( gl, &cam, winWidth, winHeight );
+	emanager.Prepare(&renderer);
+
 	assets.Prepare( gl );
 	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
 
@@ -60,7 +62,7 @@ void App::Setup(int argc, char** argv)
 	cam.SetHorizontalAngle( 90 );
 
 	plane.Prepare(gl,300,300,4,4);
-	efactory.Prepare( &physics, &assets, &entityList, &sceneRoot );
+	efactory.Prepare( &physics, &assets, &emanager, &sceneRoot );
 
 	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
 	{
@@ -78,25 +80,6 @@ void App::Setup(int argc, char** argv)
 
 }
 
-
-
-void App::PurgeList( DynamicArray<Entity*>& l )
-{
-	for( size_t i = 0; i < l.Size(); i++ )
-	{
-		if( !l[i]->IsAlive() )
-		{
-			l[i]->Cleanup();
-			//if( l[i]->controller != NULL ) delete l[i]->controller;
-			//l[i]->GetPhysicBody()->GetWorld()->DestroyBody(l[i]->GetPhysicBody());
-			delete l[i];
-			l[i] = l[l.Size()-1];
-			l.RemoveLast(); // dealloc!! se olvida?
-			i--;
-		}
-	}
-}
-
 void App::Update(uint32_t delta)
 {
 
@@ -111,7 +94,7 @@ void App::Update(uint32_t delta)
 
 	// Clean dead entities
 	this->sceneRoot.UpdateClean();
-	PurgeList(entityList);
+	this->emanager.ClearDeadEntities();
 
 	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
@@ -141,21 +124,12 @@ void App::Render()
 
 	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
 	renderer.BatchSprite3D();
-
-	for( size_t i = 0; i < entityList.Size(); i++ )
-	{
-		entityList[i]->PhysicStep();
-		entityList[i]->ClearVelocity();
-		entityList[i]->SetAngleY( cml::rad(180 + player->GetAngleY()) );
-		renderer.RenderEntity( entityList[i] );
-	}
+	emanager.RenderEntities( player->GetAngleY() );
 
 	gl->Disable(GL_DEPTH_TEST);
 	RenderWeapon();
-
 	RenderMiniText();
 	RenderPlayerHP();
-
 	renderer.RenderFinish( mainWindow, deltatime );
 
 }
@@ -211,10 +185,6 @@ void App::Cleanup()
 {
 	plane.Dispose(gl);
 	renderer.Dispose( );
-	for( size_t i = 0; i < entityList.Size(); i++ )
-	{
-		//if( entityList[i]->controller ) delete entityList[i]->controller;
-		delete entityList[i];
-	}
+	emanager.ClearAllEntities();
 	physics.Cleanup();
 }

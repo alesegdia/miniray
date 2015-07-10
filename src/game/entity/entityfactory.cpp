@@ -13,6 +13,7 @@
 #include <glrayfw/render/sprite3d.h>
 #include "../render/assets.h"
 #include "pickup.h"
+#include <glrayfw/entity/entitymanager.h>
 
 EntityFactory::EntityFactory ()
 {
@@ -23,12 +24,12 @@ EntityFactory::~EntityFactory ()
 {
 }
 
-void EntityFactory::Prepare( Physics* physics, Assets* assets, DynamicArray<Entity*>* entityList, Transform* sceneRoot )
+void EntityFactory::Prepare( Physics* physics, Assets* assets, EntityManager* emanager, Transform* sceneRoot )
 {
-	this->entityList = entityList;
 	this->physics = physics;
 	this->assets = assets;
 	this->sceneTree = sceneRoot;
+	this->emanager = emanager;
 }
 
 
@@ -68,7 +69,7 @@ void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& 
 	bu->direction = b2Vec2( dir[0], dir[1] );
 	ent->SetPhysicBody(b);
 	ent->SetSprite(sprite);
-	entityList->Add(ent);
+	emanager->AddEntity(ent);
 	this->sceneTree->AddChild(&(bu->transform));
 }
 
@@ -79,7 +80,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	p->controller = NULL;
 	p->SetType( Entity::Type::PICKUP );
 	p->SetSprite( assets->Sprite(S3D_PICKSFW) );
-	entityList->Add(p);
+	emanager->AddEntity(p);
 	this->sceneTree->AddChild(&(p->transform));
 }
 
@@ -93,7 +94,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->controller = new MobAIController();
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
-	entityList->Add( actor );
+	emanager->AddEntity( actor );
 	this->sceneTree->AddChild(&(actor->transform));
 
 	Entity* weapon;
@@ -102,28 +103,28 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	weapon->transform.local_position[0] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->entityList->Add(weapon);
+	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[0] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->entityList->Add(weapon);
+	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[2] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->entityList->Add(weapon);
+	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
 	weapon->transform.local_position[2] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
-	this->entityList->Add(weapon);
+	emanager->AddEntity(weapon);
 	return actor;
 }
 

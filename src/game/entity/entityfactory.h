@@ -13,6 +13,7 @@ class Sprite3D;
 class Assets;
 class Actor;
 class Transform;
+class EntityManager;
 
 class EntityFactory {
 	
@@ -27,7 +28,7 @@ public:
 
 	void Prepare(
 			Physics* physics, Assets* assets,
-			DynamicArray<Entity*>* entityList,
+			EntityManager* emanager,
 			Transform* sceneRoot
 		);
 
@@ -45,10 +46,10 @@ public:
 
 private:
 
-	DynamicArray<Entity*>* entityList;
 	Physics* physics;
 	Assets* assets;
 	Transform* sceneTree;
+	EntityManager* emanager;
 
 
 };

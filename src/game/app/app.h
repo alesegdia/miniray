@@ -18,6 +18,7 @@
 #include <glrayfw/core/random.h>
 #include "../entity/entityfactory.h"
 #include "../map/mapdata.h"
+#include <glrayfw/entity/entitymanager.h>
 
 class Player;
 class PlayerHumanController;
@@ -37,7 +38,7 @@ private:
 	mapgen::MapData mapdata;					// map generation data
 	Player* player;								// player entity
 	PlayerHumanController* playercontroller;	// player controller for input stuff
-	DynamicArray<Entity*> entityList;			// list of entityList
+	EntityManager emanager;
 
 	// game
 	Assets assets;
@@ -53,7 +54,6 @@ private:
 	void HandleCamInput();
 
 	void GenThat();
-	void PurgeList( DynamicArray<Entity*>& l );
 	void SetupPlayer();
 
 	// RENDER
