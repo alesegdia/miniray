@@ -61,7 +61,6 @@ void App::Setup(int argc, char** argv)
 	cam.SetPosition( cml::vector3f(0,0,0) );
 	cam.SetHorizontalAngle( 90 );
 
-	plane.Prepare(gl,300,300,4,4);
 	efactory.Prepare( &physics, &assets, &emanager, &sceneRoot );
 
 	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
@@ -112,21 +111,13 @@ void App::Render()
 
 	renderer.SetupRender();
 
-	cml::matrix44f_c model = cml::identity<4>();
-	cml::matrix_rotation_world_x( model, cml::rad(90.f) );
-	cml::matrix_set_translation( model, 0.f, 2.f, 0.f );
-	renderer.RenderPlane( &plane, model, assets.Texture(TEX_SUELO) );
-
-	model = cml::identity<4>();
-	cml::matrix_rotation_world_x( model, cml::rad(-90.f) );
-	cml::matrix_set_translation( model, 0.f, -2.f, 300.f );
-	renderer.RenderPlane( &plane, model, assets.Texture(TEX_TECHO) );
+	renderer.RenderFloor(assets.Texture(TEX_SUELO));
+	renderer.RenderRoof(assets.Texture(TEX_TECHO));
 
 	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
 	renderer.BatchSprite3D();
 	emanager.RenderEntities( player->GetAngleY() );
 
-	gl->Disable(GL_DEPTH_TEST);
 	RenderWeapon();
 	RenderMiniText();
 	RenderPlayerHP();
@@ -136,6 +127,7 @@ void App::Render()
 
 void App::RenderWeapon()
 {
+	gl->Disable(GL_DEPTH_TEST);
 	cml::matrix44f_c model = cml::identity<4>();
 	model = cml::identity<4>();
 	cml::vector3f offset(0,0,0);
@@ -183,7 +175,6 @@ void App::HandleEvent(SDL_Event& event)
 
 void App::Cleanup()
 {
-	plane.Dispose(gl);
 	renderer.Dispose( );
 	emanager.ClearAllEntities();
 	physics.Cleanup();

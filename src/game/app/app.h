@@ -44,7 +44,6 @@ private:
 	Assets assets;
 	EntityFactory efactory;
 
-	Plane plane;
 	Font font;
 
 	Renderer renderer;
