@@ -8,8 +8,8 @@ public:
 	void Step( Entity* e, uint32_t delta )
 	{
 		time += delta;
-		e->transform.local_position[1] = 0.4*sin(time/10.f);
-		e->transform.local_rotation[0] += 0.1;
+		e->transform.local_position[1] = 0.4*sin(time/100.f);
+		e->transform.local_rotation[0] += delta * 0.001;
 	}
 };
 

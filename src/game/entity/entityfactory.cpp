@@ -88,9 +88,9 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 {
 	Mob* actor = AllocEntity<Mob>();
 	actor->hp.current = 10;
-	actor->wep.rate = 20;
+	actor->wep.rate = 200;
 	actor->wep.bullet_speed = 20;
-	actor->wep.bullet_duration = 30;
+	actor->wep.bullet_duration = 1000;
 	actor->controller = new MobAIController();
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
