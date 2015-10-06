@@ -44,6 +44,12 @@ void main() {
 	vec3 inv = inverse();
 	vec3 sob = sobel();
 
+	float dx = 3.05*(1./512.);
+	float dy = 3.05*(1./512.);
+	vec2 coord = vec2(dx*floor(Texcoord.x/dx),
+						dy*floor(Texcoord.y/dy));
+	original = texture2D(texFramebuffer, coord).xyz;
+
 	//outColor = vec4((inv+bl)/3, 1.0);
 
 	vec3 final = (original * 2 + bl)/3.0;
@@ -66,5 +72,6 @@ void main() {
 	//float division = (Texcoord.y * 256);
 	//if( mod( Texcoord.y, 0.005 ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), scanarray[int(division)] );
 	if( mod( Texcoord.y, 0.005 ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), 0.2 );
+
 
 }
