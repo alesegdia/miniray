@@ -12,9 +12,6 @@ public:
 	enum Faction { GOOD, BAD, NEUTRAL };
 	Faction faction;
 
-	// offset de ángulo y dirección de movimiento
-	cml::vector2f rotation_offset, move_direction;
-
 	// última vez que se aplicó daño
 	int last_pain;
 
