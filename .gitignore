@@ -22,3 +22,5 @@ build
 test
 bin
 proj
+glrayfw.make
+libglrayfw.a
