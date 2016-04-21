@@ -3,6 +3,7 @@
 
 
 #include <cstdint>
+#include <cassert>
 
 class Color
 {
@@ -96,9 +97,8 @@ public:
 
 	uint8_t& operator[](size_t index)
 	{
-		if( index >= 0 && index <= 3 )
-			return data[index];
-		printf( "Color::operator[]: invalid index\n" );
+		assert(index <= 3);
+		return data[index];
 	}
 
 };

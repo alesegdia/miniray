@@ -128,7 +128,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	return actor;
 }
 
-Entity* EntityFactory::SpawnPlayerWeapon(float x, float y)
+Entity* EntityFactory::SpawnPlayerWeapon(float, float)
 {
 	Entity* e = AllocEntity<Entity>();
 	e->SetSprite( this->assets->Sprite(0) );

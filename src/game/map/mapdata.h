@@ -54,14 +54,15 @@ struct RoomGenConfig
 	int num_rooms, room_max_width, room_max_height, room_min_width, room_min_height;
 	bool overlap_control;
 	RoomGenConfig() :
+		map_width(64),
+		map_height(64),
 		num_rooms(7),
 		room_max_width (15),
 		room_max_height(15),
-		overlap_control(true),
 		room_min_width(8),
 		room_min_height(8),
-		map_width(64),
-		map_height(64)
+		overlap_control(true)
+
 	{}
 };
 

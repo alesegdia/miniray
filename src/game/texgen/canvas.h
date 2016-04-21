@@ -21,11 +21,12 @@ public:
 	Canvas& operator=( const Canvas& other )
 	{
 		data = other.data;
+		return *this;
 	}
 
 	void Plot( int x, int y, Color c );
 
-	void ToBitmap( tdogl::Bitmap& bmp )
+	void ToBitmap( tdogl::Bitmap& )
 	{
 
 	}
