@@ -39,7 +39,7 @@ void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg, DynamicArray<Room>& list_roo
 		bool valid_room = true;
 		if( cfg.overlap_control )
 		{
-			for( int j = 0; j < list_rooms.Size(); j++ )
+			for( int j = 0; j < ((int)list_rooms.Size()); j++ )
 			{
 				if( r.Intersects( list_rooms[j] ) )
 				{
@@ -134,7 +134,7 @@ Map Decorate( Map map )
 
 void RasterRooms( DynamicArray<Room>& rooms, Map& map, Map::BlockType block_type )
 {
-	for( int i = 0; i < rooms.Size(); i++ )
+	for( int i = 0; i < ((int)rooms.Size()); i++ )
 	{
 		printf("NG\n");
 		Room r = rooms[i];
@@ -148,7 +148,7 @@ void RasterRooms( DynamicArray<Room>& rooms, Map& map, Map::BlockType block_type
 
 void RasterPaths( DynamicArray<Room>& rooms, Map& map, Map::BlockType block_type )
 {
-	for( int i = 0; i < rooms.Size()-1; i++ )
+	for( int i = 0; i < (int)rooms.Size()-1; i++ )
 	{
 		Room r0 = rooms[i];
 		Room r1 = rooms[i+1];
@@ -185,7 +185,7 @@ Map ConstructRoomMap( Map map, DynamicArray<Room>& rooms )
 {
 	Map ret(map);
 	mapgen::Fill( ret, 0 );
-	for( int i = 0; i < rooms.Size(); i++ )
+	for( int i = 0; i < (int)rooms.Size(); i++ )
 	{
 		for( int x = rooms[i].Left(); x < rooms[i].Right(); x++ )
 		for( int y = rooms[i].Top(); y < rooms[i].Bot(); y++ )
