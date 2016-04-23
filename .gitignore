@@ -6,9 +6,7 @@ win
 .ycm*
 Makefile
 Makefile*
-miniray.*
 obj
-miniray.*
 *.workspace
 .codelite
 tags
