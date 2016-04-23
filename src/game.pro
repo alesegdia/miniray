@@ -12,7 +12,6 @@ HEADERS += \
     game/ailib/mapsearchnode.h \
     game/ailib/stlastar.h \
     game/app/app.h \
-    game/app/engine.h \
     game/entity/controller/bulletcontroller.h \
     game/entity/controller/mobaicontroller.h \
     game/entity/controller/moboptioncontroller.h \
@@ -43,7 +42,6 @@ HEADERS += \
 SOURCES += \
     game/main.cpp \
     game/app/app.cpp \
-    game/app/engine.cpp \
     game/entity/controller/mobaicontroller.cpp \
     game/entity/controller/moboptioncontroller.cpp \
     game/entity/controller/playerhumancontroller.cpp \
