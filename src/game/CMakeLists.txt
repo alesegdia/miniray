@@ -32,6 +32,5 @@ endif()
 
 include_directories(${CML_HEADER_PATH})
 
-
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY} )
 
