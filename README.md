@@ -8,9 +8,9 @@ DEPENDENCIES
 * CML
 
 
-INSTALL
+DEVELOPMENT NOTES
 ---
-todo.
+* The `assets` directory must be in the executable working directory.
 
 EXTERNAL CREDITS
 ---
