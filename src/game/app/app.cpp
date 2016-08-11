@@ -111,7 +111,7 @@ void App::Render()
 
 	renderer.SetupRender();
 
-	renderer.RenderFloor(assets.Texture(TEX_SUELO));
+	//renderer.RenderFloor(assets.Texture(TEX_SUELO));
 	renderer.RenderRoof(assets.Texture(TEX_TECHO));
 
 	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
