@@ -58,8 +58,8 @@ void App::Setup(int argc, char** argv)
 		}
 	}
 
-	cam.SetPosition( cml::vector3f(0,0,0) );
-	cam.SetHorizontalAngle( 90 );
+	cam.position( cml::vector3f(0,0,0) );
+	cam.horizontalAngle( 90 );
 
 	efactory.Prepare( &physics, &assets, &emanager, &sceneRoot );
 
@@ -106,8 +106,8 @@ void App::Render()
 
 	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
-	cam.SetPosition(cml::vector3f(ppos.x, 0, ppos.y));
-	cam.SetHorizontalAngle(-player->GetAngleY());
+	cam.position(cml::vector3f(ppos.x, 0, ppos.y));
+	cam.horizontalAngle(-player->GetAngleY());
 
 	renderer.SetupRender();
 
