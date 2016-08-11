@@ -69,8 +69,9 @@ void main() {
 
 
 	// scanlines
-	//float division = (Texcoord.y * 256);
-	//if( mod( Texcoord.y, 0.005 ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), scanarray[int(division)] );
+	float division = (Texcoord.y * 256);
+	float gap = 1.f / 64.f;
+	//if( mod( Texcoord.y, gap ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), scanarray[int(division)] );
 	if( mod( Texcoord.y, 0.005 ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), 0.2 );
 
 
