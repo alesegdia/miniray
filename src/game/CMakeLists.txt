@@ -9,6 +9,7 @@ file( GLOB_RECURSE SRCs */*.cpp )
 file( GLOB_RECURSE INCs */*.h )
 file( GLOB_RECURSE GLRAYFW_SOURCES
 	../../lib/glrayfw/glrayfw/*/*.cpp
+	../../lib/glrayfw/glrayfw/*/*.h
 	)
 
 add_library(glrayfw ${GLRAYFW_SOURCES})
