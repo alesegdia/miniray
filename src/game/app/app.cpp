@@ -39,7 +39,7 @@ void App::Setup(int argc, char** argv)
 	rng.seed( sid );
 
 	physics.Init( argc, argv, new ContactListener() );
-	renderer.Prepare( gl, &cam, winWidth, winHeight );
+	renderer.prepare( gl, &cam, winWidth, winHeight );
 	emanager.Prepare(&renderer);
 
 	assets.Prepare( gl );
@@ -113,7 +113,6 @@ void App::Render()
 
 	//renderer.RenderFloor(assets.Texture(TEX_SUELO));
 	renderer.RenderRoof(assets.Texture(TEX_TECHO));
-
 	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
 	renderer.BatchSprite3D();
 	emanager.RenderEntities( player->GetAngleY() );
@@ -143,7 +142,7 @@ void App::RenderMiniText()
 	float r = sin(((float)time)/10);
 	float g = sin(((float)time)/40);
 	float b = sin(((float)time)/400);
-    renderer.RenderText("Miniray", -0.35, 0.7, cml::vector4f(b,g,r,1));
+	renderer.renderText("Miniray", -0.35, 0.7, cml::vector4f(b,g,r,1));
 }
 
 void App::RenderPlayerHP()
@@ -151,10 +150,10 @@ void App::RenderPlayerHP()
     char buf[8];
     sprintf(buf, "%d", player->hp.current);
 	float phealth = float(player->hp.current) / float(player->hp.total);
-    renderer.RenderText(buf, -1, -0.97, cml::vector4f(1-phealth,phealth,0,1));
+	renderer.renderText(buf, -1, -0.97, cml::vector4f(1-phealth,phealth,0,1));
 
     sprintf(buf, "%d", player->ammo);
-    renderer.RenderText(buf, 0.5, -0.97, cml::vector4f(1,0.5,0,1));
+	renderer.renderText(buf, 0.5, -0.97, cml::vector4f(1,0.5,0,1));
 }
 
 
@@ -166,8 +165,8 @@ void App::HandleEvent(SDL_Event& event)
 		{
 		case SDL_KEYDOWN:
 			if( event.key.keysym.sym == SDLK_ESCAPE ) Stop();
-			else if( event.key.keysym.sym == SDLK_p ) renderer.UseDefaultFBO();
-			else if( event.key.keysym.sym == SDLK_o ) renderer.UseCreatedFBO();
+			else if( event.key.keysym.sym == SDLK_p ) renderer.useDefaultFBO();
+			else if( event.key.keysym.sym == SDLK_o ) renderer.useCreatedFBO();
 			break;
 		}
 	}
