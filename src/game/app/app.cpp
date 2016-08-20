@@ -139,10 +139,10 @@ void App::RenderWeapon()
 void App::RenderMiniText()
 {
 	uint32_t time = SDL_GetTicks();
-	float r = sin(((float)time)/10);
-	float g = sin(((float)time)/40);
-	float b = sin(((float)time)/400);
-	renderer.renderText("Miniray", -0.35, 0.7, cml::vector4f(b,g,r,1));
+	float r = sinf((float(time))/10);
+	float g = sinf((float(time))/40);
+	float b = sinf((float(time))/400);
+	renderer.renderText("Miniray", -0.35f, 0.7f, cml::vector4f(b,g,r,1));
 }
 
 void App::RenderPlayerHP()
@@ -150,10 +150,10 @@ void App::RenderPlayerHP()
     char buf[8];
     sprintf(buf, "%d", player->hp.current);
 	float phealth = float(player->hp.current) / float(player->hp.total);
-	renderer.renderText(buf, -1, -0.97, cml::vector4f(1-phealth,phealth,0,1));
+	renderer.renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
 
     sprintf(buf, "%d", player->ammo);
-	renderer.renderText(buf, 0.5, -0.97, cml::vector4f(1,0.5,0,1));
+	renderer.renderText(buf, 0.5, -0.97f, cml::vector4f(1,0.5,0,1));
 }
 
 
