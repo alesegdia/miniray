@@ -25,6 +25,11 @@ class PlayerHumanController;
 
 class App : public SDLGLApp
 {
+public:
+
+    App();
+    virtual ~App();
+
 
 private:
 
@@ -66,9 +71,5 @@ private:
 	void Render();
 	void Cleanup();
 	void HandleEvent(SDL_Event& event);
-
-public:
-
-	App();
 
 };

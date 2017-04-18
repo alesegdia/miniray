@@ -18,6 +18,13 @@
 App::App() :
 	SDLGLApp( 800, 600 )
 {
+
+}
+
+
+App::~App()
+{
+	Cleanup();
 }
 
 void App::SetupPlayer()

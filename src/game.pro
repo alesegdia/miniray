@@ -5,6 +5,9 @@ CONFIG -= qt
 
 include(../lib/glrayfw/glrayfw.pri)
 
+INCLUDEPATH += \
+    $$PWD/../lib/cml
+
 HEADERS += \
     game/constants.h \
     game/ailib/blackboard.h \
