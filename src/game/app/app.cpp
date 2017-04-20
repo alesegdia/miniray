@@ -15,12 +15,10 @@
 #include <glrayfw/core/random.h>
 #include "../physics/contactlistener.h"
 
-App::App() :
-	SDLGLApp( 800, 600 )
+App::App::App(int w, int h) : SDLGLApp(w, h)
 {
 
 }
-
 
 App::~App()
 {

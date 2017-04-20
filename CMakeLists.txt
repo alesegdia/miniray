@@ -11,15 +11,14 @@ find_package(OpenGL REQUIRED)
 find_package(BOX2D REQUIRED)
 find_package(Freetype REQUIRED)
 
-file( GLOB_RECURSE SRC ŝrc/game/*.cpp )
-file( GLOB_RECURSE INC src/game/*.h )
+file(GLOB_RECURSE SOURCES src/game/**.cpp src/game/**.h)
 file( GLOB_RECURSE GLRAYFW_SOURCES
 	lib/glrayfw/glrayfw/**/*.cpp
 	lib/glrayfw/glrayfw/**/*.h
 	)
 
 add_library(glrayfw ${GLRAYFW_SOURCES})
-add_executable(miniray-game src/game/main.cpp ${SRC} ${INC})
+add_executable(miniray-game src/game/main.cpp ${SOURCES})
 
 target_link_libraries(miniray-game glrayfw)
 include_directories(lib/cml/)

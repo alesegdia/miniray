@@ -27,7 +27,9 @@ class App : public SDLGLApp
 {
 public:
 
-    App();
+    App(int w, int h);
+
+
     virtual ~App();
 
 

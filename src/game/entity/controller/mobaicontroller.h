@@ -30,6 +30,7 @@ public:
 	void Step( Entity* e, uint32_t delta )
 	{
 		Mob* mob = static_cast<Mob*>(e);
+        assert(mob != nullptr && "THE OBJECT IS NOT A MOB");
 		mob->GetPhysicBody()->SetLinearVelocity(b2Vec2(0,0));
 		CheckHealth( mob );
 		DoDropItem( mob, rng, entityfactory );

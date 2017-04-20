@@ -121,8 +121,8 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		rotation_offset[0] = ((float)event.motion.x) - 400.f;
-		rotation_offset[1] = ((float)event.motion.y) - 300.f;
+        rotation_offset[0] = ((float)event.motion.x) - 400.f;
+        rotation_offset[1] = ((float)event.motion.y) - 300.f;
 		ret = 1;break;
 	case SDL_MOUSEBUTTONUP:
 		switch( event.button.button )
