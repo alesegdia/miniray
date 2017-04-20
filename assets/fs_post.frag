@@ -44,8 +44,9 @@ void main() {
 	vec3 inv = inverse();
 	vec3 sob = sobel();
 
-	float dx = 3.05*(1./512.);
-	float dy = 3.05*(1./512.);
+	// good values are between 0.004 and 0.006 or so
+	float dx = 0.006;
+	float dy = 0.006;
 	vec2 coord = vec2(dx*floor(Texcoord.x/dx),
 						dy*floor(Texcoord.y/dy));
 	original = texture2D(texFramebuffer, coord).xyz;
