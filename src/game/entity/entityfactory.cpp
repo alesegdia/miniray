@@ -58,7 +58,14 @@ void EntityFactory::SpawnEnemyBullet( const cml::vector2f& pos, const cml::vecto
 	SpawnBullet( pos, dir, CollisionLayer::ENEMY_BULLET, Physics::EBULLET_MASK, assets->Sprite(S3D_REDBULLET), time );
 }
 
-void EntityFactory::SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time )
+void EntityFactory::SpawnBullet(
+        const cml::vector2f& pos,
+        const cml::vector2f& dir,
+        CollisionLayer col,
+        uint16_t mask,
+        Sprite3D* sprite,
+        float time
+        )
 {
 	Entity* ent = AllocEntity<Bullet>();
 	Bullet* bu = static_cast<Bullet*>(ent);

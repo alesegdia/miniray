@@ -3,6 +3,7 @@
 
 #include <glrayfw/entity/pawn.h>
 #include "script/weapon.h"
+#include "skill/skills.h"
 
 class Actor : public Pawn
 {
@@ -39,5 +40,7 @@ public:
 	{
 		body->SetLinearVelocity(b2Vec2(move_direction[0],move_direction[1]));
 	}
+
+    SkillSet skillSet = SkillSet(10);
 
 };
