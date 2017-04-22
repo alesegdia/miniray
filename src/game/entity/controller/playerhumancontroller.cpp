@@ -48,7 +48,7 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 	if( p->ammo > 0 && DoShoot( static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
 	{
 		cml::vector2f shootdir = GetForward( p ); //Rotate2D( cml::vector2f(0.f,1.f), cml::rad(-e->GetAngleY()) );
-		entityfactory->SpawnPlayerBullet( GetWorld2DPos( e->transform.position ) + shootdir * 2.5, shootdir * p->weapon.bullet_speed, p->weapon.bullet_duration);
+        entityfactory->SpawnPlayerBullet( GetWorld2DPos( e->transform.position ) + shootdir * 2, shootdir * p->weapon.bullet_speed, p->weapon.bullet_duration);
 		p->ammo--;
 		// restar el bat y spr
 	}

@@ -9,16 +9,13 @@
 #include <glrayfw/render/block.h>
 #include <glrayfw/render/Bitmap.h>
 #include <glrayfw/render/Texture.h>
-#include <glrayfw/render/renderer.h>
 #include "../render/assets.h"
 #include "../texgen/canvas.h"
-#include <glrayfw/physics/physics.h>
 #include <glrayfw/render/plane.h>
 #include <glrayfw/render/font.h>
 #include <glrayfw/core/random.h>
 #include "../entity/entityfactory.h"
 #include "../map/mapdata.h"
-#include <glrayfw/entity/entitymanager.h>
 
 class Player;
 class PlayerHumanController;
@@ -40,12 +37,9 @@ private:
 	uint32_t deltatime;
 
 	// scene
-	Camera cam;
-	Map map;
-	mapgen::MapData mapdata;					// map generation data
+    mapgen::MapData mapdata;					// map generation data
 	Player* player;								// player entity
 	PlayerHumanController* playercontroller;	// player controller for input stuff
-	EntityManager emanager;
 
 	// game
 	Assets assets;
@@ -53,9 +47,9 @@ private:
 
 	Font font;
 
-	Renderer renderer;
-	Physics physics;
 	Transform sceneRoot;
+
+    Scene scene;
 
 	void HandleCamInput();
 

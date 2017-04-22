@@ -12,7 +12,7 @@ Color HSLtoRGB(Color hsl);
 class Canvas
 {
 
-	Matrix2D<Color> data;
+    matrix::Matrix2D<Color> data;
 
 public:
 
@@ -36,7 +36,7 @@ public:
 		return data.Cols();
 	}
 
-	double SmoothNoise( Matrix2D<float>& noise, double x, double y )
+    double SmoothNoise( matrix::Matrix2D<float>& noise, double x, double y )
 	{
 		double fractX = x - int(x);
 		double fractY = y - int(y);
@@ -65,7 +65,7 @@ public:
 		GenTurbulence( rng, light, light * rel, false );
 	}
 
-	double Turbulence( Matrix2D<float>& noise, double x, double y, double size, bool bifilter = true, double base = 128.0 )
+    double Turbulence( matrix::Matrix2D<float>& noise, double x, double y, double size, bool bifilter = true, double base = 128.0 )
 	{
 		double value = 0.0, initialSize = size;
 		while( size >= 1 )
@@ -90,7 +90,7 @@ public:
 		}
 	}
 
-	void MakeNoise( Matrix2D<float>& noise, RNG& rng, int w, int h )
+    void MakeNoise( matrix::Matrix2D<float>& noise, RNG& rng, int w, int h )
 	{
 		for( int x = 0; x < w; x++ )
 		for( int y = 0; y < h; y++ )
@@ -106,7 +106,7 @@ public:
 		w = Width();
 		h = Height();
 
-		Matrix2D<float> noise(w, h);
+        matrix::Matrix2D<float> noise(w, h);
 		MakeNoise( noise, rng, w, h );
 
 		for( int x = 0; x < w; x++ )
@@ -124,7 +124,7 @@ public:
 		w = Width();
 		h = Height();
 
-		Matrix2D<float> noise(w, h);
+        matrix::Matrix2D<float> noise(w, h);
 		MakeNoise( noise, rng, w, h );
 
 

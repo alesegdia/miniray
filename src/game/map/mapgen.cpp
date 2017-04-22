@@ -2,6 +2,7 @@
 #include "mapgen.h"
 #include <glrayfw/core/random.h>
 #include "mapdata.h"
+#include <glrayfw/core/matrix2d.h>
 
 
 
@@ -9,10 +10,10 @@ namespace mapgen
 {
 
 
-void Fill( Map& map, Map::BlockType block )
+void Fill( Matrix2D& map, int block )
 {
-	for( int x = 0; x < map.Width(); x++ )
-	for( int y = 0; y < map.Height(); y++ )
+    for( int x = 0; x < map.Cols(); x++ )
+    for( int y = 0; y < map.Rows(); y++ )
 	{
 		map.Set( x, y, block );
 	}
@@ -24,8 +25,8 @@ void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg, DynamicArray<Room>& list_roo
 	int w, h;
 	w = cfg.map_width;
 	h = cfg.map_height;
-	Map map(w, h);
-	Fill(map, Map::BLOCK_SOLID);
+	Matrix2D map(w, h);
+    Fill(map, 1);
 	int room_halfw = cfg.room_max_width / 2;
 	int room_halfh = cfg.room_max_height / 2;
 
@@ -59,19 +60,19 @@ void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg, DynamicArray<Room>& list_roo
 	}
 }
 
-Map RasterMapData( MapData& md )
+Matrix2D RasterMapData( MapData& md )
 {
-	Map map(md.config.map_width, md.config.map_height);
-	Fill( map, Map::BLOCK_SOLID );
+	Matrix2D map(md.config.map_width, md.config.map_height);
+    Fill( map, 1 );
 	RasterRooms( md.rooms, map );
 	RasterPaths( md.rooms, map );
 	return Decorate(Flatten(map));
 }
 
-Map RasterMapData2( MapData& md )
+Matrix2D RasterMapData2( MapData& md )
 {
-	Map map(md.config.map_width, md.config.map_height);
-	Fill( map, Map::BLOCK_SOLID );
+	Matrix2D map(md.config.map_width, md.config.map_height);
+    Fill( map, 1 );
 	RasterRooms( md.rooms, map );
 	RasterPaths( md.rooms, map );
 	return Decorate(Flatten(map));
@@ -86,9 +87,9 @@ void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg )
 }
 */
 
-Map Flatten( Map map )
+Matrix2D Flatten( Matrix2D map )
 {
-	Map newmap(map);
+	Matrix2D newmap(map);
 	int bounds[8][2] = {
 		{  1,  0 },
 		{  1,  1 },
@@ -99,40 +100,40 @@ Map Flatten( Map map )
 		{  0, -1 },
 		{  1, -1 }
 	};
-	for( int x = 0; x < map.Width(); x++ )
-	for( int y = 0; y < map.Height(); y++ )
+    for( int x = 0; x < map.Cols(); x++ )
+    for( int y = 0; y < map.Rows(); y++ )
 	{
 		int nb=0;
-		for( int i = 0; i < 8; i++ ) nb += (map.GetScroll(x + bounds[i][0], y + bounds[i][1]) == Map::BLOCK_FREE ? 0 : 1);
-		if( nb == 8 ) newmap.Set(x, y, Map::BLOCK_FREE);
+        for( int i = 0; i < 8; i++ ) nb += (map.getScroll(x + bounds[i][0], y + bounds[i][1]) == 0 ? 0 : 1);
+        if( nb == 8 ) newmap.Set(x, y, 0);
 	}
 	return newmap;
 }
 
-Map Decorate( Map map )
+Matrix2D Decorate( Matrix2D map )
 {
-	Map newmap(map);
+	Matrix2D newmap(map);
 	int bounds[4][2] = {
 		{ 1, 0 },
 		{ -1, 0 },
 		{ 0, 1 },
 		{ 0, -1 }
 	};
-	for( int x = 0; x < map.Width(); x++ )
-	for( int y = 0; y < map.Height(); y++ )
+    for( int x = 0; x < map.Cols(); x++ )
+    for( int y = 0; y < map.Rows(); y++ )
 	{
 		int hnb=0,vnb=0;
 		for( int i = 0; i < 2; i++ )
-			hnb += (map.GetScroll( x + bounds[i][0], y + bounds[i][1] ) == Map::BLOCK_FREE ? 0 : 1);
+            hnb += (map.getScroll( x + bounds[i][0], y + bounds[i][1] ) == 0 ? 0 : 1);
 		for( int i = 2; i < 4; i++ )
-			vnb += (map.GetScroll( x + bounds[i][0], y + bounds[i][1] ) == Map::BLOCK_FREE ? 0 : 1);
-		if( (hnb - vnb == 0 || hnb + vnb == 1 ) && map.Get( x, y ) != Map::BLOCK_FREE ) newmap.Set(x, y, 2);
+            vnb += (map.getScroll( x + bounds[i][0], y + bounds[i][1] ) == 0 ? 0 : 1);
+        if( (hnb - vnb == 0 || hnb + vnb == 1 ) && map.Get( x, y ) != 0 ) newmap.Set(x, y, 2);
 	}
 	return newmap;
 
 }
 
-void RasterRooms( DynamicArray<Room>& rooms, Map& map, Map::BlockType block_type )
+void RasterRooms( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 {
 	for( int i = 0; i < ((int)rooms.Size()); i++ )
 	{
@@ -146,7 +147,7 @@ void RasterRooms( DynamicArray<Room>& rooms, Map& map, Map::BlockType block_type
 	}
 }
 
-void RasterPaths( DynamicArray<Room>& rooms, Map& map, Map::BlockType block_type )
+void RasterPaths( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 {
 	for( int i = 0; i < (int)rooms.Size()-1; i++ )
 	{
@@ -162,7 +163,7 @@ int sign( int x )
 	return (x >= 0) ? 1 : -1;
 }
 
-void HCorridor( Map& map, int x0, int x1, int y, int block_type )
+void HCorridor( Matrix2D& map, int x0, int x1, int y, int block_type )
 {
 	int dx = x1 - x0;
 	for( int x = x0; x != x1; x += sign(dx) )
@@ -171,7 +172,7 @@ void HCorridor( Map& map, int x0, int x1, int y, int block_type )
 	}
 }
 
-void VCorridor( Map& map, int y0, int y1, int x, int block_type )
+void VCorridor( Matrix2D& map, int y0, int y1, int x, int block_type )
 {
 	int dy = y1 - y0;
 	for( int y = y0; y != y1; y += sign(dy) )
@@ -181,9 +182,9 @@ void VCorridor( Map& map, int y0, int y1, int x, int block_type )
 }
 
 
-Map ConstructRoomMap( Map map, DynamicArray<Room>& rooms )
+Matrix2D ConstructRoomMap( Matrix2D map, DynamicArray<Room>& rooms )
 {
-	Map ret(map);
+	Matrix2D ret(map);
 	mapgen::Fill( ret, 0 );
 	for( int i = 0; i < (int)rooms.Size(); i++ )
 	{
@@ -197,9 +198,9 @@ Map ConstructRoomMap( Map map, DynamicArray<Room>& rooms )
 	return ret;
 }
 
-Map ConstructDoors( Map map )
+Matrix2D ConstructDoors( Matrix2D map )
 {
-	Map ret(map);
+	Matrix2D ret(map);
 	
 	return map;
 }

@@ -14,6 +14,7 @@
 #include "../entity/controller/mobaicontroller.h"
 #include <glrayfw/core/random.h>
 #include "../physics/contactlistener.h"
+#include <glrayfw/render/scene.h>
 
 App::App::App(int w, int h) : SDLGLApp(w, h)
 {
@@ -37,29 +38,30 @@ void App::Setup(int argc, char** argv)
 	//map.LoadFromFile( "mimapa.txt" );
 	//map.Debug();
 
-	SDL_ShowCursor(0);
-	uint32_t sid = 0;
+    uint32_t sid = 0;
 	if( argc == 2 ) sid = atoi(argv[1]);
 	printf("SEED: %d\n",sid);
 	rng.seed( sid );
-
-	physics.Init( argc, argv, new ContactListener() );
-	renderer.prepare( gl, &cam, winWidth, winHeight );
-	emanager.Prepare(&renderer);
+    physics.SetContactListener( new ContactListener() );
 
 	assets.Prepare( gl );
 	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
 
 	mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
 	printf("n: %zu\n", mapdata.rooms.Size() );
-	map = mapgen::RasterMapData( mapdata );
+    Matrix2D tilemap = mapgen::RasterMapData( mapdata );
 
-	for(int i = 0; i < map.Width(); i++ )
+    scene.tilemap(tilemap);
+    scene.setTextureForTile(1, assets.Texture(TEX_TEX1));
+    scene.setTextureForTile(2, assets.Texture(TEX_TEX2));
+    scene.setTextureForTile(3, assets.Texture(TEX_TEX3));
+
+    for(int i = 0; i < tilemap.Cols(); i++ )
 	{
-		for( int j = 0; j < map.Height(); j++ )
+        for( int j = 0; j < tilemap.Rows(); j++ )
 		{
-			if( map.Get(i,j) != Map::BLOCK_FREE )
-				physics.AddCubeBody(-i*2,-j*2);
+            if( tilemap.Get(i,j) != 0 )
+                physics.AddCubeBody(-i*2,-j*2);
 		}
 	}
 
@@ -118,7 +120,7 @@ void App::Render()
 
     renderer.RenderFloor(assets.Texture(TEX_SUELO));
 	renderer.RenderRoof(assets.Texture(TEX_TECHO));
-	renderer.RenderMap( map, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
+    renderer.RenderMap( scene, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
 	renderer.BatchSprite3D();
 	emanager.RenderEntities( player->GetAngleY() );
 
@@ -134,8 +136,8 @@ void App::RenderWeapon()
 	gl->Disable(GL_DEPTH_TEST);
 	cml::matrix44f_c model = cml::identity<4>();
 	model = cml::identity<4>();
-	cml::vector3f offset(0,0,0);
-	offset = cml::rotate_vector( cml::vector3f(1,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
+    cml::vector3f offset(0,0,0);
+    offset = cml::rotate_vector( cml::vector3f(0.65,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
 	cml::matrix_set_translation( model, player->GetTransform().position + offset );
 	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
 	renderer.RenderSprite3D( assets.Sprite(S3D_ARMA), model );

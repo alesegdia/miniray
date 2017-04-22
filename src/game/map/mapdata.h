@@ -75,7 +75,7 @@ struct RoomConnection
 		PATH, WARP, HACK
 	} type;
 	// connected rooms
-	Map::BlockType ids[2];
+    int ids[2];
 
 	bool operator==( const RoomConnection& other )
 	{
@@ -85,7 +85,7 @@ struct RoomConnection
 
 struct Path
 {
-	Map::BlockType ids[2];
+    int ids[2];
 };
 
 struct Intersection
@@ -93,7 +93,7 @@ struct Intersection
 	// posición de la interseccion
 	int x, y;
 	// identificadores de los tipos de bloque que intersectan
-	Map::BlockType ids[2];
+    int ids[2];
 	// conexión que provoca la intersección
 	RoomConnection connection;
 };
