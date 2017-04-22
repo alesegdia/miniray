@@ -35,40 +35,28 @@ void App::SetupPlayer()
 
 void App::Setup(int argc, char** argv)
 {
-	//map.LoadFromFile( "mimapa.txt" );
-	//map.Debug();
-
     uint32_t sid = 0;
 	if( argc == 2 ) sid = atoi(argv[1]);
 	printf("SEED: %d\n",sid);
 	rng.seed( sid );
-    physics.SetContactListener( new ContactListener() );
 
-	assets.Prepare( gl );
-	//map = mapgen::Generar( rng, mapgen::RoomGenConfig(), room_list);
+    physics().SetContactListener( new ContactListener() );
 
-	mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
-	printf("n: %zu\n", mapdata.rooms.Size() );
+    assets.Prepare( GL() );
+
+    mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
     Matrix2D tilemap = mapgen::RasterMapData( mapdata );
 
     scene.tilemap(tilemap);
     scene.setTextureForTile(1, assets.Texture(TEX_TEX1));
     scene.setTextureForTile(2, assets.Texture(TEX_TEX2));
     scene.setTextureForTile(3, assets.Texture(TEX_TEX3));
+    scene.setFloorTexture(assets.Texture(TEX_SUELO));
+    scene.setRoofTexture(assets.Texture(TEX_TECHO));
 
-    for(int i = 0; i < tilemap.Cols(); i++ )
-	{
-        for( int j = 0; j < tilemap.Rows(); j++ )
-		{
-            if( tilemap.Get(i,j) != 0 )
-                physics.AddCubeBody(-i*2,-j*2);
-		}
-	}
+    loadScene(&scene);
 
-	cam.position( cml::vector3f(0,0,0) );
-	cam.horizontalAngle( 90 );
-
-	efactory.Prepare( &physics, &assets, &emanager, &sceneRoot );
+    efactory.Prepare( &physics(), &assets, &entityManager(), &sceneRoot() );
 
 	for( size_t i = 1; i < mapdata.rooms.Size(); i++ )
 	{
@@ -89,18 +77,10 @@ void App::Setup(int argc, char** argv)
 void App::Update(uint32_t delta)
 {
 
-	SDL_WarpMouseInWindow( NULL, 400, 300 );
 
-	// Update everything
-	this->sceneRoot.Update(Transform(), delta);
-	physics.Step();
 	player->PhysicStep();
 	player->Step( delta );
 	if( !player->IsAlive() ) Stop();
-
-	// Clean dead entities
-	this->sceneRoot.UpdateClean();
-	this->emanager.ClearDeadEntities();
 
 	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
@@ -113,34 +93,27 @@ void App::Render()
 
 	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
-	cam.position(cml::vector3f(ppos.x, 0, ppos.y));
-	cam.horizontalAngle(-player->GetAngleY());
+    cam().position(cml::vector3f(ppos.x, 0, ppos.y));
+    cam().horizontalAngle(-player->GetAngleY());
 
-	renderer.SetupRender();
-
-    renderer.RenderFloor(assets.Texture(TEX_SUELO));
-	renderer.RenderRoof(assets.Texture(TEX_TECHO));
-    renderer.RenderMap( scene, assets.Texture(TEX_TEX1), assets.Texture(TEX_TEX2), assets.Texture(TEX_TEX3) );
-	renderer.BatchSprite3D();
-	emanager.RenderEntities( player->GetAngleY() );
+    sceneRender(player->GetAngleY());
 
 	RenderWeapon();
 	RenderMiniText();
 	RenderPlayerHP();
-	renderer.RenderFinish( mainWindow, deltatime );
 
 }
 
 void App::RenderWeapon()
 {
-	gl->Disable(GL_DEPTH_TEST);
+    GL()->Disable(GL_DEPTH_TEST);
 	cml::matrix44f_c model = cml::identity<4>();
 	model = cml::identity<4>();
     cml::vector3f offset(0,0,0);
     offset = cml::rotate_vector( cml::vector3f(0.65,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
 	cml::matrix_set_translation( model, player->GetTransform().position + offset );
 	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
-	renderer.RenderSprite3D( assets.Sprite(S3D_ARMA), model );
+    renderer().RenderSprite3D( assets.Sprite(S3D_ARMA), model );
 }
 
 void App::RenderMiniText()
@@ -149,7 +122,7 @@ void App::RenderMiniText()
 	float r = sinf((float(time))/10);
 	float g = sinf((float(time))/40);
 	float b = sinf((float(time))/400);
-	renderer.renderText("Miniray", -0.35f, 0.7f, cml::vector4f(b,g,r,1));
+    renderer().renderText("Miniray", -0.35f, 0.7f, cml::vector4f(b,g,r,1));
 }
 
 void App::RenderPlayerHP()
@@ -157,10 +130,10 @@ void App::RenderPlayerHP()
     char buf[8];
     sprintf(buf, "%d", player->hp.current);
 	float phealth = float(player->hp.current) / float(player->hp.total);
-	renderer.renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
+    renderer().renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
 
     sprintf(buf, "%d", player->ammo);
-	renderer.renderText(buf, 0.5, -0.97f, cml::vector4f(1,0.5,0,1));
+    renderer().renderText(buf, 0.5, -0.97f, cml::vector4f(1,0.5,0,1));
 }
 
 
@@ -172,8 +145,8 @@ void App::HandleEvent(SDL_Event& event)
 		{
 		case SDL_KEYDOWN:
 			if( event.key.keysym.sym == SDLK_ESCAPE ) Stop();
-			else if( event.key.keysym.sym == SDLK_p ) renderer.useDefaultFBO();
-			else if( event.key.keysym.sym == SDLK_o ) renderer.useCreatedFBO();
+            else if( event.key.keysym.sym == SDLK_p ) renderer().useDefaultFBO();
+            else if( event.key.keysym.sym == SDLK_o ) renderer().useCreatedFBO();
 			break;
 		}
 	}
@@ -181,7 +154,4 @@ void App::HandleEvent(SDL_Event& event)
 
 void App::Cleanup()
 {
-	renderer.Dispose( );
-	emanager.ClearAllEntities();
-	physics.Cleanup();
 }

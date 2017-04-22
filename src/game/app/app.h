@@ -4,7 +4,6 @@
 
 #include <glrayfw/core/fpscounter.h>
 #include <glrayfw/app/sdlglapp.h>
-#include <glrayfw/map/map.h>
 #include <glrayfw/render/camera.h>
 #include <glrayfw/render/block.h>
 #include <glrayfw/render/Bitmap.h>
@@ -46,9 +45,6 @@ private:
 	EntityFactory efactory;
 
 	Font font;
-
-	Transform sceneRoot;
-
     Scene scene;
 
 	void HandleCamInput();
