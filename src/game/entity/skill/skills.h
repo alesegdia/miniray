@@ -2,10 +2,13 @@
 
 #include <cstdint>
 #include <vector>
+#include <memory>
 
 class Skill
 {
 public:
+    typedef std::shared_ptr<Skill> SharedPtr;
+
     ~Skill()
     {
 
@@ -34,8 +37,10 @@ public:
     class SlotConfig
     {
     public:
-        uint32_t cooldown;
-        Skill* skill;
+        uint32_t rate = 1;
+        uint32_t last_shot = 0;
+        Skill::SharedPtr skill;
+        bool pressed = false;
     };
 
     SkillSet(int num_skills)
@@ -44,16 +49,33 @@ public:
         m_slots.shrink_to_fit();
     }
 
-    bool tryFireSkill(int slot_id)
-    {
-        return m_slots[slot_id].cooldown < 0;
-    }
-
     void update(uint32_t delta)
     {
         for( auto slot : m_slots )
         {
-            slot.cooldown = std::max(uint32_t(0), slot.cooldown - delta);
+            if( updateSlot(slot, delta) )
+            {
+                slot.skill->execute();
+            }
+        }
+    }
+
+    SlotConfig& slot(int slot_id)
+    {
+        return m_slots[slot_id];
+    }
+
+    bool updateSlot(SlotConfig& slot, uint32_t delta)
+    {
+        slot.last_shot += delta;
+        if( slot.pressed && slot.last_shot >= slot.rate )
+        {
+            slot.last_shot = 0;
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

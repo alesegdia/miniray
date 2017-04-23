@@ -17,17 +17,18 @@ public:
             Actor* shooter)
         : m_entityFactory(ef),
           m_shooter(shooter),
+          m_player(player),
           m_bulletSprite(bulletSprite),
           m_bulletSpeed(bullet_speed),
           m_bulletDuration(bullet_duration) { }
 
     void execute() override
     {
-        CollisionLayer cl = (player ? CollisionLayer::ALLY_BULLET : CollisionLayer::ENEMY_BULLET);
-        uint16_t mask = (player ? Physics::ABULLET_MASK : Physics::EBULLET_MASK );
+        CollisionLayer cl = (m_player ? CollisionLayer::ALLY_BULLET : CollisionLayer::ENEMY_BULLET);
+        uint16_t mask = (m_player ? Physics::ABULLET_MASK : Physics::EBULLET_MASK );
         cml::vector2f shootdir = GetForward( m_shooter );
         m_entityFactory->SpawnBullet(
-                    GetWorld2DPos( actor->transform.position ) + shootdir, 	// shoot point
+                    GetWorld2DPos( m_shooter->transform.position ) + shootdir, 	// shoot point
                     shootdir * m_bulletSpeed, 	// weapon bullet speed
                     cl, mask,
                     m_bulletSprite,
@@ -37,6 +38,7 @@ public:
 private:
     EntityFactory* m_entityFactory;
     Actor* m_shooter;
+    bool m_player;
     int m_ammo = 0;
     float m_bulletSpeed = 0.f;
     float m_bulletDuration = 0.f;

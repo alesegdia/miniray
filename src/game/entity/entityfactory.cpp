@@ -14,6 +14,7 @@
 #include "../render/assets.h"
 #include "pickup.h"
 #include <glrayfw/entity/entitymanager.h>
+#include "skill/shootskill.h"
 
 EntityFactory::EntityFactory ()
 {
@@ -37,6 +38,18 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	Player* player = AllocEntity<Player>();
 	this->player = player;
 
+    SkillSet::SlotConfig slot;
+    slot.rate = 1;
+    slot.skill = std::shared_ptr<Skill>(new ShootSkill(
+                                            100,
+                                            100,
+                                            true,
+                                            assets->Sprite(S3D_GREENBULLET),
+                                            this,
+                                            player
+                                            )
+                                        );
+    player->skillSet.setSlotConfig(0, slot);
 	
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
