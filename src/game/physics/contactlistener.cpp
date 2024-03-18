@@ -7,8 +7,8 @@
 
 void ContactListener::BeginContact( b2Contact* contact )
 {
-	void* entity0 = contact->GetFixtureA()->GetBody()->GetUserData();
-	void* entity1 = contact->GetFixtureB()->GetBody()->GetUserData();
+	void* entity0 = reinterpret_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
+	void* entity1 = reinterpret_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
 	if( entity0 && entity1 )
 	{
 		Entity* e0 = static_cast<Entity*>( entity0 );
@@ -62,8 +62,8 @@ void ContactListener::BeginContact( b2Contact* contact )
 
 void ContactListener::EndContact( b2Contact* contact )
 {
-	void* entity0 = contact->GetFixtureA()->GetBody()->GetUserData();
-	void* entity1 = contact->GetFixtureB()->GetBody()->GetUserData();
+	void* entity0 = reinterpret_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
+	void* entity1 = reinterpret_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
 	if( entity0 && entity1 )
 	{
 		Entity* e0 = static_cast<Entity*>( entity0 );

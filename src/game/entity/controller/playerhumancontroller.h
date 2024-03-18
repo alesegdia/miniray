@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <cml/cml.h>
 #include <glrayfw/entity/controller/entitycontroller.h>
 

@@ -53,7 +53,7 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
-	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
+	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(player), CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
 	player->SetController( new PlayerHumanController(this) );
 	player->hp.current = 200;
 	player->hp.total = 200;
@@ -85,7 +85,7 @@ void EntityFactory::SpawnBullet(
 	bu->timer = time;
 	ent->controller = new BulletController();
 	ent->SetType( Entity::Type::BULLET );
-	b2Body* b = physics->CreateBulletBody( pos[0], pos[1], col, mask );
+	b2Body* b = physics->CreateBulletBody( pos[0], pos[1], col, mask, reinterpret_cast<uintptr_t>(ent) );
 	bu->direction = b2Vec2( dir[0], dir[1] );
 	ent->SetPhysicBody(b);
 	ent->SetSprite(sprite);
@@ -96,7 +96,7 @@ void EntityFactory::SpawnBullet(
 void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 {
 	Pickup* p = AllocEntity<Pickup>();
-	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
+	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], reinterpret_cast<uintptr_t>(p), CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
 	p->controller = NULL;
 	p->SetType( Entity::Type::PICKUP );
 	p->SetSprite( assets->Sprite(S3D_PICKSFW) );
@@ -113,7 +113,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->wep.bullet_duration = 1000;
 	actor->controller = new MobAIController();
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
-	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2 ) );
+	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );
 	emanager->AddEntity( actor );
 	this->sceneTree->AddChild(&(actor->transform));
 
