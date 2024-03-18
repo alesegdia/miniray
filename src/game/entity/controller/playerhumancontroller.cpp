@@ -128,8 +128,11 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		}
 		break;
 	case SDL_MOUSEMOTION:
-        rotation_offset[0] = ((float)event.motion.x) - 400.f;
-        rotation_offset[1] = ((float)event.motion.y) - 300.f;
+		rotation_offset[0] = event.motion.x - 400;
+		rotation_offset[1] = event.motion.y - 300;
+		lastMousePos.set(event.motion.x, event.motion.y);
+		std::cout << "mouse: " << rotation_offset[0] << ", " << rotation_offset[1] << std::endl;
+		SDL_WarpMouseInWindow(NULL, 400, 300);
 		ret = 1;break;
 	case SDL_MOUSEBUTTONUP:
 		switch( event.button.button )

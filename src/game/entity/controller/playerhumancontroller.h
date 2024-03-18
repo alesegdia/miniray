@@ -25,6 +25,7 @@ private:
 	cml::vector2f axis, rotation_offset;
 	bool shift, shoot;
 	float sensitivity = 0.1;
+	cml::vector2i lastMousePos;
 
 
 };
