@@ -33,7 +33,7 @@ public:
 	struct { uint32_t duration, last_pain; } fallout;
 	struct { uint32_t slow, freeze, confuse; } effect;
 
-	Weapon wep; // PUESTO AQUI PARA DEPURAR
+	Weapon* wep; // PUESTO AQUI PARA DEPURAR
 	// EN UN FUTURO; PUNTERO A WEAPON Y EN PLAYER, PLAYERWEAPON
 
 	void ApplyLinearVelocity()

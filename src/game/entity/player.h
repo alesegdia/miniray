@@ -19,12 +19,10 @@ public:
 	float SPR;
 	// script de inventario
 	Inventory* inventory;
-	// arma en uso
-	PlayerWeapon weapon; // ES UN PUNTERO!! CAMBIADO PARA TESTEAR!!
 	// velocidad al andar
-	float walk_speed = 8.f;
+	float walk_speed = 4.f;
 	// velocidad al esprintar
-	float run_speed = 16.f;
+	float run_speed = 8.f;
 	int ammo = 200;
 
 };

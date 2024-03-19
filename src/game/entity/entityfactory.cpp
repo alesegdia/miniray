@@ -38,18 +38,17 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	Player* player = AllocEntity<Player>();
 	this->player = player;
 
-    SkillSet::SlotConfig slot;
-    slot.rate = 1;
-    slot.skill = std::shared_ptr<Skill>(new ShootSkill(
-                                            100,
-                                            100,
+    auto skill = std::shared_ptr<Skill>(new ShootSkill(
+											500,
+                                            10,
+                                            1000,
                                             true,
                                             assets->Sprite(S3D_GREENBULLET),
                                             this,
                                             player
                                             )
                                         );
-    player->skillSet.setSlotConfig(0, slot);
+    player->skillSet.SetSlotSkill(0, skill);
 	
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
@@ -109,9 +108,10 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 {
 	Mob* actor = AllocEntity<Mob>();
 	actor->hp.current = 10;
-	actor->wep.rate = 200;
-	actor->wep.bullet_speed = 20;
-	actor->wep.bullet_duration = 1000;
+	actor->wep = new Weapon();
+	actor->wep->rate = 200;
+	actor->wep->bullet_speed = 20;
+	actor->wep->bullet_duration = 1000;
 	actor->controller = new MobAIController();
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );

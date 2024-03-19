@@ -140,7 +140,7 @@ bool DoKeepDistanceAndShoot( Mob* mob, Player* player, uint32_t delta )
 	DoMove( mob, mob2player , 4 );
 
 	bool shoot = mob->player_distance < SHOOT_DISTANCE;
-	return DoShoot( &(mob->wep), shoot, delta  );
+	return DoShoot( (mob->wep), shoot, delta  );
 }
 
 void Shoot( Actor* actor, EntityFactory* ef )
@@ -148,7 +148,7 @@ void Shoot( Actor* actor, EntityFactory* ef )
 	cml::vector2f shootdir = GetForward( actor );
 	ef->SpawnEnemyBullet(
 			GetWorld2DPos( actor->transform.position ) + shootdir, 	// shoot point
-			shootdir * actor->wep.bullet_speed, 	// weapon bullet speed
-			actor->wep.bullet_duration );			// weapon bullet lifetime
+			shootdir * actor->wep->bullet_speed, 	// weapon bullet speed
+			actor->wep->bullet_duration );			// weapon bullet lifetime
 
 }

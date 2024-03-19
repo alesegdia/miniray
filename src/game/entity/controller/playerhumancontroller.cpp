@@ -45,7 +45,7 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 	}
 	CheckHealth( p );
 
-    p->skillSet.slot(0).pressed = shoot;
+    p->skillSet.SetPressed(shoot);
     p->skillSet.update(delta);
 
 	/*

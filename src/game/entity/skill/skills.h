@@ -9,12 +9,45 @@ class Skill
 public:
     typedef std::shared_ptr<Skill> SharedPtr;
 
+    Skill(uint32_t cooldown)
+    {
+        m_cooldown = cooldown;
+    }
+
     ~Skill()
     {
 
     }
 
-    virtual void execute() = 0 ;
+    void SetPressed(bool pressed)
+    {
+        m_pressed = pressed;
+    }
+
+    void Update(uint32_t delta)
+    {
+        if (m_pressed)
+        {
+            m_lastShot += delta;
+            if (m_lastShot >= m_cooldown)
+            {
+                m_lastShot -= m_cooldown;
+                Execute();
+            }
+        }
+        else
+        {
+            m_lastShot = 0;
+        }
+    }
+
+    virtual void Execute() = 0 ;
+
+private:
+    uint32_t m_lastShot = 0;
+    bool m_pressed = false;
+    uint32_t m_cooldown;
+
 };
 
 
@@ -34,57 +67,29 @@ class SkillSet
 {
 public:
 
-    class SlotConfig
-    {
-    public:
-        uint32_t rate = 1;
-        uint32_t last_shot = 0;
-        Skill::SharedPtr skill;
-        bool pressed = false;
-    };
-
     SkillSet(int num_skills)
-        : m_slots(num_skills)
+        : m_skills(num_skills)
     {
-        m_slots.shrink_to_fit();
+        m_skills.shrink_to_fit();
     }
 
     void update(uint32_t delta)
     {
-        for( auto slot : m_slots )
-        {
-            if( updateSlot(slot, delta) )
-            {
-                slot.skill->execute();
-            }
-        }
+        m_skills[m_currentSkillIndex]->Update(delta);
     }
 
-    SlotConfig& slot(int slot_id)
+    void SetSlotSkill(int skillIndex, std::shared_ptr<Skill> skill)
     {
-        return m_slots[slot_id];
+        m_skills[skillIndex] = skill;
     }
 
-    bool updateSlot(SlotConfig& slot, uint32_t delta)
+    void SetPressed(bool pressed)
     {
-        slot.last_shot += delta;
-        if( slot.pressed && slot.last_shot >= slot.rate )
-        {
-            slot.last_shot = 0;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    void setSlotConfig(int slot_id, SlotConfig slot_config)
-    {
-        m_slots[slot_id] = slot_config;
+        m_skills[m_currentSkillIndex]->SetPressed(pressed);
     }
 
 private:
-    std::vector<SlotConfig> m_slots;
+    std::vector<std::shared_ptr<Skill>> m_skills;
+    int m_currentSkillIndex = 0;
 
 };
