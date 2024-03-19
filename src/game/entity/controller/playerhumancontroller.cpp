@@ -48,17 +48,19 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
     p->skillSet.slot(0).pressed = shoot;
     p->skillSet.update(delta);
 
-    if( false ) //p->ammo > 0 && DoShoot( static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
+	/*
+    if( p->ammo > 0 && DoShoot( static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
 	{
 		cml::vector2f shootdir = GetForward( p ); //Rotate2D( cml::vector2f(0.f,1.f), cml::rad(-e->GetAngleY()) );
         entityfactory->SpawnPlayerBullet(
-                    GetWorld2DPos( e->transform.position ) + shootdir * 2,
+                    GetWorld2DPos( e->transform.position ) + shootdir * 4,
                     shootdir * p->weapon.bullet_speed,
                     p->weapon.bullet_duration
         );
-        //p->ammo--;
+        p->ammo--;
 		// restar el bat y spr
 	}
+	*/
 
 	/*
 	PlayerWeapon* pw = p->weapon;
@@ -131,7 +133,7 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		rotation_offset[0] = event.motion.x - 400;
 		rotation_offset[1] = event.motion.y - 300;
 		lastMousePos.set(event.motion.x, event.motion.y);
-		std::cout << "mouse: " << rotation_offset[0] << ", " << rotation_offset[1] << std::endl;
+		// std::cout << "mouse: " << rotation_offset[0] << ", " << rotation_offset[1] << std::endl;
 		SDL_WarpMouseInWindow(NULL, 400, 300);
 		ret = 1;break;
 	case SDL_MOUSEBUTTONUP:

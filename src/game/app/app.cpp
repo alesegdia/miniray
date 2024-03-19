@@ -40,7 +40,6 @@ void App::Setup(int argc, char** argv)
 	printf("SEED: %d\n",sid);
 	rng.seed( sid );
 
-    physics().SetContactListener( new ContactListener() );
 
     assets.Prepare( GL() );
 
@@ -55,6 +54,9 @@ void App::Setup(int argc, char** argv)
     scene.setRoofTexture(assets.Texture(TEX_TECHO));
 
     loadScene(&scene);
+
+	physics().SetContactListener(new ContactListener());
+
 
     efactory.Prepare( &physics(), &assets, &entityManager(), &sceneRoot() );
 
@@ -130,9 +132,9 @@ void App::RenderPlayerHP()
     char buf[8];
     sprintf(buf, "%d", player->hp.current);
 	float phealth = float(player->hp.current) / float(player->hp.total);
-    renderer().renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
+	renderer().renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
 
-    sprintf(buf, "%d", player->ammo);
+	sprintf(buf, "%d", player->ammo);
     renderer().renderText(buf, 0.5, -0.97f, cml::vector4f(1,0.5,0,1));
 }
 

@@ -89,6 +89,7 @@ void EntityFactory::SpawnBullet(
 	bu->direction = b2Vec2( dir[0], dir[1] );
 	ent->SetPhysicBody(b);
 	ent->SetSprite(sprite);
+	ent->SetType(Entity::Type::BULLET);
 	emanager->AddEntity(ent);
 	this->sceneTree->AddChild(&(bu->transform));
 }
