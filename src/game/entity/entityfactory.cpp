@@ -38,20 +38,33 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	Player* player = AllocEntity<Player>();
 	this->player = player;
 
-	auto skill1 = std::shared_ptr<Skill>(new ShootSkill(100, 10, 1000, 1, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill2 = std::shared_ptr<Skill>(new ShootSkill(10, 10, 1000, 3, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill3 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 1000, 1, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill4 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 1000, 1, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill0 = std::shared_ptr<Skill>(new ShootSkill(100, 10, 1000, 0, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill1 = std::shared_ptr<Skill>(new ShootSkill(10, 10, 1000, 1, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill2 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 1000, 2, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill3 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 1000, 3, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill4 = std::shared_ptr<Skill>(new ShootSkill(100, 10, 1000, 4, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill5 = std::shared_ptr<Skill>(new ShootSkill(10, 10, 300, 5, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill6 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 300, 1, 50, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill7 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 300, 2, 50, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill8 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 300, 3, 50, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill9 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 300, 4, 50, true, assets->Sprite(S3D_GREENBULLET), this, player));
 
-	player->skillSet.SetSlotSkill(0, skill1);
-	player->skillSet.SetSlotSkill(1, skill2);
-	player->skillSet.SetSlotSkill(2, skill3);
-	player->skillSet.SetSlotSkill(3, skill4);
+	player->skillSet.SetSlotSkill(0, skill0);
+	player->skillSet.SetSlotSkill(1, skill1);
+	player->skillSet.SetSlotSkill(2, skill2);
+	player->skillSet.SetSlotSkill(3, skill3);
+	player->skillSet.SetSlotSkill(4, skill4);
+	player->skillSet.SetSlotSkill(5, skill5);
+	player->skillSet.SetSlotSkill(6, skill6);
+	player->skillSet.SetSlotSkill(7, skill7);
+	player->skillSet.SetSlotSkill(8, skill8);
+	player->skillSet.SetSlotSkill(9, skill9);
 
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(player), CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
-	player->SetController( new PlayerHumanController(this) );
+	player->SetController( new PlayerHumanController(this, player) );
+
 	player->hp.current = 200;
 	player->hp.total = 200;
 
@@ -113,6 +126,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	actor->controller = new MobAIController();
 	actor->SetSprite( assets->Sprite(S3D_BICHO) );
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );
+	actor->SetRowInSpritesheet(2);
 	emanager->AddEntity( actor );
 	this->sceneTree->AddChild(&(actor->transform));
 

@@ -7,11 +7,11 @@
 
 class Entity;
 class EntityFactory;
-
+class Player;
 
 class PlayerHumanController : public EntityController {
 public:
-	PlayerHumanController (EntityFactory* efactory);
+	PlayerHumanController (EntityFactory* efactory, Player* player);
 	virtual ~PlayerHumanController ();
 
 	int HandleEvent( SDL_Event& event );
@@ -27,6 +27,7 @@ private:
 	float sensitivity = 0.1;
 	cml::vector2i lastMousePos;
 
+	Player* m_player;
 
 };
 

@@ -7,10 +7,11 @@
 #include "../entityfactory.h"
 #include <Box2D/Box2D.h>
 
-PlayerHumanController::PlayerHumanController (EntityFactory* efactory)
+PlayerHumanController::PlayerHumanController (EntityFactory* efactory, Player* player)
 {
 	this->entityfactory = efactory;
 	forward = back = left = right = shoot = shift = false;
+	m_player = player;
 }
 
 PlayerHumanController::~PlayerHumanController ()
@@ -47,6 +48,8 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 
     p->skillSet.SetPressed(shoot);
     p->skillSet.update(delta);
+
+	p->pushback *= 0.8;
 
 	/*
     if( p->ammo > 0 && DoShoot( static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
@@ -88,6 +91,7 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 int PlayerHumanController::HandleEvent( SDL_Event& event )
 {
 	int ret = 0;
+	int keysym = -1;
 	switch( event.type ){
 	case SDL_KEYDOWN:
 		switch( event.key.keysym.sym )
@@ -107,6 +111,12 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		case SDLK_LSHIFT:
 			shift = true;
 			ret = 1;break;
+		}
+		keysym = event.key.keysym.sym;
+		if (keysym >= SDLK_0 && keysym <= SDLK_9)
+		{
+			int slotidx = keysym - SDLK_0;
+			m_player->skillSet.SetCurrentSlot(slotidx);
 		}
 		break;
 	case SDL_KEYUP:

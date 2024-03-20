@@ -39,8 +39,6 @@ void Shoot( Actor* actor, EntityFactory* ef );
 // girar entidad
 void DoLogicAngleAdd( Actor* actor, float angle );
 
-// obtener vector hacia delante
-cml::vector2f GetForward( Actor* actor );
 
 /*
 float DealLinearDamage( Actor* attacker, Actor* victim,

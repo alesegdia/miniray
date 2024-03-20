@@ -89,6 +89,16 @@ public:
         m_skills[m_currentSkillIndex]->SetPressed(pressed);
     }
 
+    void SetCurrentSlot(int slot)
+    {
+        m_currentSkillIndex = slot;
+    }
+
+    int GetCurrentSlot()
+    {
+        return m_currentSkillIndex;
+    }
+
 private:
     std::vector<std::shared_ptr<Skill>> m_skills;
     int m_currentSkillIndex = 0;

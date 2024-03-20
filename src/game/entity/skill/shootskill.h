@@ -32,9 +32,9 @@ public:
     {
         CollisionLayer cl = (m_player ? CollisionLayer::ALLY_BULLET : CollisionLayer::ENEMY_BULLET);
         uint16_t mask = (m_player ? Physics::ABULLET_MASK : Physics::EBULLET_MASK );
-        cml::vector2f shootdir = GetForward( m_shooter );
+        cml::vector2f shootdir = m_shooter->GetForward();
 
-        int degsPerShot = m_extraShotsSpreadDegs / (m_extraShots);
+        m_shooter->PushBack(10);
 
         // main shot
         m_entityFactory->SpawnBullet(
@@ -46,6 +46,7 @@ public:
 
         for (int i = 0; i < m_extraShots; i ++)
         {
+            int degsPerShot = m_extraShotsSpreadDegs / (m_extraShots);
             auto rads = (i+1) * degsPerShot * 0.017453;
             auto rotatedShootDirLeft = Rotate2D(shootdir, -rads);
             auto rotatedShootDirRight = Rotate2D(shootdir, rads);

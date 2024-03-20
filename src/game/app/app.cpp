@@ -48,12 +48,12 @@ void App::Setup(int argc, char** argv)
     Matrix2D tilemap = mapgen::RasterMapData( mapdata );
 
     scene.tilemap(tilemap);
-    scene.setTextureForTile(1, assets.Texture(TEX_TEX1));
-    scene.setTextureForTile(2, assets.Texture(TEX_TEX2));
-	scene.setTextureForTile(3, assets.Texture(TEX_TEX3));
+	scene.setTextureForTile(1, assets.Texture("TEX_TEX1"));
+	scene.setTextureForTile(2, assets.Texture("TEX_TEX2"));
+	scene.setTextureForTile(3, assets.Texture("TEX_TEX3"));
 	//scene.setTextureForTile(4, assets.Texture(TEX_STAIRS));
-	scene.setFloorTexture(assets.Texture(TEX_SUELO));
-    scene.setRoofTexture(assets.Texture(TEX_TECHO));
+	scene.setFloorTexture(assets.Texture("TEX_SUELO"));
+	scene.setRoofTexture(assets.Texture("TEX_TECHO"));
 
     loadScene(&scene);
 
@@ -137,7 +137,10 @@ void App::RenderPlayerHP()
 	renderer().renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
 
 	sprintf(buf, "%d", player->ammo);
-    renderer().renderText(buf, 0.5, -0.97f, cml::vector4f(1,0.5,0,1));
+	renderer().renderText(buf, 0.5, -0.97f, cml::vector4f(1, 0.5, 0, 1));
+
+	sprintf(buf, "%d", player->skillSet.GetCurrentSlot());
+	renderer().renderText(buf, -0.095, -0.97f, cml::vector4f(1, 1, 1, 1));
 }
 
 

@@ -38,7 +38,19 @@ public:
 
 	void ApplyLinearVelocity()
 	{
-		body->SetLinearVelocity(b2Vec2(move_direction[0],move_direction[1]));
+		body->SetLinearVelocity(b2Vec2(move_direction[0] + pushback[0], move_direction[1] + pushback[1]));
+	}
+
+	void PushBack(int amount)
+	{
+		auto forward = GetForward();
+		auto backward = cml::rotate_vector_2D(forward, M_PI);
+		pushback = { backward[0] * amount, backward[1] * amount};
+	}
+
+	cml::vector2f GetForward()
+	{
+		return cml::rotate_vector_2D(cml::vector2f(0.f, 1.f), transform.logic_angle);
 	}
 
     SkillSet skillSet = SkillSet(10);

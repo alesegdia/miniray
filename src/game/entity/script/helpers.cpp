@@ -50,7 +50,7 @@ void DoMove( Actor* actor, cml::vector3f dir, float speed )
 {
 	if( dir != cml::zero<3>() ) dir.normalize();
 	dir *= speed;
-	actor->GetPhysicBody()->SetLinearVelocity(b2Vec2(dir[0],dir[2]));
+	actor->GetPhysicBody()->SetLinearVelocity(b2Vec2(actor->pushback[0] + dir[0], actor->pushback[1] + dir[2]));
 }
 
 cml::vector2f GetWorld2DPos( cml::vector3f v )
@@ -58,10 +58,6 @@ cml::vector2f GetWorld2DPos( cml::vector3f v )
 	return cml::vector2f(-v[0],-v[2]);
 }
 
-cml::vector2f GetForward( Actor* actor )
-{
-	return cml::rotate_vector_2D( cml::vector2f(0.f,1.f), actor->transform.logic_angle );
-}
 cml::vector2f Rotate2D( cml::vector2f v, float angle )
 {
 	return cml::rotate_vector_2D( v, angle );
@@ -101,7 +97,7 @@ void DoSensePlayer( Mob* actor, Player* player )
 	bool player_visible = false;
 	if( actor->player_distance < actor->vision.distance )
 	{
-		cml::vector2f mob_forward = GetForward( actor );
+		cml::vector2f mob_forward = actor->GetForward();
 		angle_to_player = cml::deg(cml::signed_angle_2D( mob_forward, cml::vector2f(mob2player[0],mob2player[2]) ));
 
 			if( abs(angle_to_player) < actor->vision.angle)
@@ -145,7 +141,7 @@ bool DoKeepDistanceAndShoot( Mob* mob, Player* player, uint32_t delta )
 
 void Shoot( Actor* actor, EntityFactory* ef )
 {
-	cml::vector2f shootdir = GetForward( actor );
+	cml::vector2f shootdir = actor->GetForward();
 	ef->SpawnEnemyBullet(
 			GetWorld2DPos( actor->transform.position ) + shootdir, 	// shoot point
 			shootdir * actor->wep->bullet_speed, 	// weapon bullet speed
