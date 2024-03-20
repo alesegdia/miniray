@@ -12,6 +12,8 @@ public:
             uint32_t cooldown,
             float bullet_speed,
             float bullet_duration,
+            int extraShots,
+            int extraShotsSpreadDegs,
             bool player,
             Sprite3D* bulletSprite,
             EntityFactory* ef,
@@ -19,6 +21,8 @@ public:
         : Skill(cooldown),
           m_entityFactory(ef),
           m_shooter(shooter),
+          m_extraShots(extraShots),
+          m_extraShotsSpreadDegs(extraShotsSpreadDegs),
           m_player(player),
           m_bulletSprite(bulletSprite),
           m_bulletSpeed(bullet_speed),
@@ -30,28 +34,30 @@ public:
         uint16_t mask = (m_player ? Physics::ABULLET_MASK : Physics::EBULLET_MASK );
         cml::vector2f shootdir = GetForward( m_shooter );
 
-        int shots = 3;
-        int degrees = 30;
-        int degsPerShot = degrees / (shots - 1);
-        int degsHalf = degrees / 2;
+        int degsPerShot = m_extraShotsSpreadDegs / (m_extraShots);
 
-        if (shots > 1)
+        // main shot
+        m_entityFactory->SpawnBullet(
+            GetWorld2DPos(m_shooter->transform.position) + shootdir, 	// shoot point
+            shootdir * m_bulletSpeed, 	// weapon bullet speed
+            cl, mask,
+            m_bulletSprite,
+            m_bulletDuration);			// weapon bullet lifetime
+
+        for (int i = 0; i < m_extraShots; i ++)
         {
+            auto rads = (i+1) * degsPerShot * 0.017453;
+            auto rotatedShootDirLeft = Rotate2D(shootdir, -rads);
+            auto rotatedShootDirRight = Rotate2D(shootdir, rads);
             m_entityFactory->SpawnBullet(
                 GetWorld2DPos(m_shooter->transform.position) + shootdir, 	// shoot point
-                shootdir * m_bulletSpeed, 	// weapon bullet speed
+                rotatedShootDirLeft * m_bulletSpeed, 	// weapon bullet speed
                 cl, mask,
                 m_bulletSprite,
                 m_bulletDuration);			// weapon bullet lifetime
-        }
-
-        for (int i = -degsHalf; i <= degsHalf; i += degsPerShot)
-        {
-            auto rads = i * 0.017453;
-            auto rotatedShootDir = Rotate2D(shootdir, rads);
             m_entityFactory->SpawnBullet(
                 GetWorld2DPos(m_shooter->transform.position) + shootdir, 	// shoot point
-                rotatedShootDir * m_bulletSpeed, 	// weapon bullet speed
+                rotatedShootDirRight * m_bulletSpeed, 	// weapon bullet speed
                 cl, mask,
                 m_bulletSprite,
                 m_bulletDuration);			// weapon bullet lifetime
@@ -67,4 +73,6 @@ private:
     float m_bulletSpeed = 0.f;
     float m_bulletDuration = 0.f;
     Sprite3D* m_bulletSprite;
+    int m_extraShotsSpreadDegs = 0;
+    int m_extraShots = 0;
 };

@@ -137,7 +137,6 @@ void RasterRooms( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 {
 	for( int i = 0; i < ((int)rooms.Size()); i++ )
 	{
-		printf("NG\n");
 		Room r = rooms[i];
 		for( int x = r.x - r.w/2; x < r.x + r.w/2; x++ )
 		for( int y = r.y - r.h/2; y < r.y + r.h/2; y++ )
@@ -145,6 +144,10 @@ void RasterRooms( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 			map.Set( x, y, block_type );
 		}
 	}
+
+	// auto& exitRoom = rooms[rand() % rooms.Size()];
+	// map.Set(exitRoom.Center()[0], exitRoom.Center()[1], 4);
+
 }
 
 void RasterPaths( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )

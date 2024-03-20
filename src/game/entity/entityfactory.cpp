@@ -38,18 +38,16 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	Player* player = AllocEntity<Player>();
 	this->player = player;
 
-    auto skill = std::shared_ptr<Skill>(new ShootSkill(
-											500,
-                                            10,
-                                            1000,
-                                            true,
-                                            assets->Sprite(S3D_GREENBULLET),
-                                            this,
-                                            player
-                                            )
-                                        );
-    player->skillSet.SetSlotSkill(0, skill);
-	
+	auto skill1 = std::shared_ptr<Skill>(new ShootSkill(100, 10, 1000, 1, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill2 = std::shared_ptr<Skill>(new ShootSkill(10, 10, 1000, 3, 30, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill3 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 1000, 1, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill4 = std::shared_ptr<Skill>(new ShootSkill(50, 10, 1000, 1, 0, true, assets->Sprite(S3D_GREENBULLET), this, player));
+
+	player->skillSet.SetSlotSkill(0, skill1);
+	player->skillSet.SetSlotSkill(1, skill2);
+	player->skillSet.SetSlotSkill(2, skill3);
+	player->skillSet.SetSlotSkill(3, skill4);
+
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(player), CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );

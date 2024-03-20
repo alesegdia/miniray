@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(miniray)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 set(SDL2_DIR C:/Users/alejandro.segui/SDL2-2.30.1)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "sdldep/cmake" ${CMAKE_MODULE_PATH})

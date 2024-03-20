@@ -25,7 +25,8 @@ const int TEX_GREENBULLET = 7;
 const int TEX_REDBULLET = 8;
 const int TEX_PICKSFW = 9;
 const int TEX_FIREBALL = 10;
-const int TEX_MAX = 11;
+const int TEX_STAIRS = 11;
+const int TEX_MAX = 12;
 
 class Assets {
 public:
@@ -56,6 +57,7 @@ public:
 		LoadTexture( gl, "assets/arma.png", TEX_ARMA );
 		LoadTexture( gl, "assets/picksfw.png", TEX_PICKSFW );
 		LoadTexture( gl, "assets/fireball.png", TEX_FIREBALL );
+		LoadTexture( gl, "assets/stairs.png", TEX_STAIRS);
 
 		sprites[S3D_BICHO].Prepare( gl, textures[TEX_ROBOT], 4, 3 );
 		sprites[S3D_BICHO].SetCurrentFrame(0,0);

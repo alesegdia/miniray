@@ -41,6 +41,11 @@ struct Room
 				rng.uniform( Left() + reduce, Right() - reduce ), rng.uniform( Top() + reduce, Bot() - reduce ) );
 	}
 
+	cml::vector2i Center()
+	{
+		return { x + w / 2, y + h / 2 };
+	}
+
 	int Left() { return x-floor(w/2.f); }
 	int Top() { return y-floor(h/2.f); }
 	int Right() { return x + floor(w/2.f); }

@@ -12,6 +12,7 @@ public:
     Skill(uint32_t cooldown)
     {
         m_cooldown = cooldown;
+        m_lastShot = cooldown;
     }
 
     ~Skill()
@@ -37,7 +38,7 @@ public:
         }
         else
         {
-            m_lastShot = 0;
+            m_lastShot = m_cooldown;
         }
     }
 

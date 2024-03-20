@@ -44,13 +44,15 @@ void App::Setup(int argc, char** argv)
     assets.Prepare( GL() );
 
     mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
+
     Matrix2D tilemap = mapgen::RasterMapData( mapdata );
 
     scene.tilemap(tilemap);
     scene.setTextureForTile(1, assets.Texture(TEX_TEX1));
     scene.setTextureForTile(2, assets.Texture(TEX_TEX2));
-    scene.setTextureForTile(3, assets.Texture(TEX_TEX3));
-    scene.setFloorTexture(assets.Texture(TEX_SUELO));
+	scene.setTextureForTile(3, assets.Texture(TEX_TEX3));
+	//scene.setTextureForTile(4, assets.Texture(TEX_STAIRS));
+	scene.setFloorTexture(assets.Texture(TEX_SUELO));
     scene.setRoofTexture(assets.Texture(TEX_TECHO));
 
     loadScene(&scene);
