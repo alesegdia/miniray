@@ -12,7 +12,7 @@ public:
     Skill(uint32_t cooldown)
     {
         m_cooldown = cooldown;
-        m_lastShot = cooldown;
+        m_nextShot = cooldown;
     }
 
     ~Skill()
@@ -27,25 +27,18 @@ public:
 
     void Update(uint32_t delta)
     {
-        if (m_pressed)
+        m_nextShot -= delta;
+        if (m_pressed && m_nextShot <= 0)
         {
-            m_lastShot += delta;
-            if (m_lastShot >= m_cooldown)
-            {
-                m_lastShot -= m_cooldown;
-                Execute();
-            }
-        }
-        else
-        {
-            m_lastShot = m_cooldown;
+            Execute();
+            m_nextShot = m_cooldown;
         }
     }
 
     virtual void Execute() = 0 ;
 
 private:
-    uint32_t m_lastShot = 0;
+    int m_nextShot = 0;
     bool m_pressed = false;
     uint32_t m_cooldown;
 
@@ -99,8 +92,27 @@ public:
         return m_currentSkillIndex;
     }
 
+    void AddAmmo(int ammo)
+    {
+        m_ammo += ammo;
+    }
+
+    void ConsumeAmmo()
+    {
+        if (m_ammo > 0)
+        {
+            m_ammo--;
+        }
+    }
+
+    int GetAmmo()
+    {
+        return m_ammo;
+    }
+
 private:
     std::vector<std::shared_ptr<Skill>> m_skills;
     int m_currentSkillIndex = 0;
+    int m_ammo = -1;
 
 };

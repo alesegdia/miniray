@@ -10,11 +10,13 @@
 
 const int S3D_BICHO = 		0;
 const int S3D_GREENBULLET = 	1;
-const int S3D_REDBULLET = 	2;
-const int S3D_ARMA = 		3;
-const int S3D_PICKSFW = 4;
-const int S3D_FIREBALL = 5;
-const int S3D_MAX = 6;
+const int S3D_REDBULLET = 2;
+const int S3D_BLUEBULLET = 3;
+const int S3D_ARMA = 		4;
+const int S3D_PICKSFW = 5;
+const int S3D_FIREBALL = 6;
+const int S3D_BULLETOLD = 7;
+const int S3D_MAX = 8;
 
 
 class Assets {
@@ -43,6 +45,8 @@ public:
 		LoadTexture(gl, "assets/rob.png", "TEX_ROBOT");
 		LoadTexture(gl, "assets/bullet.png", "TEX_GREENBULLET");
 		LoadTexture(gl, "assets/redbullet.png", "TEX_REDBULLET");
+		LoadTexture(gl, "assets/bluebullet.png", "TEX_BLUEBULLET");
+		LoadTexture(gl, "assets/bulletold.png", "TEX_BULLETOLD");
 		LoadTexture(gl, "assets/arma.png", "TEX_ARMA");
 		LoadTexture(gl, "assets/picksfw.png", "TEX_PICKSFW");
 		LoadTexture(gl, "assets/fireball.png", "TEX_FIREBALL");
@@ -52,9 +56,11 @@ public:
 		sprites[S3D_BICHO].SetCurrentFrame(0,0);
 		sprites[S3D_GREENBULLET].Prepare(gl, m_textures["TEX_GREENBULLET"], 1, 1);
 		sprites[S3D_REDBULLET].Prepare(gl, m_textures["TEX_REDBULLET"], 1, 1);
+		sprites[S3D_BLUEBULLET].Prepare(gl, m_textures["TEX_BLUEBULLET"], 1, 1);
 		sprites[S3D_ARMA].Prepare(gl, m_textures["TEX_ARMA"], 2, 2);
 		sprites[S3D_FIREBALL].Prepare(gl, m_textures["TEX_FIREBALL"], 1, 1);
 		sprites[S3D_PICKSFW].Prepare(gl, m_textures["TEX_PICKSFW"], 1, 1);
+		sprites[S3D_BULLETOLD].Prepare(gl, m_textures["TEX_BULLETOLD"], 1, 1);
 	}
 
 	Sprite3D* Sprite( int spriteid )

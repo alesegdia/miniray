@@ -84,7 +84,10 @@ void App::Update(uint32_t delta)
 
 	player->PhysicStep();
 	player->Step( delta );
-	if( !player->IsAlive() ) Stop();
+	if (!player->IsAlive())
+	{
+		Stop();
+	}
 
 	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
 	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
@@ -136,11 +139,11 @@ void App::RenderPlayerHP()
 	float phealth = float(player->hp.current) / float(player->hp.total);
 	renderer().renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
 
-	sprintf(buf, "%d", player->ammo);
+	sprintf(buf, "%d", player->skillSet.GetAmmo());
 	renderer().renderText(buf, 0.5, -0.97f, cml::vector4f(1, 0.5, 0, 1));
 
 	sprintf(buf, "%d", player->skillSet.GetCurrentSlot());
-	renderer().renderText(buf, -0.095, -0.97f, cml::vector4f(1, 1, 1, 1));
+	renderer().renderText(buf, -0.04f, -0.97f, cml::vector4f(1, 1, 1, 1));
 }
 
 

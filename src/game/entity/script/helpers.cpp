@@ -24,28 +24,6 @@ void DoDropItem( Actor* actor, RNG& rng, EntityFactory* entityfactory )
 	}
 }
 
-bool DoShoot( Weapon* wp, bool shoot_key_pressed, uint32_t delta )
-{
-	if( shoot_key_pressed )
-	{
-		if( wp->last_shot >= wp->rate )
-		{
-			wp->last_shot = 0;
-			return true;
-		}
-		else
-		{
-			wp->last_shot += delta;
-		}
-	}
-	else
-	{
-		wp->last_shot += delta;
-	}
-	return false;
-
-}
-
 void DoMove( Actor* actor, cml::vector3f dir, float speed )
 {
 	if( dir != cml::zero<3>() ) dir.normalize();
@@ -61,11 +39,6 @@ cml::vector2f GetWorld2DPos( cml::vector3f v )
 cml::vector2f Rotate2D( cml::vector2f v, float angle )
 {
 	return cml::rotate_vector_2D( v, angle );
-}
-
-void DoLogicAngleAdd( Actor* actor, float angle )
-{
-	actor->transform.logic_angle += cml::rad(angle);
 }
 
 class MyRayCB : public b2RayCastCallback
@@ -125,26 +98,24 @@ void DoSensePlayer( Mob* actor, Player* player )
 	actor->player_visible = player_visible;
 }
 
-bool DoKeepDistanceAndShoot( Mob* mob, Player* player, uint32_t delta )
+void DoKeepDistance( Mob* mob, Player* player, uint32_t delta )
 {
-	DoLogicAngleAdd( mob, mob->angle_to_player );
+	mob->DoLogicAngleAdd( mob->angle_to_player );
 
 	float dist = mob->player_distance;
 	cml::vector3f mob2player = mob->transform.position - player->transform.position;
-	if( dist < 6 ) DoMove( mob, mob2player , -4 );
-	if( dist > 7 ) DoMove( mob, mob2player , 4 );
-	DoMove( mob, mob2player , 4 );
-
-	bool shoot = mob->player_distance < SHOOT_DISTANCE;
-	return DoShoot( (mob->wep), shoot, delta  );
+	if (dist < 6)
+	{
+		DoMove(mob, mob2player, -4);
+	}
+	else if (dist > 7)
+	{
+		DoMove(mob, mob2player, 4);
+	}
 }
 
-void Shoot( Actor* actor, EntityFactory* ef )
+void DoFly(Entity* e, double freqMod, double amplitudeMod, double offset)
 {
-	cml::vector2f shootdir = actor->GetForward();
-	ef->SpawnEnemyBullet(
-			GetWorld2DPos( actor->transform.position ) + shootdir, 	// shoot point
-			shootdir * actor->wep->bullet_speed, 	// weapon bullet speed
-			actor->wep->bullet_duration );			// weapon bullet lifetime
-
+	auto time = SDL_GetTicks();
+	e->transform.position[1] = float(sin((time * freqMod)) * amplitudeMod + offset);
 }

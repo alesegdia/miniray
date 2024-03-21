@@ -2,8 +2,18 @@
 #include "contactlistener.h"
 #include <glrayfw/entity/entity.h>
 #include "../entity/actor.h"
+#include "../entity/bullet.h"
 #include "../entity/player.h"
 #include "../entity/pickup.h"
+
+bool DoesCollide(Entity* e0, Entity* e1, Entity::Type ett0, Entity::Type ett1, Entity** oute0, Entity** oute1)
+{
+	bool hit = e0->GetType() == ett0 && e1->GetType() == ett1 ||
+		       e0->GetType() == ett1 && e1->GetType() == ett0;
+	*oute0 = (e0->GetType() == ett0 ? e0 : e1);
+	*oute1 = (e1->GetType() == ett1 ? e1 : e0);
+	return hit;
+}
 
 void ContactListener::BeginContact( b2Contact* contact )
 {
@@ -18,34 +28,30 @@ void ContactListener::BeginContact( b2Contact* contact )
 		if( e0->GetType() == Entity::Type::BULLET )
 		{
 			e0->Die();
+			Bullet* b = static_cast<Bullet*> (e0);
 			if( e1->GetType() == Entity::Type::MOB || e1->GetType() == Entity::Type::PLAYER )
 			{
 				Actor* actor = static_cast<Actor*>(e1);
-				actor->hp.current--;
+				actor->hp.current -= b->dmg;
 			}
 		}
 		if( e1->GetType() == Entity::Type::BULLET )
 		{
 			e1->Die();
+			Bullet* b = static_cast<Bullet*> (e1);
 			if( e0->GetType() == Entity::Type::MOB || e0->GetType() == Entity::Type::PLAYER )
 			{
 				Actor* actor = static_cast<Actor*>(e0);
-				actor->hp.current--;
+				actor->hp.current -= b->dmg;
 			}
 		}
-		if( e0->GetType() == Entity::Type::PLAYER && e1->GetType() == Entity::Type::PICKUP )
+		Entity *oute0, *oute1;
+		if( DoesCollide(e0, e1, Entity::Type::PLAYER, Entity::Type::PICKUP, &oute0, &oute1 ) )
 		{
-			Player* pl = static_cast<Player*>( e0 );
-			Pickup* pi = static_cast<Pickup*>( e1 );
-			pl->ammo += pi->quantity;
-			e1->Die();
-		}
-		if( e1->GetType() == Entity::Type::PLAYER && e0->GetType() == Entity::Type::PICKUP )
-		{
-			Player* pl = static_cast<Player*>( e1 );
-			Pickup* pi = static_cast<Pickup*>( e0 );
-			pl->ammo += pi->quantity;
-			e0->Die();
+			Player* pl = static_cast<Player*>( oute0 );
+			Pickup* pi = static_cast<Pickup*>( oute1 );
+			pl->skillSet.AddAmmo(pi->quantity);
+			oute1->Die();
 		}
 	}
 	else if( entity0 )

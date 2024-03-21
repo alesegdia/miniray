@@ -31,16 +31,17 @@ public:
 	{
 		Mob* mob = static_cast<Mob*>(e);
         assert(mob != nullptr && "THE OBJECT IS NOT A MOB");
-		mob->GetPhysicBody()->SetLinearVelocity(b2Vec2(0,0));
+		mob->ClearVelocity();
 		CheckHealth( mob );
 		DoDropItem( mob, rng, entityfactory );
 		DoSensePlayer( mob, player );
 
 		if( mob->player_visible )
 		{
-			if( DoKeepDistanceAndShoot( mob, player, delta ) )
-				Shoot( mob, entityfactory );
+			DoKeepDistance(mob, player, delta);
 		}
+		mob->skillSet.SetPressed(mob->player_visible);
+		mob->skillSet.update(delta);
 	}
 
 };
