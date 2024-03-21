@@ -8,21 +8,16 @@
 
 #include "../constants.h"
 
-const int S3D_BICHO = 		0;
-const int S3D_GREENBULLET = 	1;
-const int S3D_REDBULLET = 2;
-const int S3D_BLUEBULLET = 3;
-const int S3D_ARMA = 		4;
-const int S3D_PICKSFW = 5;
-const int S3D_FIREBALL = 6;
-const int S3D_BULLETOLD = 7;
-const int S3D_MAX = 8;
-
 
 class Assets {
 public:
 	~Assets(){
 		for (auto item : m_textures)
+		{
+			delete item.second;
+		}
+
+		for (auto item : m_sprites)
 		{
 			delete item.second;
 		}
@@ -33,6 +28,13 @@ public:
 		tdogl::Bitmap bmp = tdogl::Bitmap::bitmapFromFile(path);
 		bmp.flipVertically();
 		m_textures[id] = new tdogl::Texture( gl, bmp );
+	}
+
+	void LoadSprite(Render::Context* gl, const char* id, std::string texid, int w = 1, int h = 1)
+	{
+		Sprite3D* sprite = new Sprite3D();
+		sprite->Prepare(gl, m_textures[texid], w, h);
+		m_sprites[id] = sprite;
 	}
 
 	void Prepare( Render::Context* gl )
@@ -52,20 +54,21 @@ public:
 		LoadTexture(gl, "assets/fireball.png", "TEX_FIREBALL");
 		LoadTexture(gl, "assets/stairs.png", "TEX_STAIRS");
 
-		sprites[S3D_BICHO].Prepare(gl, m_textures["TEX_ROBOT"], 4, 3);
-		sprites[S3D_BICHO].SetCurrentFrame(0,0);
-		sprites[S3D_GREENBULLET].Prepare(gl, m_textures["TEX_GREENBULLET"], 1, 1);
-		sprites[S3D_REDBULLET].Prepare(gl, m_textures["TEX_REDBULLET"], 1, 1);
-		sprites[S3D_BLUEBULLET].Prepare(gl, m_textures["TEX_BLUEBULLET"], 1, 1);
-		sprites[S3D_ARMA].Prepare(gl, m_textures["TEX_ARMA"], 2, 2);
-		sprites[S3D_FIREBALL].Prepare(gl, m_textures["TEX_FIREBALL"], 1, 1);
-		sprites[S3D_PICKSFW].Prepare(gl, m_textures["TEX_PICKSFW"], 1, 1);
-		sprites[S3D_BULLETOLD].Prepare(gl, m_textures["TEX_BULLETOLD"], 1, 1);
+		LoadSprite(gl, "S3D_ROBOT", "TEX_ROBOT", 4, 3);
+		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
+		
+		LoadSprite(gl, "S3D_GREENBULLET", "TEX_GREENBULLET");
+		LoadSprite(gl, "S3D_REDBULLET", "TEX_REDBULLET");
+		LoadSprite(gl, "S3D_BLUEBULLET", "TEX_BLUEBULLET");
+		LoadSprite(gl, "S3D_ARMA", "TEX_ARMA", 2, 2);
+		LoadSprite(gl, "S3D_FIREBALL", "TEX_FIREBALL");
+		LoadSprite(gl, "S3D_PICKSFW", "TEX_PICKSFW");
+		LoadSprite(gl, "S3D_BULLETOLD", "S3D_BULLETOLD");
 	}
 
-	Sprite3D* Sprite( int spriteid )
+	Sprite3D* Sprite( std::string id )
 	{
-		return sprites + spriteid;
+		return m_sprites[id];
 	}
 
 	tdogl::Texture* Texture( const std::string& texID )
@@ -75,7 +78,7 @@ public:
 
 private:
 
-	Sprite3D sprites[S3D_MAX];
+	std::unordered_map<std::string, Sprite3D*> m_sprites;
 	std::unordered_map<std::string, tdogl::Texture*> m_textures;
 
 

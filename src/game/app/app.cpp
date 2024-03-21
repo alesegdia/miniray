@@ -89,8 +89,8 @@ void App::Update(uint32_t delta)
 		Stop();
 	}
 
-	if( player->attack ) assets.Sprite(S3D_ARMA)->SetCurrentFrame(1,1);
-	else assets.Sprite(S3D_ARMA)->SetCurrentFrame(0,1);
+	if (player->attack) assets.Sprite("S3D_ARMA")->SetCurrentFrame(1, 1);
+	else assets.Sprite("S3D_ARMA")->SetCurrentFrame(0, 1);
 
 	deltatime = delta;
 }
@@ -120,7 +120,7 @@ void App::RenderWeapon()
     offset = cml::rotate_vector( cml::vector3f(0.65,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
 	cml::matrix_set_translation( model, player->GetTransform().position + offset );
 	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
-    renderer().RenderSprite3D( assets.Sprite(S3D_ARMA), model );
+	renderer().RenderSprite3D(assets.Sprite("S3D_ARMA"), model);
 }
 
 void App::RenderMiniText()

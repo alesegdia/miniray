@@ -52,23 +52,23 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	*/
 
 	// pistol
-	auto skill1 = std::shared_ptr<Skill>(new ShootSkill({ 300, 30, 1000, 0, 0, 10, 6 }, true, assets->Sprite(S3D_BULLETOLD), this, player));
+	auto skill1 = std::shared_ptr<Skill>(new ShootSkill({ 300, 30, 1000, 0, 0, 10, 6 }, true, assets->Sprite("S3D_BULLETOLD"), this, player));
 	
 	// rifle
-	auto skill2 = std::shared_ptr<Skill>(new ShootSkill({ 50, 20, 1000, 0, 0, 10, 1 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill2 = std::shared_ptr<Skill>(new ShootSkill({ 50, 20, 1000, 0, 0, 10, 1 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
 	
 	// shotgun
-	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 1 }, true, assets->Sprite(S3D_BLUEBULLET), this, player));
+	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 1 }, true, assets->Sprite("S3D_BLUEBULLET"), this, player));
 
 	// flamethrower
-	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 30, 6, 1 }, true, assets->Sprite(S3D_FIREBALL), this, player));
+	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 30, 6, 1 }, true, assets->Sprite("S3D_FIREBALL"), this, player));
 	
-	auto skill5 = std::shared_ptr<Skill>(new ShootSkill({ 10, 10, 300, 5, 30, 10 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill6 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 1, 50, 10 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill7 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 2, 50, 10 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill8 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 3, 50, 10 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill9 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 50, 10 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
-	auto skill0 = std::shared_ptr<Skill>(new ShootSkill({ 100, 10, 1000, 0, 0, 10 }, true, assets->Sprite(S3D_GREENBULLET), this, player));
+	auto skill5 = std::shared_ptr<Skill>(new ShootSkill({ 10, 10, 300, 5, 30, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill6 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 1, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill7 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 2, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill8 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 3, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill9 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill0 = std::shared_ptr<Skill>(new ShootSkill({ 100, 10, 1000, 0, 0, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
 
 
 	player->skillSet.SetSlotSkill(0, skill0);
@@ -97,12 +97,12 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 
 void EntityFactory::SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time, int dmg )
 {
-	SpawnBullet( pos, dir, CollisionLayer::ALLY_BULLET, Physics::ABULLET_MASK, assets->Sprite(S3D_GREENBULLET), time, dmg );
+	SpawnBullet(pos, dir, CollisionLayer::ALLY_BULLET, Physics::ABULLET_MASK, assets->Sprite("S3D_GREENBULLET"), time, dmg);
 }
 
 void EntityFactory::SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time, int dmg )
 {
-	SpawnBullet( pos, dir, CollisionLayer::ENEMY_BULLET, Physics::EBULLET_MASK, assets->Sprite(S3D_REDBULLET), time, dmg );
+	SpawnBullet(pos, dir, CollisionLayer::ENEMY_BULLET, Physics::EBULLET_MASK, assets->Sprite("S3D_REDBULLET"), time, dmg);
 }
 
 void EntityFactory::SpawnBullet(
@@ -147,7 +147,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], reinterpret_cast<uintptr_t>(p), CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
 	p->controller = new PickupController();
 	p->SetType( Entity::Type::PICKUP );
-	p->SetSprite( assets->Sprite(S3D_PICKSFW) );
+	p->SetSprite(assets->Sprite("S3D_PICKSFW"));
 	emanager->AddEntity(p);
 	this->sceneTree->AddChild(&(p->transform));
 }
@@ -161,11 +161,11 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	scfg.bullet_duration = 1000.f;
 	scfg.pushback = 0;
 
-	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, assets->Sprite(S3D_REDBULLET), this, actor);
+	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, assets->Sprite("S3D_REDBULLET"), this, actor);
 	actor->skillSet.SetSlotSkill(0, skill);
 	actor->hp.current = 10;
 	actor->controller = new MobAIController();
-	actor->SetSprite( assets->Sprite(S3D_BICHO) );
+	actor->SetSprite(assets->Sprite("S3D_ROBOT"));
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );
 	actor->SetRowInSpritesheet(2);
 	emanager->AddEntity( actor );
@@ -173,28 +173,28 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 
 	Entity* weapon;
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[0] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[0] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[2] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite(S3D_FIREBALL));
+	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[2] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
