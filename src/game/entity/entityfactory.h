@@ -41,7 +41,8 @@ public:
 	void SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time, int dmg);
 	void SpawnPickup( const cml::vector2f& pos );
 	Entity* SpawnPlayerWeapon(float, float);
-	Actor* SpawnEnemy( float x, float y );
+	Actor* SpawnEnemy(float x, float y);
+	Actor* SpawnPortal(float x, float y);
 
 
 private:

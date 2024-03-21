@@ -202,6 +202,26 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	return actor;
 }
 
+Actor* EntityFactory::SpawnPortal(float x, float y)
+{
+	Mob* actor = AllocEntity<Mob>();
+	ShootConfig scfg;
+	scfg.cooldown = 200;
+	scfg.bullet_speed = 20.f;
+	scfg.bullet_duration = 1000.f;
+	scfg.pushback = 0;
+
+	actor->hp.current = 10;
+	actor->controller = nullptr;
+	actor->SetSprite(assets->Sprite("S3D_ROBOT"));
+	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::BOUNDARY, Physics::PICKUP_MASK, false));
+	actor->SetRowInSpritesheet(2);
+	emanager->AddEntity(actor);
+	this->sceneTree->AddChild(&(actor->transform));
+
+	return actor;
+}
+
 Entity* EntityFactory::SpawnPlayerWeapon(float, float)
 {
 	Entity* e = AllocEntity<Entity>();
