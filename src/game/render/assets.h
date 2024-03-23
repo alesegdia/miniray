@@ -33,6 +33,7 @@ public:
 	void LoadSprite(Render::Context* gl, const char* id, std::string texid, int w = 1, int h = 1)
 	{
 		Sprite3D* sprite = new Sprite3D();
+		assert(m_textures[texid] != nullptr);
 		sprite->Prepare(gl, m_textures[texid], w, h);
 		m_sprites[id] = sprite;
 	}
@@ -51,6 +52,7 @@ public:
 		LoadTexture(gl, "assets/bulletold.png", "TEX_BULLETOLD");
 		LoadTexture(gl, "assets/arma.png", "TEX_ARMA");
 		LoadTexture(gl, "assets/picksfw.png", "TEX_PICKSFW");
+		LoadTexture(gl, "assets/pickhp.png", "TEX_PICKHP");
 		LoadTexture(gl, "assets/fireball.png", "TEX_FIREBALL");
 		LoadTexture(gl, "assets/stairs.png", "TEX_STAIRS");
 
@@ -63,7 +65,8 @@ public:
 		LoadSprite(gl, "S3D_ARMA", "TEX_ARMA", 2, 2);
 		LoadSprite(gl, "S3D_FIREBALL", "TEX_FIREBALL");
 		LoadSprite(gl, "S3D_PICKSFW", "TEX_PICKSFW");
-		LoadSprite(gl, "S3D_BULLETOLD", "S3D_BULLETOLD");
+		LoadSprite(gl, "S3D_PICKHP", "TEX_PICKHP");
+		LoadSprite(gl, "S3D_BULLETOLD", "TEX_BULLETOLD");
 	}
 
 	Sprite3D* Sprite( std::string id )

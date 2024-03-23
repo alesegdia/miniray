@@ -4,6 +4,10 @@ in vec2 Texcoord;
 out vec4 outColor;
 uniform sampler2D texFramebuffer;
 uniform float time;
+uniform float health;
+uniform float paintimer;
+uniform float hptimer;
+uniform float ammotimer;
 uniform float scanarray[256];
 
 const float blurSizeH = 1.0 / 300.0;
@@ -75,5 +79,18 @@ void main() {
 	//if( mod( Texcoord.y, gap ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), scanarray[int(division)] );
 	if( mod( Texcoord.y, 0.005 ) < 0.0025 ) outColor = mix( outColor, vec4(0,0,0,1), 0.2 );
 
+	float d = (outColor.x + outColor.y + outColor.z) / 3.0;
+	vec4 baseColor = vec4(1,0,0,1) * 2;
+	//vec4 baseColor = vec4(0.2,1,1,1) * 3;
+	//vec4 baseColor = vec4(1,0,0,1);
+	//vec4 baseColor = vec4(1,0,0,1);
+
+	outColor = outColor * health + (1-health) * baseColor * d;
+
+		outColor = outColor * (1-paintimer) + paintimer * vec4(1,0,0,1) * d;		
+		outColor = outColor * (1-hptimer) + hptimer * vec4(0,1,0,1) * d;		
+		outColor = outColor * (1-ammotimer) + ammotimer * vec4(1,0.5,0.1,1) * d;		
+
+	outColor.a = 1.0;
 
 }

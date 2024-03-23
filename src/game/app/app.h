@@ -55,7 +55,7 @@ private:
 	// RENDER
 	void RenderMiniText();
 	void RenderPlayerHP();
-	void RenderWeapon();
+	void RenderWeapon(cml::vector3f walkOffset);
 
 	// APP INTERFACE
 	void Setup(int argc, char** argv);

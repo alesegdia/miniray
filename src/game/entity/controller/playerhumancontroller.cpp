@@ -12,6 +12,7 @@ PlayerHumanController::PlayerHumanController (EntityFactory* efactory, Player* p
 	this->entityfactory = efactory;
 	forward = back = left = right = shoot = shift = false;
 	m_player = player;
+	rotation_offset = { 0,0 };
 }
 
 PlayerHumanController::~PlayerHumanController ()
@@ -25,7 +26,6 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 	p->transform.logic_angle = -cml::rad(e->GetAngleY());
 	p->attack = shoot;
 
-	// MOVEMENT HANDLE
 	rotation_offset[0] *= -sensitivity;
 	p->OffsetRotationY( rotation_offset[0] );
 
@@ -113,7 +113,7 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 			ret = 1;break;
 		}
 		keysym = event.key.keysym.sym;
-		if (keysym >= SDLK_0 && keysym <= SDLK_9)
+		if (keysym >= SDLK_1 && keysym <= SDLK_4)
 		{
 			int slotidx = keysym - SDLK_0;
 			m_player->skillSet.SetCurrentSlot(slotidx);
@@ -143,7 +143,7 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		rotation_offset[0] = event.motion.x - 400;
 		rotation_offset[1] = event.motion.y - 300;
 		lastMousePos.set(event.motion.x, event.motion.y);
-		// std::cout << "mouse: " << rotation_offset[0] << ", " << rotation_offset[1] << std::endl;
+		//std::cout << "mouse: " << rotation_offset[0] << ", " << rotation_offset[1] << std::endl;
 		SDL_WarpMouseInWindow(NULL, 400, 300);
 		ret = 1;break;
 	case SDL_MOUSEBUTTONUP:

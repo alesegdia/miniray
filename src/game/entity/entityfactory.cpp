@@ -52,16 +52,16 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	*/
 
 	// pistol
-	auto skill1 = std::shared_ptr<Skill>(new ShootSkill({ 300, 30, 1000, 0, 0, 10, 6 }, true, assets->Sprite("S3D_BULLETOLD"), this, player));
+	auto skill1 = std::shared_ptr<Skill>(new ShootSkill({ 300, 30, 1000, 0, 0, 10, 6, 0.0001f }, true, assets->Sprite("S3D_BULLETOLD"), this, player));
 	
 	// rifle
-	auto skill2 = std::shared_ptr<Skill>(new ShootSkill({ 50, 20, 1000, 0, 0, 10, 1 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill2 = std::shared_ptr<Skill>(new ShootSkill({ 50, 20, 1000, 0, 0, 10, 1, 0.00003f }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
 	
 	// shotgun
-	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 1 }, true, assets->Sprite("S3D_BLUEBULLET"), this, player));
+	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 2, 0.001f }, true, assets->Sprite("S3D_BLUEBULLET"), this, player));
 
 	// flamethrower
-	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 30, 6, 1 }, true, assets->Sprite("S3D_FIREBALL"), this, player));
+	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 30, 6, 1, 0.00001f }, true, assets->Sprite("S3D_FIREBALL"), this, player));
 	
 	auto skill5 = std::shared_ptr<Skill>(new ShootSkill({ 10, 10, 300, 5, 30, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
 	auto skill6 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 1, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
@@ -87,11 +87,11 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(player), CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
 	player->SetController( new PlayerHumanController(this, player) );
 
-	player->hp.current = 200;
-	player->hp.total = 200;
+	player->hp.current = 100;
+	player->hp.total = 100;
 
 	player->skillSet.AddAmmo(300);
-
+	player->skillSet.SetCurrentSlot(1);
 	return player;
 }	
 
@@ -147,7 +147,8 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], reinterpret_cast<uintptr_t>(p), CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
 	p->controller = new PickupController();
 	p->SetType( Entity::Type::PICKUP );
-	p->SetSprite(assets->Sprite("S3D_PICKSFW"));
+	p->type = rand() % 2 == 0 ? Pickup::Type::AMMO : Pickup::Type::HEALTH;
+	p->SetSprite(assets->Sprite(p->type == Pickup::Type::AMMO ? "S3D_PICKSFW" : "S3D_PICKHP"));
 	emanager->AddEntity(p);
 	this->sceneTree->AddChild(&(p->transform));
 }
@@ -157,7 +158,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	Mob* actor = AllocEntity<Mob>();
 	ShootConfig scfg;
 	scfg.cooldown = 200;
-	scfg.bullet_speed = 20.f;
+	scfg.bullet_speed = 5.f;
 	scfg.bullet_duration = 1000.f;
 	scfg.pushback = 0;
 

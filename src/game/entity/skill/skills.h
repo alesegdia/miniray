@@ -37,10 +37,24 @@ public:
 
     virtual void Execute() = 0 ;
 
+    float ConsumeShakeLastFrame()
+    {
+        auto f = m_shakeLastFrame;
+        m_shakeLastFrame = 0;
+        return f;
+    }
+
+protected:
+    void AddShake(float f)
+    {
+        m_shakeLastFrame += f;
+    }
+
 private:
     int m_nextShot = 0;
     bool m_pressed = false;
     uint32_t m_cooldown;
+    float m_shakeLastFrame = 0.0f;
 
 };
 
@@ -85,6 +99,11 @@ public:
     void SetCurrentSlot(int slot)
     {
         m_currentSkillIndex = slot;
+    }
+
+    std::shared_ptr<Skill> GetCurrentSkill()
+    {
+        return m_skills[m_currentSkillIndex];
     }
 
     int GetCurrentSlot()

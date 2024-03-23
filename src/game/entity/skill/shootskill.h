@@ -14,6 +14,7 @@ struct ShootConfig
     int extraShotsSpreadDegs = 0;
     int pushback = 10;
     int damage = 1;
+    float shake = 0.0f;
 };
 
 class ShootSkill : public Skill
@@ -30,7 +31,10 @@ public:
           m_entityFactory(ef),
           m_shooter(shooter),
           m_player(player),
-          m_bulletSprite(bulletSprite) { }
+          m_bulletSprite(bulletSprite)
+    {
+        
+    }
 
     void Execute() override
     {
@@ -75,6 +79,8 @@ public:
                 m_bulletSprite,
                 m_shootConfig.bullet_duration, m_shootConfig.damage);			// weapon bullet lifetime
         }
+
+        AddShake(m_shootConfig.shake);
 
     }
 

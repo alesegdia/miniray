@@ -15,12 +15,27 @@ bool DoesCollide(Entity* e0, Entity* e1, Entity::Type ett0, Entity::Type ett1, E
 	return hit;
 }
 
+bool IsAnyOf(Entity* e0, Entity* e1, Entity::Type type, Entity** out)
+{
+	if (e0->GetType() == type)
+	{
+		*out = e0;
+		return true;
+	}
+	if (e1->GetType() == type)
+	{
+		*out = e1;
+		return true;
+	}
+}
+
 void ContactListener::BeginContact( b2Contact* contact )
 {
 	void* entity0 = reinterpret_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
 	void* entity1 = reinterpret_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
 	if( entity0 && entity1 )
 	{
+		Entity* oute0, * oute1;
 		Entity* e0 = static_cast<Entity*>( entity0 );
 		Entity* e1 = static_cast<Entity*>( entity1 );
 		e0->CollisionEnter( e1 );
@@ -28,29 +43,40 @@ void ContactListener::BeginContact( b2Contact* contact )
 		if( e0->GetType() == Entity::Type::BULLET )
 		{
 			e0->Die();
-			Bullet* b = static_cast<Bullet*> (e0);
 			if( e1->GetType() == Entity::Type::MOB || e1->GetType() == Entity::Type::PLAYER )
 			{
+				Bullet* b = static_cast<Bullet*> (e0);
 				Actor* actor = static_cast<Actor*>(e1);
-				actor->hp.current -= b->dmg;
+				actor->ReceiveDamage(b->dmg);
 			}
 		}
 		if( e1->GetType() == Entity::Type::BULLET )
 		{
 			e1->Die();
-			Bullet* b = static_cast<Bullet*> (e1);
 			if( e0->GetType() == Entity::Type::MOB || e0->GetType() == Entity::Type::PLAYER )
 			{
+				Bullet* b = static_cast<Bullet*> (e1);
 				Actor* actor = static_cast<Actor*>(e0);
-				actor->hp.current -= b->dmg;
+				actor->ReceiveDamage(b->dmg);
 			}
 		}
-		Entity *oute0, *oute1;
 		if( DoesCollide(e0, e1, Entity::Type::PLAYER, Entity::Type::PICKUP, &oute0, &oute1 ) )
 		{
 			Player* pl = static_cast<Player*>( oute0 );
 			Pickup* pi = static_cast<Pickup*>( oute1 );
-			pl->skillSet.AddAmmo(pi->quantity);
+			switch (pi->type)
+			{
+			case Pickup::Type::AMMO:
+				pl->skillSet.AddAmmo(pi->quantity);
+				pl->ammoLastFrame = true;
+				break;
+			case Pickup::Type::HEALTH:
+				pl->hp.current += (pi->quantity);
+				pl->hpLastFrame = true;
+				break;
+			case Pickup::Type::ITEM:
+				break;
+			}
 			oute1->Die();
 		}
 	}

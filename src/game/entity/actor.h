@@ -16,6 +16,10 @@ public:
 	// última vez que se aplicó daño
 	int last_pain;
 
+	bool painLastFrame = false;
+	bool ammoLastFrame = false;
+	bool hpLastFrame = false;
+
 	// atacó en el ultimo frame?
 	bool attack;
 
@@ -34,5 +38,11 @@ public:
 	struct { uint32_t slow, freeze, confuse; } effect;
 
     SkillSet skillSet = SkillSet(10);
+
+	void ReceiveDamage(int damage)
+	{
+		hp.current -= damage;
+		painLastFrame = true;
+	}
 
 };

@@ -93,10 +93,34 @@ void App::Update(uint32_t delta)
 	else assets.Sprite("S3D_ARMA")->SetCurrentFrame(0, 1);
 
 	deltatime = delta;
+
+	renderer().Update();
+
 }
 
 void App::Render()
 {
+
+	if (player->painLastFrame)
+	{
+		player->painLastFrame = false;
+		renderer().AddShake(0.00015f);
+		renderer().AddRedScreen(0.5f);
+	}
+
+	if (player->hpLastFrame)
+	{
+		player->hpLastFrame = false;
+		renderer().AddGreenScreen(1.0f);
+	}
+
+	if (player->ammoLastFrame)
+	{
+		player->ammoLastFrame = false;
+		renderer().AddOrangeScreen(0.5f);
+	}
+
+	renderer().AddShake(player->skillSet.GetCurrentSkill()->ConsumeShakeLastFrame());
 
 	// SETUP CAMERA
 	b2Vec2 ppos = player->GetPhysicBody()->GetPosition();
@@ -105,20 +129,21 @@ void App::Render()
 
     sceneRender(player->GetAngleY());
 
-	RenderWeapon();
+	RenderWeapon(cml::vector3f(0,0,0));
 	RenderMiniText();
 	RenderPlayerHP();
 
+	renderer().SetPlayerHealth(float(player->hp.current) / 100.f);
 }
 
-void App::RenderWeapon()
+void App::RenderWeapon(cml::vector3f walkOffset)
 {
     GL()->Disable(GL_DEPTH_TEST);
 	cml::matrix44f_c model = cml::identity<4>();
 	model = cml::identity<4>();
     cml::vector3f offset(0,0,0);
     offset = cml::rotate_vector( cml::vector3f(0.65,0,0), cml::vector3f(0,1,0), cml::rad(player->GetAngleY()+90) );
-	cml::matrix_set_translation( model, player->GetTransform().position + offset );
+	cml::matrix_set_translation( model, player->GetTransform().position + offset + walkOffset );
 	cml::matrix_rotate_about_world_y( model, cml::rad(180+player->GetAngleY()) );
 	renderer().RenderSprite3D(assets.Sprite("S3D_ARMA"), model);
 }
@@ -140,10 +165,28 @@ void App::RenderPlayerHP()
 	renderer().renderText(buf, -1, -0.97f, cml::vector4f(1-phealth,phealth,0,1));
 
 	sprintf(buf, "%d", player->skillSet.GetAmmo());
-	renderer().renderText(buf, 0.5, -0.97f, cml::vector4f(1, 0.5, 0, 1));
+	renderer().renderText(buf, 0.7, -0.97f, cml::vector4f(1, 0.5, 0, 1));
 
 	sprintf(buf, "%d", player->skillSet.GetCurrentSlot());
 	renderer().renderText(buf, -0.04f, -0.97f, cml::vector4f(1, 1, 1, 1));
+
+	std::string arma = "";
+	switch (player->skillSet.GetCurrentSlot())
+	{
+	case 1: 
+		arma = "pistol";
+		break;
+	case 2:
+		arma = "rifle";
+		break;
+	case 3:
+		arma = "shotgun";
+		break;
+	case 4:
+		arma = "thrower";
+		break;
+	}
+	renderer().renderText(arma.c_str(), 0.2f, -0.97f, cml::vector4f(1, 1, 1, 1));
 }
 
 
