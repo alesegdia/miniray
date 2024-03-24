@@ -41,8 +41,19 @@ public:
 
 	void ReceiveDamage(int damage)
 	{
-		hp.current -= damage;
-		painLastFrame = true;
+		if (!invincible)
+		{
+			hp.current -= damage;
+			painLastFrame = true;  
+		}
+		else
+		{
+			absorbedDamageLastFrame = true;
+		}
 	}
+
+	bool invincible = false;
+	bool absorbedDamageLastFrame = false;
+
 
 };

@@ -8,6 +8,7 @@ uniform float health;
 uniform float paintimer;
 uniform float hptimer;
 uniform float ammotimer;
+uniform float slowdown;
 uniform float scanarray[256];
 
 const float blurSizeH = 1.0 / 300.0;
@@ -90,6 +91,7 @@ void main() {
 		outColor = outColor * (1-paintimer) + paintimer * vec4(1,0,0,1) * d;		
 		outColor = outColor * (1-hptimer) + hptimer * vec4(0,1,0,1) * d;		
 		outColor = outColor * (1-ammotimer) + ammotimer * vec4(1,0.5,0.1,1) * d;		
+		outColor = outColor * (slowdown) + (1-slowdown) * (vec4(0.8,1,1,1) * d * 0.3 + outColor * 0.7) ;		
 
 	outColor.a = 1.0;
 

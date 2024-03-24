@@ -4,6 +4,7 @@
 #include <glrayfw/render/context.h>
 #include <glrayfw/render/Texture.h>
 #include <glrayfw/render/sprite3d.h>
+#include <glrayfw/core/core.h>
 #include <unordered_map>
 
 #include "../constants.h"
@@ -40,6 +41,8 @@ public:
 
 	void Prepare( Render::Context* gl )
 	{
+		Logger::getInstance().log(LogLevel::INFO, "START LOAD ASSETS");
+
 		LoadTexture(gl, "assets/qwe.png", "TEX_TEX1");
 		LoadTexture(gl, "assets/asd.png", "TEX_TEX2");
 		LoadTexture(gl, "assets/asd2.png", "TEX_TEX3");
@@ -55,6 +58,7 @@ public:
 		LoadTexture(gl, "assets/pickhp.png", "TEX_PICKHP");
 		LoadTexture(gl, "assets/fireball.png", "TEX_FIREBALL");
 		LoadTexture(gl, "assets/stairs.png", "TEX_STAIRS");
+		LoadTexture(gl, "assets/portal.png", "TEX_PORTAL");
 
 		LoadSprite(gl, "S3D_ROBOT", "TEX_ROBOT", 4, 3);
 		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
@@ -67,6 +71,9 @@ public:
 		LoadSprite(gl, "S3D_PICKSFW", "TEX_PICKSFW");
 		LoadSprite(gl, "S3D_PICKHP", "TEX_PICKHP");
 		LoadSprite(gl, "S3D_BULLETOLD", "TEX_BULLETOLD");
+		LoadSprite(gl, "S3D_PORTAL", "TEX_PORTAL");
+		Logger::getInstance().log(LogLevel::INFO, "END LOAD ASSETS");
+
 	}
 
 	Sprite3D* Sprite( std::string id )

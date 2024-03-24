@@ -24,11 +24,11 @@ void DoDropItem( Actor* actor, RNG& rng, EntityFactory* entityfactory )
 	}
 }
 
-void DoMove( Actor* actor, cml::vector3f dir, float speed )
+void DoMove( Actor* actor, cml::vector3f dir, float speed, cml::vector2f postAdd)
 {
 	if( dir != cml::zero<3>() ) dir.normalize();
 	dir *= speed;
-	actor->GetPhysicBody()->SetLinearVelocity(b2Vec2(actor->pushback[0] + dir[0], actor->pushback[1] + dir[2]));
+	actor->GetPhysicBody()->SetLinearVelocity(b2Vec2(actor->pushback[0] + dir[0] + postAdd[0], actor->pushback[1] + dir[2] + postAdd[1]));
 }
 
 cml::vector2f GetWorld2DPos( cml::vector3f v )

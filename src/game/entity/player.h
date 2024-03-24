@@ -23,5 +23,16 @@ public:
 	float walk_speed = 4.f;
 	// velocidad al esprintar
 	float run_speed = 8.f;
+	
+	int parryTimer = -1;
+
+	// cooldown tiene que ser mayor que parryingTime porque pasan a la vez los dos timers por simplicitud
+	int parryCooldown = 2300;
+	int parryCooldownTimer = -1;
+	int parryingTime = 300;
+
+	int slowdownTimer = 0;
+	int slowdownTimeOnParry = 3000;
+
 
 };

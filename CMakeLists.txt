@@ -3,6 +3,23 @@ project(miniray)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
+set(CompilerFlags
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        )
+foreach(CompilerFlag ${CompilerFlags})
+  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+endforeach()
+
+
 set(SDL2_DIR C:/Users/alejandro.segui/SDL2-2.30.1)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "sdldep/cmake" ${CMAKE_MODULE_PATH})
@@ -34,6 +51,20 @@ file( GLOB_RECURSE GLRAYFW_SOURCES
 
 add_library(glrayfw ${GLRAYFW_SOURCES})
 add_executable(miniray-game src/game/main.cpp ${SOURCES})
+
+
+
+set_property(TARGET miniray-game PROPERTY
+             MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set_property(TARGET glrayfw PROPERTY
+             MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+
+set_target_properties(
+    miniray-game PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "..")
+
+
 
 target_link_libraries(miniray-game glrayfw)
 include_directories(lib/cml/)

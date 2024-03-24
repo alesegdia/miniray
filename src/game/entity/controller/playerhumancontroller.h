@@ -19,6 +19,7 @@ public:
 
 
 private:
+	bool parryingRequested = false;
 
 	EntityFactory* entityfactory;
 	bool forward, back, left, right;
@@ -28,6 +29,15 @@ private:
 	cml::vector2i lastMousePos = { 400, 300 };
 
 	Player* m_player;
+
+
+	bool m_isDashing = false;
+	cml::vector2f m_currentDashSpeed = { 0,0 };
+	float m_dashDecay = 0.7f;
+	bool m_dashPressed = false;
+	float m_dashPower = 80.0f;
+	float m_dashPowerBase = 80.0f;
+	float m_dashPowerSlowdown = 2000.0f;
 
 };
 

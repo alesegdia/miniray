@@ -81,6 +81,14 @@ void App::Setup(int argc, char** argv)
 void App::Update(uint32_t delta)
 {
 
+	if (player->slowdownTimer >= 0)
+	{
+		SetSlowDown(0.1f);
+	}
+	else
+	{
+		SetSlowDown(1.0f);
+	}
 
 	player->PhysicStep();
 	player->Step( delta );
@@ -89,13 +97,19 @@ void App::Update(uint32_t delta)
 		Stop();
 	}
 
-	if (player->attack) assets.Sprite("S3D_ARMA")->SetCurrentFrame(1, 1);
-	else assets.Sprite("S3D_ARMA")->SetCurrentFrame(0, 1);
+	if (player->parryTimer >= 0)
+	{
+		assets.Sprite("S3D_ARMA")->SetCurrentFrame(1, 0);
+	}
+	else
+	{
+		if (player->attack) assets.Sprite("S3D_ARMA")->SetCurrentFrame(1, 1);
+		else assets.Sprite("S3D_ARMA")->SetCurrentFrame(0, 1);
+	}
 
 	deltatime = delta;
 
 	renderer().Update();
-
 }
 
 void App::Render()

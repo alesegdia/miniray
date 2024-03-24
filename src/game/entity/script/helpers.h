@@ -16,7 +16,7 @@ void CheckHealth( Actor* actor );
 void DoDropItem( Actor* actor, RNG& rng, EntityFactory* entityfactory );
 
 // establece la velocidad lineal
-void DoMove( Actor* actor, cml::vector3f dir, float speed );
+void DoMove( Actor* actor, cml::vector3f dir, float speed, cml::vector2f postAdd = { 0,0 });
 
 // devuelve la posicion en el mundo
 cml::vector2f GetWorld2DPos( cml::vector3f v );

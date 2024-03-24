@@ -61,7 +61,7 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 2, 0.001f }, true, assets->Sprite("S3D_BLUEBULLET"), this, player));
 
 	// flamethrower
-	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 30, 6, 1, 0.00001f }, true, assets->Sprite("S3D_FIREBALL"), this, player));
+	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 600, 4, 30, 6, 1, 0.00001f }, true, assets->Sprite("S3D_FIREBALL"), this, player));
 	
 	auto skill5 = std::shared_ptr<Skill>(new ShootSkill({ 10, 10, 300, 5, 30, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
 	auto skill6 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 1, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
@@ -157,9 +157,9 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 {
 	Mob* actor = AllocEntity<Mob>();
 	ShootConfig scfg;
-	scfg.cooldown = 200;
-	scfg.bullet_speed = 5.f;
-	scfg.bullet_duration = 1000.f;
+	scfg.cooldown = 300;
+	scfg.bullet_speed = 15.f;
+	scfg.bullet_duration = 3000.f;
 	scfg.pushback = 0;
 
 	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, assets->Sprite("S3D_REDBULLET"), this, actor);
@@ -205,18 +205,10 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 
 Actor* EntityFactory::SpawnPortal(float x, float y)
 {
-	Mob* actor = AllocEntity<Mob>();
-	ShootConfig scfg;
-	scfg.cooldown = 200;
-	scfg.bullet_speed = 20.f;
-	scfg.bullet_duration = 1000.f;
-	scfg.pushback = 0;
-
-	actor->hp.current = 10;
-	actor->controller = nullptr;
-	actor->SetSprite(assets->Sprite("S3D_ROBOT"));
-	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::BOUNDARY, Physics::PICKUP_MASK, false));
-	actor->SetRowInSpritesheet(2);
+	Actor* actor = AllocEntity<Actor>();
+	actor->SetSprite(assets->Sprite("S3D_PORTAL"));
+	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::PORTAL, Physics::PORTAL_MASK, false));
+	actor->SetRowInSpritesheet(0);
 	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
 

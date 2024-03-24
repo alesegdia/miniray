@@ -36,7 +36,7 @@ public:
 		DoDropItem( mob, rng, entityfactory );
 		DoSensePlayer( mob, player );
 
-		if( mob->player_visible )
+		if( mob->player_visible || mob->painLastFrame)
 		{
 			DoKeepDistance(mob, player, delta);
 		}

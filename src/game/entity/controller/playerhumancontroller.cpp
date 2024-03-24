@@ -26,10 +26,31 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 	p->transform.logic_angle = -cml::rad(e->GetAngleY());
 	p->attack = shoot;
 
+	m_dashPower = p->slowdownTimer >= 0 ? m_dashPowerSlowdown : m_dashPowerBase;
+
+	if (m_dashPressed && forward)
+	{
+		m_currentDashSpeed += p->GetForward() * m_dashPower;
+	}
+	if (m_dashPressed && back)
+	{
+		m_currentDashSpeed += cml::rotate_vector_2D(p->GetForward(), M_PI) * m_dashPower;
+	}
+	if (m_dashPressed && left)
+	{
+		m_currentDashSpeed += cml::rotate_vector_2D(p->GetForward(), M_PI + M_PI / 2) * m_dashPower;
+	}
+	if (m_dashPressed && right)
+	{
+		m_currentDashSpeed += cml::rotate_vector_2D(p->GetForward(), M_PI - M_PI / 2 ) * m_dashPower;
+	}
+	m_dashPressed = false;
+
 	rotation_offset[0] *= -sensitivity;
 	p->OffsetRotationY( rotation_offset[0] );
 
 	p->move_direction = axis;
+	m_currentDashSpeed *= m_dashDecay;
 	p->rotation_offset = rotation_offset;
 
 	float speed = (shift?p->run_speed:p->walk_speed);
@@ -41,7 +62,8 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 			axis.normalize();
 			finaldir = cml::rotate_vector_2D( axis, -cml::rad(p->GetAngleY()));
 		}
-		DoMove( p, cml::vector3f(finaldir[0],0,finaldir[1]), speed );
+
+		DoMove( p, cml::vector3f(finaldir[0] , 0, finaldir[1]), speed, m_currentDashSpeed);
 		//p->GetPhysicBody()->SetLinearVelocity(b2Vec2(finaldir[0]*speed,finaldir[1]*speed));
 	}
 	CheckHealth( p );
@@ -50,6 +72,45 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
     p->skillSet.update(delta);
 
 	p->pushback *= 0.8;
+
+	if (p->absorbedDamageLastFrame)
+	{
+		p->slowdownTimer = p->slowdownTimeOnParry;
+	}
+
+	if (p->slowdownTimer >= 0)
+	{
+		p->slowdownTimer -= delta;
+	}
+
+	p->absorbedDamageLastFrame = false;
+
+	if (parryingRequested)
+	{
+		if (p->parryTimer <= 0 && p->parryCooldownTimer <= 0)
+		{
+			p->parryTimer = p->parryingTime;
+			p->parryCooldownTimer = p->parryCooldown;
+		}
+	}
+	parryingRequested = false;
+
+	if (p->parryCooldownTimer >= 0)
+	{
+		p->parryCooldownTimer -= delta;
+	}
+
+	if (p->parryCooldownTimer >= 0)
+	{
+		p->parryCooldownTimer -= delta;
+	}
+
+	if (p->parryTimer >= 0)
+	{
+		p->parryTimer -= delta;
+	}
+
+	p->invincible = p->parryTimer >= 0;
 
 	/*
     if( p->ammo > 0 && DoShoot( static_cast<Weapon*>(&(p->weapon)), shoot, delta ) )
@@ -111,6 +172,9 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		case SDLK_LSHIFT:
 			shift = true;
 			ret = 1;break;
+		case SDLK_SPACE:
+			m_dashPressed = true;
+			ret = 1; break;
 		}
 		keysym = event.key.keysym.sym;
 		if (keysym >= SDLK_1 && keysym <= SDLK_4)
@@ -137,6 +201,9 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		case SDLK_LSHIFT:
 			shift = false;
 			ret = 1;break;
+		case SDLK_SPACE:
+			m_dashPressed = false;
+			ret = 1; break;
 		}
 		break;
 	case SDL_MOUSEMOTION:
@@ -159,6 +226,9 @@ int PlayerHumanController::HandleEvent( SDL_Event& event )
 		{
 		case SDL_BUTTON_LEFT:
 			shoot = true;
+			ret = 1;break;
+		case SDL_BUTTON_RIGHT:
+			parryingRequested = true;
 			ret = 1;break;
 		}
 		break;
