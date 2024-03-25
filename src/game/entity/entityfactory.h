@@ -42,7 +42,7 @@ public:
 	void SpawnPickup( const cml::vector2f& pos);
 	Entity* SpawnPlayerWeapon(float, float);
 	Actor* SpawnEnemy(float x, float y);
-	Actor* SpawnPortal(float x, float y);
+	Entity* SpawnPortal(float x, float y);
 
 
 private:

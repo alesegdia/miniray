@@ -13,5 +13,6 @@ int main( int argc, char** argv )
 	// create orphaned pointers, so be careful about your world management.
     App app(1280, 720);
     int retval = app.Exec(argc, argv);
+    Logger::getInstance().log(LogLevel::INFO, "GAME END");
     return retval;
 }

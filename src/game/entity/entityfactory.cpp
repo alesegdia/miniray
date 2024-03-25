@@ -203,12 +203,11 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	return actor;
 }
 
-Actor* EntityFactory::SpawnPortal(float x, float y)
+Entity* EntityFactory::SpawnPortal(float x, float y)
 {
-	Actor* actor = AllocEntity<Actor>();
+	Entity* actor = AllocEntity<Entity>();
 	actor->SetSprite(assets->Sprite("S3D_PORTAL"));
-	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::PORTAL, Physics::PORTAL_MASK, false));
-	actor->SetRowInSpritesheet(0);
+	actor->SetPhysicBody(physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::PORTAL, Physics::PORTAL_MASK, true));
 	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
 
