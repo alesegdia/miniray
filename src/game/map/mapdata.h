@@ -105,9 +105,11 @@ struct Intersection
 
 struct MapData
 {
-	RoomGenConfig config;
 	DynamicArray<Room> rooms;
-	DynamicArray<RoomConnection> connections;
+	// DynamicArray<RoomConnection> connections;
+	Matrix2D map;
+	int map_width = 0;
+	int map_height = 0;
 	
 };
 

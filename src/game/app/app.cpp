@@ -41,7 +41,11 @@ void GameScreen::Setup(const std::vector<std::string>& args)
 	printf("SEED: %d\n",sid);
 	rng.seed( time(NULL) );
 
-    mapgen::GenRooms( rng, mapdata.config, mapdata.rooms );
+	mapgen::RoomGenConfig cfg;
+
+    mapdata = mapgen::GenRooms( rng, cfg );
+
+	int a = 3;
 
     Matrix2D tilemap = mapgen::RasterMapData( mapdata );
 

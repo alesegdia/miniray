@@ -20,8 +20,11 @@ void Fill( Matrix2D& map, int block )
 }
 
 // pasarle el mapdata.rooms
-void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg, DynamicArray<Room>& list_rooms)
+MapData GenRooms( RNG& rng, mapgen::RoomGenConfig cfg)
 {
+	MapData mapData;
+	mapData.map_width = cfg.map_width;
+	mapData.map_height = cfg.map_height;
 	int w, h;
 	w = cfg.map_width;
 	h = cfg.map_height;
@@ -40,9 +43,9 @@ void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg, DynamicArray<Room>& list_roo
 		bool valid_room = true;
 		if( cfg.overlap_control )
 		{
-			for( int j = 0; j < ((int)list_rooms.Size()); j++ )
+			for( int j = 0; j < ((int)mapData.rooms.Size()); j++ )
 			{
-				if( r.Intersects( list_rooms[j] ) )
+				if( r.Intersects(mapData.rooms[j] ) )
 				{
 					valid_room = false;
 					i--;
@@ -55,23 +58,24 @@ void GenRooms( RNG& rng, mapgen::RoomGenConfig cfg, DynamicArray<Room>& list_roo
 		{
 			printf("ROOM %d\n", i);
 			r.Debug();
-			list_rooms.Add(r);
+			mapData.rooms.Add(r);
 		}
 	}
+	return mapData;
 }
 
-Matrix2D RasterMapData( MapData& md )
+Matrix2D RasterMapData( const MapData& md )
 {
-	Matrix2D map(md.config.map_width, md.config.map_height);
+	Matrix2D map(md.map_width, md.map_height);
     Fill( map, 1 );
 	RasterRooms( md.rooms, map );
 	RasterPaths( md.rooms, map );
 	return Decorate(Flatten(map));
 }
 
-Matrix2D RasterMapData2( MapData& md )
+Matrix2D RasterMapData2( const MapData& md )
 {
-	Matrix2D map(md.config.map_width, md.config.map_height);
+	Matrix2D map(md.map_width, md.map_height);
     Fill( map, 1 );
 	RasterRooms( md.rooms, map );
 	RasterPaths( md.rooms, map );
@@ -133,7 +137,7 @@ Matrix2D Decorate( Matrix2D map )
 
 }
 
-void RasterRooms( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
+void RasterRooms( const DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 {
 	for( int i = 0; i < ((int)rooms.Size()); i++ )
 	{
@@ -150,7 +154,7 @@ void RasterRooms( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 
 }
 
-void RasterPaths( DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
+void RasterPaths( const DynamicArray<Room>& rooms, Matrix2D& map, int block_type )
 {
 	for( int i = 0; i < (int)rooms.Size()-1; i++ )
 	{
