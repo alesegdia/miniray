@@ -6,13 +6,22 @@
 #include <glrayfw/render/sprite3d.h>
 #include <glrayfw/core/core.h>
 #include <unordered_map>
+#include <cassert>
 
 #include "../constants.h"
 
 
 class Assets {
+private:
+	static Assets s_instance;
+
 public:
-	~Assets(){
+	static Assets& GetInstance()
+	{
+		return s_instance;
+	}
+
+	void Clean(){
 		for (auto item : m_textures)
 		{
 			delete item.second;
@@ -22,21 +31,6 @@ public:
 		{
 			delete item.second;
 		}
-	}
-
-	void LoadTexture( Render::Context* gl, const char* path, const char* id )
-	{
-		tdogl::Bitmap bmp = tdogl::Bitmap::bitmapFromFile(path);
-		bmp.flipVertically();
-		m_textures[id] = new tdogl::Texture( gl, bmp );
-	}
-
-	void LoadSprite(Render::Context* gl, const char* id, std::string texid, int w = 1, int h = 1)
-	{
-		Sprite3D* sprite = new Sprite3D();
-		assert(m_textures[texid] != nullptr);
-		sprite->Prepare(gl, m_textures[texid], w, h);
-		m_sprites[id] = sprite;
 	}
 
 	void Prepare( Render::Context* gl )
@@ -87,6 +81,22 @@ public:
 	}
 
 private:
+
+	void LoadTexture(Render::Context* gl, const char* path, const char* id)
+	{
+		tdogl::Bitmap bmp = tdogl::Bitmap::bitmapFromFile(path);
+		bmp.flipVertically();
+		m_textures[id] = new tdogl::Texture(gl, bmp);
+	}
+
+	void LoadSprite(Render::Context* gl, const char* id, std::string texid, int w = 1, int h = 1)
+	{
+		Sprite3D* sprite = new Sprite3D();
+		assert(m_textures[texid] != nullptr);
+		sprite->Prepare(gl, m_textures[texid], w, h);
+		m_sprites[id] = sprite;
+	}
+
 
 	std::unordered_map<std::string, Sprite3D*> m_sprites;
 	std::unordered_map<std::string, tdogl::Texture*> m_textures;

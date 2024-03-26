@@ -23,34 +23,25 @@ private:
 
 public:
 
-	EntityFactory ();
+	EntityFactory (std::shared_ptr<Physics> physics, std::shared_ptr<EntityManager> emanager, std::shared_ptr<Transform> sceneRoot);
 	virtual ~EntityFactory ();
 
-	void Prepare(
-			Physics* physics, Assets* assets,
-			EntityManager* emanager,
-			Transform* sceneRoot
-		);
 
 	template <typename EntityType>
 	EntityType* AllocEntity(Transform* parent=NULL);
 
 	Player* SpawnPlayer( float x, float y );
 	void SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time, int dmg);
-	void SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time, int dmg );
-	void SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time, int dmg);
 	void SpawnPickup( const cml::vector2f& pos);
-	Entity* SpawnPlayerWeapon(float, float);
 	Actor* SpawnEnemy(float x, float y);
 	Entity* SpawnPortal(float x, float y);
 
 
 private:
 
-	Physics* physics;
-	Assets* assets;
-	Transform* sceneTree;
-	EntityManager* emanager;
+	std::shared_ptr<Physics> physics;
+	std::shared_ptr<Transform> sceneTree;
+	std::shared_ptr<EntityManager> emanager;
 
 
 };

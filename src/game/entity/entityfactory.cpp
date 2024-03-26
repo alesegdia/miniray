@@ -16,19 +16,13 @@
 #include <glrayfw/entity/entitymanager.h>
 #include "skill/shootskill.h"
 
-EntityFactory::EntityFactory ()
-{
-	 // ctor
-}
-
 EntityFactory::~EntityFactory ()
 {
 }
 
-void EntityFactory::Prepare( Physics* physics, Assets* assets, EntityManager* emanager, Transform* sceneRoot )
+EntityFactory::EntityFactory( std::shared_ptr<Physics> physics, std::shared_ptr<EntityManager> emanager, std::shared_ptr<Transform> sceneRoot)
 {
 	this->physics = physics;
-	this->assets = assets;
 	this->sceneTree = sceneRoot;
 	this->emanager = emanager;
 }
@@ -52,23 +46,23 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	*/
 
 	// pistol
-	auto skill1 = std::shared_ptr<Skill>(new ShootSkill({ 300, 30, 1000, 0, 0, 10, 6, 0.0001f }, true, assets->Sprite("S3D_BULLETOLD"), this, player));
+	auto skill1 = std::shared_ptr<Skill>(new ShootSkill({ 300, 30, 1000, 0, 0, 10, 6, 0.0001f }, true, Assets::GetInstance().Sprite("S3D_BULLETOLD"), this, player));
 	
 	// rifle
-	auto skill2 = std::shared_ptr<Skill>(new ShootSkill({ 50, 20, 1000, 0, 0, 10, 1, 0.00003f }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill2 = std::shared_ptr<Skill>(new ShootSkill({ 50, 20, 1000, 0, 0, 10, 1, 0.00003f }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
 	
 	// shotgun
-	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 2, 0.001f }, true, assets->Sprite("S3D_BLUEBULLET"), this, player));
+	auto skill3 = std::shared_ptr<Skill>(new ShootSkill({ 600, 30, 1000, 3, 30, 50, 2, 0.001f }, true, Assets::GetInstance().Sprite("S3D_BLUEBULLET"), this, player));
 
 	// flamethrower
-	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 600, 4, 30, 6, 1, 0.00001f }, true, assets->Sprite("S3D_FIREBALL"), this, player));
+	auto skill4 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 600, 4, 30, 6, 1, 0.00001f }, true, Assets::GetInstance().Sprite("S3D_FIREBALL"), this, player));
 	
-	auto skill5 = std::shared_ptr<Skill>(new ShootSkill({ 10, 10, 300, 5, 30, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
-	auto skill6 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 1, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
-	auto skill7 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 2, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
-	auto skill8 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 3, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
-	auto skill9 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 50, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
-	auto skill0 = std::shared_ptr<Skill>(new ShootSkill({ 100, 10, 1000, 0, 0, 10 }, true, assets->Sprite("S3D_GREENBULLET"), this, player));
+	auto skill5 = std::shared_ptr<Skill>(new ShootSkill({ 10, 10, 300, 5, 30, 10 }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
+	auto skill6 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 1, 50, 10 }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
+	auto skill7 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 2, 50, 10 }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
+	auto skill8 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 3, 50, 10 }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
+	auto skill9 = std::shared_ptr<Skill>(new ShootSkill({ 50, 10, 300, 4, 50, 10 }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
+	auto skill0 = std::shared_ptr<Skill>(new ShootSkill({ 100, 10, 1000, 0, 0, 10 }, true, Assets::GetInstance().Sprite("S3D_GREENBULLET"), this, player));
 
 
 	player->skillSet.SetSlotSkill(0, skill0);
@@ -94,16 +88,6 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	player->skillSet.SetCurrentSlot(1);
 	return player;
 }	
-
-void EntityFactory::SpawnPlayerBullet( cml::vector2f pos, cml::vector2f dir, float time, int dmg )
-{
-	SpawnBullet(pos, dir, CollisionLayer::ALLY_BULLET, Physics::ABULLET_MASK, assets->Sprite("S3D_GREENBULLET"), time, dmg);
-}
-
-void EntityFactory::SpawnEnemyBullet( const cml::vector2f& pos, const cml::vector2f& dir, float time, int dmg )
-{
-	SpawnBullet(pos, dir, CollisionLayer::ENEMY_BULLET, Physics::EBULLET_MASK, assets->Sprite("S3D_REDBULLET"), time, dmg);
-}
 
 void EntityFactory::SpawnBullet(
         const cml::vector2f& pos,
@@ -148,7 +132,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	p->controller = new PickupController();
 	p->SetType( Entity::Type::PICKUP );
 	p->type = rand() % 2 == 0 ? Pickup::Type::AMMO : Pickup::Type::HEALTH;
-	p->SetSprite(assets->Sprite(p->type == Pickup::Type::AMMO ? "S3D_PICKSFW" : "S3D_PICKHP"));
+	p->SetSprite(Assets::GetInstance().Sprite(p->type == Pickup::Type::AMMO ? "S3D_PICKSFW" : "S3D_PICKHP"));
 	emanager->AddEntity(p);
 	this->sceneTree->AddChild(&(p->transform));
 }
@@ -161,12 +145,13 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	scfg.bullet_speed = 15.f;
 	scfg.bullet_duration = 3000.f;
 	scfg.pushback = 0;
+	scfg.damage = 5;
 
-	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, assets->Sprite("S3D_REDBULLET"), this, actor);
+	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, Assets::GetInstance().Sprite("S3D_REDBULLET"), this, actor);
 	actor->skillSet.SetSlotSkill(0, skill);
 	actor->hp.current = 10;
 	actor->controller = new MobAIController();
-	actor->SetSprite(assets->Sprite("S3D_ROBOT"));
+	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOT"));
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );
 	actor->SetRowInSpritesheet(2);
 	emanager->AddEntity( actor );
@@ -174,28 +159,28 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 
 	Entity* weapon;
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[0] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[0] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[2] = -1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(this->assets->Sprite("S3D_FIREBALL"));
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[2] = 1;
 	weapon->controller = new MobOptionController();
 	actor->transform.AddChild(&(weapon->transform));
@@ -206,7 +191,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 Entity* EntityFactory::SpawnPortal(float x, float y)
 {
 	Entity* actor = AllocEntity<Entity>();
-	actor->SetSprite(assets->Sprite("S3D_PORTAL"));
+	actor->SetSprite(Assets::GetInstance().Sprite("S3D_PORTAL"));
 	actor->SetPhysicBody(physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::PORTAL, Physics::PORTAL_MASK, true));
 	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
@@ -214,17 +199,10 @@ Entity* EntityFactory::SpawnPortal(float x, float y)
 	return actor;
 }
 
-Entity* EntityFactory::SpawnPlayerWeapon(float, float)
-{
-	Entity* e = AllocEntity<Entity>();
-	e->SetSprite( this->assets->Sprite(0) );
-	return e;
-}
-
 template <typename EntityType>
 EntityType* EntityFactory::AllocEntity( Transform* parent)
 {
-	if( parent == NULL ) parent = this->sceneTree;
+	if( parent == NULL ) parent = this->sceneTree.get();
 	EntityType* e = new EntityType();
 	// parent->AddChild( &(e->transform) );
 	return e;
