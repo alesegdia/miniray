@@ -79,6 +79,11 @@ void ContactListener::BeginContact( b2Contact* contact )
 			}
 			oute1->Die();
 		}
+		if (DoesCollide(e0, e1, Entity::Type::PLAYER, Entity::Type::PORTAL, &oute0, &oute1))
+		{
+			Player* pl = static_cast<Player*>(oute0);
+			pl->touchPortal = true;
+		}
 	}
 	else if( entity0 )
 	{

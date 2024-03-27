@@ -191,6 +191,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 Entity* EntityFactory::SpawnPortal(float x, float y)
 {
 	Entity* actor = AllocEntity<Entity>();
+	actor->SetType(Entity::Type::PORTAL);
 	actor->SetSprite(Assets::GetInstance().Sprite("S3D_PORTAL"));
 	actor->SetPhysicBody(physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::PORTAL, Physics::PORTAL_MASK, true));
 	emanager->AddEntity(actor);

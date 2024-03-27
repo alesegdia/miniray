@@ -49,6 +49,14 @@ file( GLOB_RECURSE GLRAYFW_SOURCES
 	lib/glrayfw/glrayfw/**/*.h
 	)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+message(${SOURCES})
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" PREFIX "game" FILES ${SOURCES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/lib/glrayfw" PREFIX "glrayfw" FILES ${GLRAYFW_SOURCES})
+
+
 add_library(glrayfw ${GLRAYFW_SOURCES})
 add_executable(miniray-game src/game/main.cpp ${SOURCES})
 
@@ -68,6 +76,7 @@ set_target_properties(
 
 target_link_libraries(miniray-game glrayfw)
 include_directories(lib/cml/)
+include_directories(src/)
 include_directories(lib/glrayfw/)
 
 if(SDL2_FOUND)

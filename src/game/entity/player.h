@@ -34,5 +34,7 @@ public:
 	int slowdownTimer = 0;
 	int slowdownTimeOnParry = 3000;
 
+	bool touchPortal = false;
+
 
 };
