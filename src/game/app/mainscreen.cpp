@@ -88,7 +88,8 @@ void NextFloorScreen::Render()
     float g = sinf((float(time)) / 40);
     float b = sinf((float(time)) / 40);
     engine()->renderer()->SetPlayerHealth(0.0f);
-    engine()->renderer()->renderText("NEXT FLOOR", -0.7, 0, cml::vector4f(r, 1, b, 1), 2, 2);
+    std::string txt = "NEXT FLOOR: " + std::to_string(PlayerPersistentData::GetInstance().GetRunPersistentData().GetCurrentFloor() + 1);
+    engine()->renderer()->renderText(txt.c_str(), -0.8, 0, cml::vector4f(r, 1, b, 1), 2, 2);
 
     r = sinf((float(time)) / 20);
     g = sinf((float(time)) / 20);

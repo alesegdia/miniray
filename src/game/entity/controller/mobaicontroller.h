@@ -10,6 +10,8 @@
 #include "game/entity/script/helpers.h"
 #include "glrayfw/physics/physics.h"
 
+#include <cml/cml.h>
+
 class MobAIController : public EntityController
 {
 
@@ -18,18 +20,40 @@ class MobAIController : public EntityController
 	static Player* player;
 	static EntityFactory* entityfactory;
 
+	uint32_t timeAlive = 0;
+
+	cml::vector2f startDirection;
+
 public:
 
 	static void Prepare(Player* pl, EntityFactory* ef) {
 		MobAIController::player = pl;
 		MobAIController::entityfactory = ef;
+
 	}
 
 	void Step(Entity* e, uint32_t delta)
 	{
 		Mob* mob = static_cast<Mob*>(e);
+
+		if (timeAlive == 0)
+		{
+			startDirection.set(0, 1);
+			auto angle = (rand() % 360) * 0.01745329251;
+			startDirection = Rotate2D(startDirection, angle);
+			mob->transform.logic_angle = angle;
+		}
+
+		timeAlive += delta;
+
 		assert(mob != nullptr && "THE OBJECT IS NOT A MOB");
 		mob->ClearVelocity();
+
+		if (timeAlive < 1000)
+		{
+			DoMove(mob, { startDirection[0], 0, startDirection[1] }, 4);
+		}
+
 		CheckHealth(mob);
 		DoDropItem(mob, rng, entityfactory);
 		DoSensePlayer(mob, player);
