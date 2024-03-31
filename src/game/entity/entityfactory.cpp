@@ -188,6 +188,33 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	return actor;
 }
 
+Entity* EntityFactory::SpawnEntity(const EntityPrefab& prefab, float x, float y)
+{
+	Entity* actor = AllocEntity<Entity>();
+	actor->SetType(prefab.entityType);
+	auto sprite = Assets::GetInstance().Sprite(prefab.spriteID);
+	actor->SetSprite(sprite);
+	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor), prefab.collisionLayer, prefab.collisionMask, prefab.dynamicBody));
+	actor->controller = prefab.controller;
+	emanager->AddEntity(actor);
+	this->sceneTree->AddChild(&(actor->transform));
+	return actor;
+}
+
+Entity* EntityFactory::SpawnSpawner(float x, float y)
+{
+	EntityPrefab prefab;
+	prefab.collisionLayer = CollisionLayer::ENEMY_UNDMG;
+	prefab.collisionMask = CollisionLayer::PLAYER | CollisionLayer::ENEMY;
+	prefab.controller = new SpawnerAIController(this, physics);
+	prefab.dynamicBody = false;
+	prefab.entityType = Entity::Type::SPAWNER;
+	prefab.spriteID = "S3D_SPAWNER";
+	auto entity = SpawnEntity(prefab, x, y);
+	entity->name = "SPAWNER";
+	return entity;
+}
+
 Entity* EntityFactory::SpawnPortal(float x, float y)
 {
 	Entity* actor = AllocEntity<Entity>();

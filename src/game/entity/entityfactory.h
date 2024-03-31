@@ -15,6 +15,16 @@ class Actor;
 class Transform;
 class EntityManager;
 
+struct EntityPrefab
+{
+	std::string spriteID;
+	Entity::Type entityType;
+	CollisionLayer collisionLayer;
+	uint16_t collisionMask;
+	bool dynamicBody = true;
+	EntityController* controller = nullptr;
+};
+
 class EntityFactory {
 	
 private:
@@ -35,6 +45,8 @@ public:
 	void SpawnPickup( const cml::vector2f& pos);
 	Actor* SpawnEnemy(float x, float y);
 	Entity* SpawnPortal(float x, float y);
+	Entity* SpawnEntity(const EntityPrefab& prefab, float x, float y);
+	Entity* SpawnSpawner(float x, float y);
 
 
 private:

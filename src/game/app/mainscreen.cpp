@@ -5,9 +5,12 @@
 #include "game/physics/contactlistener.h"
 #include "game/app/gamescreen.h"
 
+#include "game/app/persistentdata.h"
+
 void MainScreen::Setup(const std::vector<std::string>& args)
 {
     engine()->Reset(new ContactListener());
+    PlayerPersistentData::GetInstance().GetRunPersistentData().ResetFloor();
 }
 
 void MainScreen::Update(uint32_t delta)
@@ -31,7 +34,7 @@ void MainScreen::Render()
     g = sinf((float(time)) / 20);
     b = sinf((float(time)) / 20);
 
-    engine()->renderer()->renderText("Press enter to start game", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
+    engine()->renderer()->renderText("Press space to start game", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
 }
 
 void MainScreen::Cleanup()
@@ -45,7 +48,7 @@ void MainScreen::HandleEvent(SDL_Event& event)
     case SDL_KEYDOWN:
         switch (event.key.keysym.sym)
         {
-        case SDLK_RETURN:
+        case SDLK_SPACE:
             SetNextScreen(std::make_shared<GameScreen>());
             break;
         }
@@ -67,6 +70,7 @@ void MainScreen::HandleEvent(SDL_Event& event)
 void NextFloorScreen::Setup(const std::vector<std::string>& args)
 {
     engine()->Reset(new ContactListener());
+    PlayerPersistentData::GetInstance().GetRunPersistentData().IncreaseFloor();
 }
 
 void NextFloorScreen::Update(uint32_t delta)
@@ -90,7 +94,7 @@ void NextFloorScreen::Render()
     g = sinf((float(time)) / 20);
     b = sinf((float(time)) / 20);
 
-    engine()->renderer()->renderText("Press enter to continue", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
+    engine()->renderer()->renderText("Press space to continue", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
 }
 
 void NextFloorScreen::Cleanup()
@@ -104,7 +108,7 @@ void NextFloorScreen::HandleEvent(SDL_Event& event)
     case SDL_KEYDOWN:
         switch (event.key.keysym.sym)
         {
-        case SDLK_RETURN:
+        case SDLK_SPACE:
             SetNextScreen(std::make_shared<GameScreen>());
             break;
         }

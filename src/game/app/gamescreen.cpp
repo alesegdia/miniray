@@ -8,12 +8,14 @@
 #include "game/render/assets.h"
 #include "mainscreen.h"
 
+#include "game/app/persistentdata.h"
+
 void GameScreen::SetupPlayer()
 {
 	cml::vector2i playerpos = mapdata.rooms[0].RandomPosition(rng, 3);
 	player = this->efactory->SpawnPlayer(playerpos[0], playerpos[1]);
 	this->playercontroller = static_cast<PlayerHumanController*>(player->controller);
-	efactory->SpawnPortal(playerpos[0] + 2, playerpos[1] + 2);
+	//efactory->SpawnPortal(playerpos[0] + 2, playerpos[1] + 2);
 }
 
 void GameScreen::Setup(const std::vector<std::string>& args)
@@ -25,6 +27,7 @@ void GameScreen::Setup(const std::vector<std::string>& args)
 	rng.seed(time(NULL));
 
 	mapgen::RoomGenConfig cfg;
+	cfg.num_rooms = PlayerPersistentData::GetInstance().GetRunPersistentData().GetCurrentFloor() + 2;
 
 	mapdata = mapgen::GenRooms(rng, cfg);
 
@@ -47,11 +50,15 @@ void GameScreen::Setup(const std::vector<std::string>& args)
 	for (size_t i = 1; i < mapdata.rooms.Size(); i++)
 	{
 		int lim = rng.uniform(6, 11);
+		auto spawnerPos = mapdata.rooms[i].RandomPosition(rng, 1);
+		efactory->SpawnSpawner(mapdata.rooms[i].x, mapdata.rooms[i].y);
+		/*
 		for (int j = 0; j < lim; j++)
 		{
 			cml::vector2i enemypos = mapdata.rooms[i].RandomPosition(rng, 1);
 			efactory->SpawnEnemy(enemypos[0], enemypos[1]);
 		}
+		*/
 	}
 
 	cml::vector2i portalpos = mapdata.rooms[mapdata.rooms.Size() - 1].RandomPosition(rng, 1);

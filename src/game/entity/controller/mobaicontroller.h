@@ -1,16 +1,14 @@
 
 #pragma once
 
-#include <glrayfw/entity/controller/entitycontroller.h>
-#include "../../constants.h"
-#include "../actor.h"
-#include "../mob.h"
-#include <glrayfw/entity/entity.h>
-#include "../entityfactory.h"
-#include "../player.h"
-// mierda, el player deberia estar en el controller, pero bueno
-#include <glrayfw/core/random.h>
-#include "../script/helpers.h"
+#include "glrayfw/entity/controller/entitycontroller.h"
+
+#include "game/entity/entityfactory.h"
+#include "game/entity/mob.h"
+#include "game/entity/player.h"
+
+#include "game/entity/script/helpers.h"
+#include "glrayfw/physics/physics.h"
 
 class MobAIController : public EntityController
 {
@@ -47,24 +45,43 @@ public:
 };
 
 
-
-
-
 class SpawnerAIController : public EntityController
 {
 public:
-	SpawnerAIController(std::shared_ptr<EntityFactory> efactory)
-		: m_efactory(efactory)
+	SpawnerAIController(EntityFactory* efactory, std::shared_ptr<Physics> physics)
+		: m_efactory(efactory),
+		  m_physics(physics)
 	{
 
 	}
+
 	void Step(Entity* e, uint32_t delta)
 	{
+		if (m_numSpawned >= m_capacity) return;
 		m_timer += delta;
 		if (m_timer >= m_timeBetweenSpawns)
 		{
 			m_timer -= m_timeBetweenSpawns;
-			auto enemy = m_efactory->SpawnEnemy(1, 1);
+
+			/*
+
+			bool canSpawn = false;
+			
+			cml::vector2f positionToSpawn;
+
+			while (!canSpawn)
+			{
+				positionToSpawn[0] = - e->transform.position[0];
+				positionToSpawn[1] = - e->transform.position[2];
+				canSpawn = true;
+				if (!m_physics->IsAnyBodyDetected({ {positionToSpawn[0] - SPAWN_WIDTH, positionToSpawn[1] - SPAWN_WIDTH}, {SPAWN_WIDTH, SPAWN_WIDTH} }))
+				{
+					canSpawn = true;
+				}
+			}
+			*/
+
+			auto enemy = m_efactory->SpawnEnemy(e->transform.position[0] / 2, e->transform.position[2] / 2);
 			m_numSpawned++;
 			enemy->onDie = [this](Entity* e) {
 				this->m_numSpawned--;
@@ -74,7 +91,13 @@ public:
 
 private:
 
-	std::shared_ptr<EntityFactory> m_efactory;
+	float m_xdiff = 3.0f;
+	float m_ydiff = 3.0f;
+	static constexpr float SPAWN_WIDTH = 0.1f;
+
+	EntityFactory* m_efactory;
+	std::shared_ptr<Physics> m_physics;
+
 	int m_numSpawned = 0;
 	int m_capacity = 6;
 	uint32_t m_timeBetweenSpawns = 5000;

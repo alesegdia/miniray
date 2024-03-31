@@ -53,6 +53,7 @@ public:
 		LoadTexture(gl, "assets/fireball.png", "TEX_FIREBALL");
 		LoadTexture(gl, "assets/stairs.png", "TEX_STAIRS");
 		LoadTexture(gl, "assets/portal.png", "TEX_PORTAL");
+		LoadTexture(gl, "assets/spawner.png", "TEX_SPAWNER");
 
 		LoadSprite(gl, "S3D_ROBOT", "TEX_ROBOT", 4, 3);
 		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
@@ -66,6 +67,7 @@ public:
 		LoadSprite(gl, "S3D_PICKHP", "TEX_PICKHP");
 		LoadSprite(gl, "S3D_BULLETOLD", "TEX_BULLETOLD");
 		LoadSprite(gl, "S3D_PORTAL", "TEX_PORTAL");
+		LoadSprite(gl, "S3D_SPAWNER", "TEX_SPAWNER");
 		Logger::getInstance().log(LogLevel::INFO, "END LOAD ASSETS");
 
 	}
