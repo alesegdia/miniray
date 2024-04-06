@@ -54,10 +54,14 @@ public:
 		LoadTexture(gl, "assets/stairs.png", "TEX_STAIRS");
 		LoadTexture(gl, "assets/portal.png", "TEX_PORTAL");
 		LoadTexture(gl, "assets/spawner.png", "TEX_SPAWNER");
+		LoadTexture(gl, "assets/bomber.png", "TEX_BOMBER");
 
 		LoadSprite(gl, "S3D_ROBOT", "TEX_ROBOT", 4, 3);
 		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
-		
+
+		LoadSprite(gl, "S3D_BOMBER", "TEX_BOMBER", 5, 1);
+		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
+
 		LoadSprite(gl, "S3D_GREENBULLET", "TEX_GREENBULLET");
 		LoadSprite(gl, "S3D_REDBULLET", "TEX_REDBULLET");
 		LoadSprite(gl, "S3D_BLUEBULLET", "TEX_BLUEBULLET");

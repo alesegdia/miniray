@@ -2,6 +2,6 @@
 #include "mobaicontroller.h"
 
 RNG MobAIController::rng;
-EntityFactory* MobAIController::entityfactory = NULL;
-Player* MobAIController::player = NULL;
+std::shared_ptr<EntityFactory> MobAIController::entityfactory = nullptr;
+Player* MobAIController::player = nullptr;
 

@@ -39,7 +39,7 @@ private:
 	// scene
 	mapgen::MapData mapdata;					// map generation data
 	Player* player;								// player entity
-	PlayerHumanController* playercontroller;	// player controller for input stuff
+	std::shared_ptr<PlayerHumanController> playercontroller;	// player controller for input stuff
 
 	// game
 	std::shared_ptr<EntityFactory> efactory;

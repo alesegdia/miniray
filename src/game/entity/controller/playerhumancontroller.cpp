@@ -53,7 +53,7 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 	m_currentDashSpeed *= m_dashDecay;
 	p->rotation_offset = rotation_offset;
 
-	float speed = (shift?p->run_speed:p->walk_speed);
+	float speed = (shift?p->stats.runSpeed:p->stats.walkSpeed);
 
 	{
 		cml::vector2f finaldir(0,0);
@@ -75,7 +75,7 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 
 	if (p->absorbedDamageLastFrame)
 	{
-		p->slowdownTimer = p->slowdownTimeOnParry;
+		p->slowdownTimer = p->stats.slowdownTimeOnParry;
 	}
 
 	if (p->slowdownTimer >= 0)
@@ -89,8 +89,8 @@ void PlayerHumanController::Step( Entity* e, uint32_t delta )
 	{
 		if (p->parryTimer <= 0 && p->parryCooldownTimer <= 0)
 		{
-			p->parryTimer = p->parryingTime;
-			p->parryCooldownTimer = p->parryCooldown;
+			p->parryTimer = p->stats.parryingTime;
+			p->parryCooldownTimer = p->stats.parryCooldown;
 		}
 	}
 	parryingRequested = false;

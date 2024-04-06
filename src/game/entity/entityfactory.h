@@ -22,7 +22,7 @@ struct EntityPrefab
 	CollisionLayer collisionLayer;
 	uint16_t collisionMask;
 	bool dynamicBody = true;
-	EntityController* controller = nullptr;
+	std::shared_ptr<EntityController> controller = nullptr;
 };
 
 class EntityFactory {
@@ -43,7 +43,8 @@ public:
 	Player* SpawnPlayer( float x, float y );
 	void SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time, int dmg);
 	void SpawnPickup( const cml::vector2f& pos);
-	Actor* SpawnEnemy(float x, float y);
+	Actor* SpawnBasicEnemyShooter(float x, float y);
+	Actor* SpawnBomber(float x, float y);
 	Entity* SpawnPortal(float x, float y);
 	Entity* SpawnEntity(const EntityPrefab& prefab, float x, float y);
 	Entity* SpawnSpawner(float x, float y);

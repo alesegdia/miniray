@@ -44,17 +44,32 @@ public:
         return f;
     }
 
+    void Upgrade()
+    {
+        m_level++;
+        OnWeaponUpgraded(m_level);
+    }
+
 protected:
     void AddShake(float f)
     {
         m_shakeLastFrame += f;
     }
 
+    int GetLevel()
+    {
+        return m_level;
+    }
+
+    virtual void OnWeaponUpgraded(int level) = 0;
+
 private:
+
     int m_nextShot = 0;
     bool m_pressed = false;
     uint32_t m_cooldown;
     float m_shakeLastFrame = 0.0f;
+    int m_level = 0;
 
 };
 
@@ -94,6 +109,18 @@ public:
     void SetPressed(bool pressed)
     {
         m_skills[m_currentSkillIndex]->SetPressed(pressed);
+    }
+
+    int UpgradeSkill(int weaponIndex)
+    {
+        if (weaponIndex >= 0 && weaponIndex < m_skills.size())
+        {
+            m_skills[weaponIndex]->Upgrade();
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     void SetCurrentSlot(int slot)

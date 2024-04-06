@@ -27,6 +27,7 @@ bool IsAnyOf(Entity* e0, Entity* e1, Entity::Type type, Entity** out)
 		*out = e1;
 		return true;
 	}
+	return false;
 }
 
 void ContactListener::BeginContact( b2Contact* contact )

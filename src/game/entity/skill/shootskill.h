@@ -33,7 +33,12 @@ public:
           m_player(player),
           m_bulletSprite(bulletSprite)
     {
-        
+        AddShootConfigForLevel(0, shootConfig);
+    }
+
+    void AddShootConfigForLevel(int level, ShootConfig shootConfig)
+    {
+        m_shootConfigPerLevel[level] = shootConfig;
     }
 
     void Execute() override
@@ -84,11 +89,19 @@ public:
 
     }
 
+    void OnWeaponUpgraded(int level) override
+    {
+        auto isValidLevel = m_shootConfigPerLevel.count(level) == 1;
+        assert(isValidLevel);
+        m_shootConfig = m_shootConfigPerLevel[level];
+    }
+
 private:
     EntityFactory* m_entityFactory;
     Actor* m_shooter;
     bool m_player;
     Sprite3D* m_bulletSprite;
     ShootConfig m_shootConfig;
+    std::unordered_map<int, ShootConfig> m_shootConfigPerLevel;
 
 };

@@ -18,6 +18,7 @@
 
 EntityFactory::~EntityFactory ()
 {
+
 }
 
 EntityFactory::EntityFactory( std::shared_ptr<Physics> physics, std::shared_ptr<EntityManager> emanager, std::shared_ptr<Transform> sceneRoot)
@@ -79,7 +80,7 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 	player->SetSprite(NULL);
 	player->SetType(Entity::Type::PLAYER);
 	player->SetPhysicBody( physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(player), CollisionLayer::PLAYER, Physics::PLAYER_MASK ) );
-	player->SetController( new PlayerHumanController(this, player) );
+	player->AddController(std::make_shared<PlayerHumanController>(this, player) );
 
 	player->hp.current = 100;
 	player->hp.total = 100;
@@ -102,7 +103,7 @@ void EntityFactory::SpawnBullet(
 	Entity* ent = AllocEntity<Bullet>();
 	Bullet* bu = static_cast<Bullet*>(ent);
 	bu->timer = time;
-	ent->controller = new BulletController();
+	ent->AddController(std::make_shared<BulletController>());
 	ent->SetType( Entity::Type::BULLET );
 	b2Body* b = physics->CreateBulletBody( pos[0], pos[1], col, mask, reinterpret_cast<uintptr_t>(ent) );
 	bu->direction = b2Vec2( dir[0], dir[1] );
@@ -114,22 +115,12 @@ void EntityFactory::SpawnBullet(
 	this->sceneTree->AddChild(&(bu->transform));
 }
 
-class PickupController : public TypedEntityController<Pickup>
-{
-public:
-	void Step(Pickup* p, uint32_t delta)
-	{
-		DoFly(p, 0.01, 0.1, 0.05);
-	}
-
-private:
-};
 
 void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 {
 	Pickup* p = AllocEntity<Pickup>();
 	p->SetPhysicBody( physics->CreateSphereBody( pos[0], pos[1], reinterpret_cast<uintptr_t>(p), CollisionLayer::PICKUP, Physics::PICKUP_MASK ) );
-	p->controller = new PickupController();
+	p->AddController(std::make_shared<FlyingController>(0.01, 0.1, 0.05));
 	p->SetType( Entity::Type::PICKUP );
 	p->type = rand() % 2 == 0 ? Pickup::Type::AMMO : Pickup::Type::HEALTH;
 	p->SetSprite(Assets::GetInstance().Sprite(p->type == Pickup::Type::AMMO ? "S3D_PICKSFW" : "S3D_PICKHP"));
@@ -137,7 +128,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	this->sceneTree->AddChild(&(p->transform));
 }
 
-Actor* EntityFactory::SpawnEnemy( float x, float y )
+Actor* EntityFactory::SpawnBasicEnemyShooter( float x, float y )
 {
 	Mob* actor = AllocEntity<Mob>();
 	ShootConfig scfg;
@@ -150,7 +141,7 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, Assets::GetInstance().Sprite("S3D_REDBULLET"), this, actor);
 	actor->skillSet.SetSlotSkill(0, skill);
 	actor->hp.current = 10;
-	actor->controller = new MobAIController();
+	actor->AddController(std::make_shared<MobAIController>());
 	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOT"));
 	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );
 	actor->SetRowInSpritesheet(2);
@@ -161,32 +152,50 @@ Actor* EntityFactory::SpawnEnemy( float x, float y )
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[0] = -1;
-	weapon->controller = new MobOptionController();
+	weapon->AddController(std::make_shared<MobOptionController>());
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[0] = 1;
-	weapon->controller = new MobOptionController();
+	weapon->AddController(std::make_shared<MobOptionController>());
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[2] = -1;
-	weapon->controller = new MobOptionController();
+	weapon->AddController(std::make_shared<MobOptionController>());
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
 	weapon = AllocEntity<Entity>();
 	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
 	weapon->transform.local_position[2] = 1;
-	weapon->controller = new MobOptionController();
+	weapon->AddController(std::make_shared<MobOptionController>());
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
+
+	actor->relativeToPlayerSprite = true;
 	return actor;
 }
+
+Actor* EntityFactory::SpawnBomber(float x, float y)
+{
+	/*
+	Mob* actor = AllocEntity<Mob>();
+	actor->hp.current = 10;
+	actor->SetController(std::make_shared<BomberAIController>());
+	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOT"));
+	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor)));
+	actor->SetRowInSpritesheet(2);
+	emanager->AddEntity(actor);
+	this->sceneTree->AddChild(&(actor->transform));
+	*/
+	return nullptr;
+}
+
 
 Entity* EntityFactory::SpawnEntity(const EntityPrefab& prefab, float x, float y)
 {
@@ -195,7 +204,7 @@ Entity* EntityFactory::SpawnEntity(const EntityPrefab& prefab, float x, float y)
 	auto sprite = Assets::GetInstance().Sprite(prefab.spriteID);
 	actor->SetSprite(sprite);
 	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor), prefab.collisionLayer, prefab.collisionMask, prefab.dynamicBody));
-	actor->controller = prefab.controller;
+	actor->AddController(prefab.controller);
 	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
 	return actor;
@@ -206,7 +215,7 @@ Entity* EntityFactory::SpawnSpawner(float x, float y)
 	EntityPrefab prefab;
 	prefab.collisionLayer = CollisionLayer::ENEMY_UNDMG;
 	prefab.collisionMask = CollisionLayer::PLAYER | CollisionLayer::ENEMY;
-	prefab.controller = new SpawnerAIController(this, physics);
+	prefab.controller = std::make_shared<SpawnerAIController>(this, physics);
 	prefab.dynamicBody = false;
 	prefab.entityType = Entity::Type::SPAWNER;
 	prefab.spriteID = "S3D_SPAWNER";
@@ -223,6 +232,7 @@ Entity* EntityFactory::SpawnPortal(float x, float y)
 	actor->SetPhysicBody(physics->CreateSphereBody(-x*2, -y*2, reinterpret_cast<uintptr_t>(actor), CollisionLayer::PORTAL, Physics::PORTAL_MASK, true));
 	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
+	actor->AddController(std::make_shared<FlyingController>(0.002, 0.1, 0.025));
 
 	return actor;
 }

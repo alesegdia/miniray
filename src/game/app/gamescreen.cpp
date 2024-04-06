@@ -10,11 +10,13 @@
 
 #include "game/app/persistentdata.h"
 
+#include <memory>
+
 void GameScreen::SetupPlayer()
 {
 	cml::vector2i playerpos = mapdata.rooms[0].RandomPosition(rng, 3);
-	player = this->efactory->SpawnPlayer(playerpos[0], playerpos[1]);
-	this->playercontroller = static_cast<PlayerHumanController*>(player->controller);
+	player = efactory->SpawnPlayer(playerpos[0], playerpos[1]);
+	playercontroller = player->GetController<PlayerHumanController>();
 	//efactory->SpawnPortal(playerpos[0] + 2, playerpos[1] + 2);
 }
 
@@ -67,7 +69,7 @@ void GameScreen::Setup(const std::vector<std::string>& args)
 
 	SetupPlayer();
 
-	MobAIController::Prepare(this->player, efactory.get());
+	MobAIController::Prepare(this->player, this->efactory);
 
 }
 
@@ -145,6 +147,9 @@ void GameScreen::Render()
 	RenderPlayerHP();
 
 	engine()->renderer()->SetPlayerHealth(float(player->hp.current) / 30.f);
+
+	engine()->renderer()->RenderPostFX();
+	engine()->renderer()->RenderFinish();
 }
 
 void GameScreen::RenderWeapon(cml::vector3f walkOffset)
@@ -180,6 +185,9 @@ void GameScreen::RenderPlayerHP()
 
 	sprintf(buf, "%d", player->skillSet.GetCurrentSlot());
 	engine()->renderer()->renderText(buf, -0.04f, -0.97f, cml::vector4f(1, 1, 1, 1));
+
+
+	engine()->renderer()->renderText("This is a written text.", 0, 0, cml::vector4f(1, 1, 1, 1), 0.8, 0.8);
 
 	std::string arma = "";
 	switch (player->skillSet.GetCurrentSlot())

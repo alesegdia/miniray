@@ -13,7 +13,7 @@ class Player;
 void CheckHealth( Actor* actor );
 
 // dropea un objeto, solo si hay suerte
-void DoDropItem( Actor* actor, RNG& rng, EntityFactory* entityfactory );
+void DoDropItem( Actor* actor, RNG& rng, std::shared_ptr<EntityFactory> entityfactory );
 
 // establece la velocidad lineal
 void DoMove( Actor* actor, cml::vector3f dir, float speed, cml::vector2f postAdd = { 0,0 });
@@ -29,6 +29,7 @@ void DoKeepDistance( Mob* mob, Player* playerpos, uint32_t delta );
 
 // establece percepción del jugador en un enemigo
 void DoSensePlayer( Mob* actor, Player* player );
+
 
 void DoFly(Entity* e, double freqMod, double amplitudeMod, double offset);
 

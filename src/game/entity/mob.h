@@ -6,7 +6,6 @@
 
 class Mob : public Actor
 {
-
 public:
 
 	// mas alto, mas pro
@@ -21,4 +20,10 @@ public:
 		float angle = SIGHT_ANGLE;
 	} vision;
 
+};
+
+
+class Bomber : public Mob
+{
+public:
 };

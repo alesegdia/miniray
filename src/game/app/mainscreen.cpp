@@ -35,6 +35,9 @@ void MainScreen::Render()
     b = sinf((float(time)) / 20);
 
     engine()->renderer()->renderText("Press space to start game", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
+
+    engine()->renderer()->RenderPostFX();
+    engine()->renderer()->RenderFinish();
 }
 
 void MainScreen::Cleanup()
@@ -96,6 +99,10 @@ void NextFloorScreen::Render()
     b = sinf((float(time)) / 20);
 
     engine()->renderer()->renderText("Press space to continue", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
+
+    engine()->renderer()->RenderPostFX();
+    engine()->renderer()->RenderFinish();
+
 }
 
 void NextFloorScreen::Cleanup()

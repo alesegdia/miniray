@@ -12,13 +12,37 @@
 
 #include <cml/cml.h>
 
+class FlyingController : public EntityController
+{
+public:
+	FlyingController(double freqMod, double amplitudeMod, double offset)
+		: m_freqMod(freqMod),
+		  m_ampMod(amplitudeMod),
+		  m_offset(offset)
+	{
+
+	}
+
+	void Step(Entity* e, uint32_t delta)
+	{
+		auto time = SDL_GetTicks();
+		e->transform.position[1] = float(sin((time * m_freqMod)) * m_ampMod + m_offset);
+	}
+
+private:
+	double m_freqMod;
+	double m_ampMod;
+	double m_offset;
+
+};
+
 class MobAIController : public EntityController
 {
 
 	static RNG rng; // hacerlo puntero y pasarselo desde el main
 
 	static Player* player;
-	static EntityFactory* entityfactory;
+	static std::shared_ptr<EntityFactory> entityfactory;
 
 	uint32_t timeAlive = 0;
 
@@ -26,7 +50,7 @@ class MobAIController : public EntityController
 
 public:
 
-	static void Prepare(Player* pl, EntityFactory* ef) {
+	static void Prepare(Player* pl, const std::shared_ptr<EntityFactory>& ef) {
 		MobAIController::player = pl;
 		MobAIController::entityfactory = ef;
 
@@ -72,11 +96,16 @@ public:
 class SpawnerAIController : public EntityController
 {
 public:
-	SpawnerAIController(EntityFactory* efactory, std::shared_ptr<Physics> physics)
+	SpawnerAIController(
+		EntityFactory* efactory,
+		std::shared_ptr<Physics> physics,
+		int maxSpawnedEnemies = 10,
+		uint32_t millisBetweenSpawns = 1000)
 		: m_efactory(efactory),
 		  m_physics(physics)
 	{
-
+		m_capacity = maxSpawnedEnemies;
+		m_timeBetweenSpawns = millisBetweenSpawns;
 	}
 
 	void Step(Entity* e, uint32_t delta)
@@ -87,25 +116,7 @@ public:
 		{
 			m_timer -= m_timeBetweenSpawns;
 
-			/*
-
-			bool canSpawn = false;
-			
-			cml::vector2f positionToSpawn;
-
-			while (!canSpawn)
-			{
-				positionToSpawn[0] = - e->transform.position[0];
-				positionToSpawn[1] = - e->transform.position[2];
-				canSpawn = true;
-				if (!m_physics->IsAnyBodyDetected({ {positionToSpawn[0] - SPAWN_WIDTH, positionToSpawn[1] - SPAWN_WIDTH}, {SPAWN_WIDTH, SPAWN_WIDTH} }))
-				{
-					canSpawn = true;
-				}
-			}
-			*/
-
-			auto enemy = m_efactory->SpawnEnemy(e->transform.position[0] / 2, e->transform.position[2] / 2);
+			auto enemy = m_efactory->SpawnBasicEnemyShooter(e->transform.position[0] / 2, e->transform.position[2] / 2);
 			m_numSpawned++;
 			enemy->onDie = [this](Entity* e) {
 				this->m_numSpawned--;
@@ -123,11 +134,14 @@ private:
 	std::shared_ptr<Physics> m_physics;
 
 	int m_numSpawned = 0;
-	int m_capacity = 6;
-	uint32_t m_timeBetweenSpawns = 5000;
+	int m_capacity = 10;
+	uint32_t m_timeBetweenSpawns = 1000;
 	uint32_t m_timer = 0;
 
-	static RNG rng; // hacerlo puntero y pasarselo desde el main
+	static RNG rng;
 
 };
+
+
+
 

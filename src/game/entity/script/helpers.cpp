@@ -13,7 +13,7 @@ void CheckHealth( Actor* actor )
 	if( actor->hp.current <= 0 ) actor->Die();
 }
 
-void DoDropItem( Actor* actor, RNG& rng, EntityFactory* entityfactory )
+void DoDropItem( Actor* actor, RNG& rng, std::shared_ptr<EntityFactory> entityfactory )
 {
 	if( !actor->IsAlive() )
 	{
@@ -116,6 +116,4 @@ void DoKeepDistance( Mob* mob, Player* player, uint32_t delta )
 
 void DoFly(Entity* e, double freqMod, double amplitudeMod, double offset)
 {
-	auto time = SDL_GetTicks();
-	e->transform.position[1] = float(sin((time * freqMod)) * amplitudeMod + offset);
 }

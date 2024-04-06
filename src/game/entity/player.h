@@ -6,10 +6,56 @@
 
 class Inventory;
 
+
+struct PowerUp
+{
+	int weaponIndexUpgrade = -1;
+	int speedLevel = -1;
+};
+
+// health kills you but you heal on parrying
+
+struct Stats
+{
+	float walkSpeed = 4.f;
+	float runSpeed = 8.f;
+	int parryCooldown = 2300;
+	int parryingTime = 300;
+	int slowdownTimeOnParry = 1000;
+	void ApplyPowerup(PowerUp pwup)
+	{
+
+	}
+};
+
+/*
+std::vector<PowerUp> CreateAllPowerups()
+{
+	std::vector<PowerUp> allPowerups;
+	std::vector<std::string> weaponNames = { "pistol", "shotgun", "rifle", "thrower" };
+	for (int i = 0; i < weaponNames.size(); i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			PowerUp pwup;
+			pwup.weaponIndexUpgrade = i;
+			allPowerups.push_back(pwup);
+		}
+	}
+
+	return allPowerups;
+}
+*/
+
 class Player : public Actor
 {
 
 public:
+
+	void ApplyPowerup(const PowerUp& powerUp)
+	{
+		int result = skillSet.UpgradeSkill(powerUp.weaponIndexUpgrade);
+	}
 
 	// se pulsó la tecla de inventario en el último frame?
 	bool inventory_open;
@@ -19,22 +65,17 @@ public:
 	float SPR;
 	// script de inventario
 	Inventory* inventory;
-	// velocidad al andar
-	float walk_speed = 4.f;
-	// velocidad al esprintar
-	float run_speed = 8.f;
 	
 	int parryTimer = -1;
 
 	// cooldown tiene que ser mayor que parryingTime porque pasan a la vez los dos timers por simplicitud
-	int parryCooldown = 2300;
 	int parryCooldownTimer = -1;
-	int parryingTime = 300;
 
 	int slowdownTimer = 0;
-	int slowdownTimeOnParry = 3000;
 
 	bool touchPortal = false;
+
+	Stats stats;
 
 
 };
