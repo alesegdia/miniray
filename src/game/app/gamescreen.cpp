@@ -140,6 +140,8 @@ void GameScreen::Render()
 	engine()->cam()->position(cml::vector3f(ppos.x, 0, ppos.y));
 	engine()->cam()->horizontalAngle(-player->GetAngleY());
 
+
+	engine()->renderer()->RenderBegin();
 	engine()->sceneRender(player->GetAngleY());
 
 	RenderWeapon(cml::vector3f(0, 0, 0));
@@ -148,7 +150,6 @@ void GameScreen::Render()
 
 	engine()->renderer()->SetPlayerHealth(float(player->hp.current) / 30.f);
 
-	engine()->renderer()->RenderPostFX();
 	engine()->renderer()->RenderFinish();
 }
 

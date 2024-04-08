@@ -21,22 +21,23 @@ void MainScreen::Update(uint32_t delta)
 void MainScreen::Render()
 {
     engine()->cam()->position(cml::vector3f(0, 0, 0));
-    engine()->renderer()->SetupRender();
 
-    uint32_t time = SDL_GetTicks();
-    float r = sinf((float(time)) / 10);
-    float g = sinf((float(time)) / 40);
-    float b = sinf((float(time)) / 40);
-    engine()->renderer()->SetPlayerHealth(0.0f);
-    engine()->renderer()->renderText("Miniray", -0.5, 0, cml::vector4f(r, 1, b, 1), 2, 2);
+    engine()->renderer()->RenderBegin();
+    {
+        uint32_t time = SDL_GetTicks();
+        float r = sinf((float(time)) / 10);
+        float g = sinf((float(time)) / 40);
+        float b = sinf((float(time)) / 40);
+        engine()->renderer()->SetPlayerHealth(0.0f);
+        engine()->renderer()->renderText("Miniray", -0.5, 0, cml::vector4f(r, 1, b, 1), 2, 2);
 
-    r = sinf((float(time)) / 20);
-    g = sinf((float(time)) / 20);
-    b = sinf((float(time)) / 20);
+        r = sinf((float(time)) / 20);
+        g = sinf((float(time)) / 20);
+        b = sinf((float(time)) / 20);
 
-    engine()->renderer()->renderText("Press space to start game", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
+        engine()->renderer()->renderText("Press space to start game", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
 
-    engine()->renderer()->RenderPostFX();
+    }
     engine()->renderer()->RenderFinish();
 }
 
@@ -84,7 +85,7 @@ void NextFloorScreen::Update(uint32_t delta)
 void NextFloorScreen::Render()
 {
     engine()->cam()->position(cml::vector3f(0, 0, 0));
-    engine()->renderer()->SetupRender();
+    engine()->renderer()->RenderBegin();
 
     uint32_t time = SDL_GetTicks();
     float r = sinf((float(time)) / 10);
@@ -100,7 +101,6 @@ void NextFloorScreen::Render()
 
     engine()->renderer()->renderText("Press space to continue", -0.8, -0.5, cml::vector4f(r, g, b, 1), 1, 1);
 
-    engine()->renderer()->RenderPostFX();
     engine()->renderer()->RenderFinish();
 
 }
