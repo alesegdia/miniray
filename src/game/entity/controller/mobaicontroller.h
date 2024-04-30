@@ -116,7 +116,15 @@ public:
 		{
 			m_timer -= m_timeBetweenSpawns;
 
-			auto enemy = m_efactory->SpawnBasicEnemyShooter(e->transform.position[0] / 2, e->transform.position[2] / 2);
+			Entity* enemy = nullptr;
+			if (rand() % 2 == 0)
+			{
+				enemy = m_efactory->SpawnBasicEnemyShooter(e->transform.position[0] / 2, e->transform.position[2] / 2);
+			}
+			else
+			{
+				enemy = m_efactory->SpawnBasicEnemyMelee(e->transform.position[0] / 2, e->transform.position[2] / 2);
+			}
 			m_numSpawned++;
 			enemy->onDie = [this](Entity* e) {
 				this->m_numSpawned--;

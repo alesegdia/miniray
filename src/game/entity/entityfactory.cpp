@@ -149,35 +149,6 @@ Actor* EntityFactory::SpawnBasicEnemyShooter(float x, float y)
 	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
 
-	Entity* weapon;
-	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
-	weapon->transform.local_position[0] = -1;
-	weapon->AddController(std::make_shared<MobOptionController>());
-	actor->transform.AddChild(&(weapon->transform));
-	emanager->AddEntity(weapon);
-
-	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
-	weapon->transform.local_position[0] = 1;
-	weapon->AddController(std::make_shared<MobOptionController>());
-	actor->transform.AddChild(&(weapon->transform));
-	emanager->AddEntity(weapon);
-
-	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
-	weapon->transform.local_position[2] = -1;
-	weapon->AddController(std::make_shared<MobOptionController>());
-	actor->transform.AddChild(&(weapon->transform));
-	emanager->AddEntity(weapon);
-
-	weapon = AllocEntity<Entity>();
-	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
-	weapon->transform.local_position[2] = 1;
-	weapon->AddController(std::make_shared<MobOptionController>());
-	actor->transform.AddChild(&(weapon->transform));
-	emanager->AddEntity(weapon);
-
 	actor->animationPack = Assets::GetInstance().CreateSidedAnim(2, 0);
 
 	actor->relativeToPlayerSprite = true;
@@ -198,7 +169,7 @@ Actor* EntityFactory::SpawnBasicEnemyMelee(float x, float y)
 	actor->skillSet.SetSlotSkill(0, skill);
 	actor->hp.current = 10;
 	actor->AddController(std::make_shared<MobAIController>());
-	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOT"));
+	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOTMELEE"));
 	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor)));
 	actor->SetRowInSpritesheet(2);
 	emanager->AddEntity(actor);
@@ -233,7 +204,7 @@ Actor* EntityFactory::SpawnBasicEnemyMelee(float x, float y)
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
 
-	actor->animationPack = Assets::GetInstance().CreateSidedAnim(2, 0);
+	actor->animationPack = Assets::GetInstance().CreateSidedAnim(3, 0);
 
 	actor->relativeToPlayerSprite = true;
 	return actor;

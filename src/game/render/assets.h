@@ -42,6 +42,7 @@ public:
 		LoadTexture(gl, "assets/techo.png", "TEX_TECHO");
 		LoadTexture(gl, "assets/suelo.png", "TEX_SUELO");
 		LoadTexture(gl, "assets/rob.png", "TEX_ROBOT");
+		LoadTexture(gl, "assets/physicalmob.png", "TEX_ROBOTMELEE");
 		LoadTexture(gl, "assets/bullet.png", "TEX_GREENBULLET");
 		LoadTexture(gl, "assets/redbullet.png", "TEX_REDBULLET");
 		LoadTexture(gl, "assets/bluebullet.png", "TEX_BLUEBULLET");
@@ -57,6 +58,9 @@ public:
 
 		LoadSprite(gl, "S3D_ROBOT", "TEX_ROBOT", 4, 3);
 		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
+
+		LoadSprite(gl, "S3D_ROBOTMELEE", "TEX_ROBOTMELEE", 4, 3);
+		m_sprites["S3D_ROBOTMELEE"]->SetCurrentFrame(0, 0);
 
 		LoadSprite(gl, "S3D_BOMBER", "TEX_BOMBER", 5, 1);
 		m_sprites["S3D_ROBOT"]->SetCurrentFrame(0, 0);
