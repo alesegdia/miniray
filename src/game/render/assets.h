@@ -10,7 +10,6 @@
 
 #include "../constants.h"
 
-
 class Assets {
 private:
 	static Assets s_instance;
@@ -79,6 +78,54 @@ public:
 	Sprite3D* Sprite( std::string id )
 	{
 		return m_sprites[id];
+	}
+
+	std::shared_ptr<AnimationPack> CreateSidedAnim(int numFrames, int startingRow, uint32_t timeForEachFrame = 200, bool loop = false)
+	{
+		std::shared_ptr<AnimationPack> animPack = std::make_shared<AnimationPack>();
+
+		assert(numFrames > 0);
+		if (numFrames == 1)
+		{
+			timeForEachFrame = 5000;
+		}
+		Side sides[4] = { Side::Front, Side::Back, Side::Right, Side::Left };
+		for (int i = 0; i < 4; i++)
+		{
+			auto currentSide = sides[i];
+			std::shared_ptr<Animation> anim = std::make_shared<Animation>();
+			anim->SetFrameDuration(timeForEachFrame);
+			for (int j = 0; j < numFrames; j++)
+			{
+				anim->AddFrame({ i, startingRow + 2-j });
+			}
+			animPack->SetSideAnimation(currentSide, anim);
+		}
+
+		return animPack;
+	}
+
+	std::shared_ptr<AnimationPack> CreateOneSidedAnim(int numFrames, int frameX, uint32_t timeForEachFrame = 200, bool loop = false)
+	{
+		std::shared_ptr<AnimationPack> animPack = std::make_shared<AnimationPack>();
+
+		assert(numFrames > 0);
+		if (numFrames == 1)
+		{
+			timeForEachFrame = 5000;
+		}
+		Side sides[4] = { Side::Right, Side::Back, Side::Left, Side::Front };
+		for (int i = 0; i < 4; i++)
+		{
+			auto currentSide = sides[i];
+			std::shared_ptr<Animation> anim = std::make_shared<Animation>();
+			for (int j = 0; j < numFrames; j++)
+			{
+				anim->AddFrame({ frameX, j });
+			}
+			animPack->SetSideAnimation(currentSide, anim);
+		}
+		return animPack;
 	}
 
 	tdogl::Texture* Texture( const std::string& texID )

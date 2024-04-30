@@ -87,6 +87,7 @@ Player* EntityFactory::SpawnPlayer( float x, float y ){
 
 	player->skillSet.AddAmmo(300);
 	player->skillSet.SetCurrentSlot(1);
+
 	return player;
 }	
 
@@ -128,7 +129,7 @@ void EntityFactory::SpawnPickup( const cml::vector2f& pos )
 	this->sceneTree->AddChild(&(p->transform));
 }
 
-Actor* EntityFactory::SpawnBasicEnemyShooter( float x, float y )
+Actor* EntityFactory::SpawnBasicEnemyShooter(float x, float y)
 {
 	Mob* actor = AllocEntity<Mob>();
 	ShootConfig scfg;
@@ -143,9 +144,9 @@ Actor* EntityFactory::SpawnBasicEnemyShooter( float x, float y )
 	actor->hp.current = 10;
 	actor->AddController(std::make_shared<MobAIController>());
 	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOT"));
-	actor->SetPhysicBody( physics->CreateSphereBody( -x*2, -y*2, reinterpret_cast<uintptr_t>(actor) ) );
+	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor)));
 	actor->SetRowInSpritesheet(2);
-	emanager->AddEntity( actor );
+	emanager->AddEntity(actor);
 	this->sceneTree->AddChild(&(actor->transform));
 
 	Entity* weapon;
@@ -176,6 +177,63 @@ Actor* EntityFactory::SpawnBasicEnemyShooter( float x, float y )
 	weapon->AddController(std::make_shared<MobOptionController>());
 	actor->transform.AddChild(&(weapon->transform));
 	emanager->AddEntity(weapon);
+
+	actor->animationPack = Assets::GetInstance().CreateSidedAnim(2, 0);
+
+	actor->relativeToPlayerSprite = true;
+	return actor;
+}
+
+Actor* EntityFactory::SpawnBasicEnemyMelee(float x, float y)
+{
+	Mob* actor = AllocEntity<Mob>();
+	ShootConfig scfg;
+	scfg.cooldown = 300;
+	scfg.bullet_speed = 15.f;
+	scfg.bullet_duration = 3000.f;
+	scfg.pushback = 0;
+	scfg.damage = 5;
+
+	std::shared_ptr<Skill> skill = std::make_shared<ShootSkill>(scfg, false, Assets::GetInstance().Sprite("S3D_REDBULLET"), this, actor);
+	actor->skillSet.SetSlotSkill(0, skill);
+	actor->hp.current = 10;
+	actor->AddController(std::make_shared<MobAIController>());
+	actor->SetSprite(Assets::GetInstance().Sprite("S3D_ROBOT"));
+	actor->SetPhysicBody(physics->CreateSphereBody(-x * 2, -y * 2, reinterpret_cast<uintptr_t>(actor)));
+	actor->SetRowInSpritesheet(2);
+	emanager->AddEntity(actor);
+	this->sceneTree->AddChild(&(actor->transform));
+
+	Entity* weapon;
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
+	weapon->transform.local_position[0] = -1;
+	weapon->AddController(std::make_shared<MobOptionController>());
+	actor->transform.AddChild(&(weapon->transform));
+	emanager->AddEntity(weapon);
+
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
+	weapon->transform.local_position[0] = 1;
+	weapon->AddController(std::make_shared<MobOptionController>());
+	actor->transform.AddChild(&(weapon->transform));
+	emanager->AddEntity(weapon);
+
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
+	weapon->transform.local_position[2] = -1;
+	weapon->AddController(std::make_shared<MobOptionController>());
+	actor->transform.AddChild(&(weapon->transform));
+	emanager->AddEntity(weapon);
+
+	weapon = AllocEntity<Entity>();
+	weapon->SetSprite(Assets::GetInstance().Sprite("S3D_FIREBALL"));
+	weapon->transform.local_position[2] = 1;
+	weapon->AddController(std::make_shared<MobOptionController>());
+	actor->transform.AddChild(&(weapon->transform));
+	emanager->AddEntity(weapon);
+
+	actor->animationPack = Assets::GetInstance().CreateSidedAnim(2, 0);
 
 	actor->relativeToPlayerSprite = true;
 	return actor;
@@ -221,6 +279,7 @@ Entity* EntityFactory::SpawnSpawner(float x, float y)
 	prefab.spriteID = "S3D_SPAWNER";
 	auto entity = SpawnEntity(prefab, x, y);
 	entity->name = "SPAWNER";
+	entity->animationPack = Assets::GetInstance().CreateOneSidedAnim(1, 0);
 	return entity;
 }
 

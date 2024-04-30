@@ -44,6 +44,7 @@ public:
 	void SpawnBullet( const cml::vector2f& pos, const cml::vector2f& dir, CollisionLayer col, uint16_t mask, Sprite3D* sprite, float time, int dmg);
 	void SpawnPickup( const cml::vector2f& pos);
 	Actor* SpawnBasicEnemyShooter(float x, float y);
+	Actor* SpawnBasicEnemyMelee(float x, float y);
 	Actor* SpawnBomber(float x, float y);
 	Entity* SpawnPortal(float x, float y);
 	Entity* SpawnEntity(const EntityPrefab& prefab, float x, float y);

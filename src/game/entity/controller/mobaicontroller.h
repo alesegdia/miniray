@@ -80,13 +80,13 @@ public:
 
 		CheckHealth(mob);
 		DoDropItem(mob, rng, entityfactory);
-		DoSensePlayer(mob, player);
+		//DoSensePlayer(mob, player);
 
-		if (mob->player_visible || mob->painLastFrame)
+		if (false) //mob->player_visible || mob->painLastFrame)
 		{
 			DoKeepDistance(mob, player, delta);
 		}
-		mob->skillSet.SetPressed(mob->player_visible);
+		//mob->skillSet.SetPressed(mob->player_visible);
 		mob->skillSet.update(delta);
 	}
 
